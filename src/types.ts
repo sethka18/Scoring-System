@@ -120,7 +120,8 @@ export interface SchoolProfile {
   principalNameKm?: string;
   phone?: string;
   email?: string;
-  logoUrl?: string; // Custom uploaded image (Base64 data URL or web link)
+  logoUrl?: string; // Custom school logo (Base64 data URL or web link)
+  moeysLogoUrl?: string; // Custom Ministry of Education / MoEYS logo (Base64 data URL or web link)
   academicYear?: string; // e.g. "២០២៥-២០២៦"
 }
 

@@ -125,6 +125,7 @@ interface GradebookContextType {
   schoolProfile: SchoolProfile;
   updateSchoolProfile: (profile: Partial<SchoolProfile>) => void;
   resetSchoolLogo: () => void;
+  resetMoEYSLogo: () => void;
   duplicateClass: (classId: string, newNameKm: string, newNameEn: string, copyStudents: boolean) => void;
   
   // Actions
@@ -134,8 +135,10 @@ interface GradebookContextType {
   deleteClass: (id: string) => void;
   
   addStudent: (student: Omit<Student, 'id'> | Student, classId?: string) => void;
+  addStudentsBatch: (newStudents: (Omit<Student, 'id'> | Student)[], classId?: string, replaceExisting?: boolean) => void;
   updateStudent: (id: string, updated: Partial<Student>) => void;
   deleteStudent: (id: string) => void;
+  deleteStudents: (ids: string[]) => void;
   
   updateSubjectScore: (
     studentId: string, 
@@ -542,6 +545,11 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     showToast(language === 'km' ? 'បានកំណត់ឡូហ្គូទៅសញ្ញាសម្គាល់ក្រសួងដើម' : 'Reset to default MoEYS emblem', 'info');
   };
 
+  const resetMoEYSLogo = () => {
+    updateSchoolProfile({ moeysLogoUrl: '' });
+    showToast(language === 'km' ? 'បានកំណត់ឡូហ្គូក្រសួងទៅសញ្ញាសម្គាល់ផ្លូវការដើម' : 'Reset to official MoEYS emblem', 'info');
+  };
+
   // ==========================================
   // Reading Speed & Mental Math Fluency Exam
   // ==========================================
@@ -689,6 +697,71 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       studentIds: (c.studentIds || []).filter(sId => sId !== id)
     })));
     showToast(language === 'km' ? 'បានលុបសិស្សចេញពីបញ្ជី' : 'Student removed from roster', 'info');
+  };
+
+  const deleteStudents = (ids: string[]) => {
+    if (!ids || ids.length === 0) return;
+    const idSet = new Set(ids);
+    setStudents(prev => prev.filter(s => !idSet.has(s.id)));
+    setClasses(prev => prev.map(c => ({
+      ...c,
+      studentIds: (c.studentIds || []).filter(sId => !idSet.has(sId))
+    })));
+    showToast(
+      language === 'km' 
+        ? `បានលុបសិស្សចំនួន ${ids.length} នាក់ចេញពីបញ្ជី` 
+        : `Removed ${ids.length} students from roster`,
+      'info'
+    );
+  };
+
+  const addStudentsBatch = (
+    newStudents: (Omit<Student, 'id'> | Student)[], 
+    classId?: string, 
+    replaceExisting: boolean = false
+  ) => {
+    if (!newStudents || newStudents.length === 0) return;
+    const targetClassId = classId || activeClassId;
+    const formattedStudents: Student[] = newStudents.map((s, idx) => ({
+      attendanceCount: s.attendanceCount || { present: 100, absentExcused: 0, absentUnexcused: 0, late: 0 },
+      behaviorScore: s.behaviorScore ?? 5,
+      conductRating: s.conductRating || 'ល្អ',
+      ...s,
+      id: 'id' in s && s.id ? s.id : `stu_${Date.now()}_${idx}_${Math.random().toString(36).slice(2, 7)}`
+    }));
+
+    const newIds = formattedStudents.map(s => s.id);
+
+    setStudents(prev => {
+      if (replaceExisting) {
+        // Find students belonging to other classes so we don't accidentally wipe them
+        const otherClasses = classes.filter(c => c.id !== targetClassId);
+        const otherStudentIds = new Set(otherClasses.flatMap(c => c.studentIds || []));
+        const retainedStudents = prev.filter(s => otherStudentIds.has(s.id));
+        return [...retainedStudents, ...formattedStudents];
+      } else {
+        return [...prev, ...formattedStudents];
+      }
+    });
+
+    setClasses(prev => prev.map(c => {
+      if (c.id === targetClassId) {
+        return {
+          ...c,
+          studentIds: replaceExisting ? newIds : [...(c.studentIds || []), ...newIds]
+        };
+      }
+      return c;
+    }));
+
+    showToast(
+      language === 'km'
+        ? (replaceExisting 
+            ? `បានជំនួសបញ្ជីសិស្សថ្មីចំនួន ${formattedStudents.length} នាក់ជោគជ័យ` 
+            : `បានបន្ថែមសិស្សចំនួន ${formattedStudents.length} នាក់ជោគជ័យ`)
+        : `Successfully imported ${formattedStudents.length} students`,
+      'success'
+    );
   };
 
   // Scoring updates
@@ -1231,14 +1304,17 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         schoolProfile,
         updateSchoolProfile,
         resetSchoolLogo,
+        resetMoEYSLogo,
         duplicateClass,
         addClass,
         createClass,
         updateClass,
         deleteClass,
         addStudent,
+        addStudentsBatch,
         updateStudent,
         deleteStudent,
+        deleteStudents,
         updateSubjectScore,
         bulkUpdatePeriodScores,
         updateWeights,

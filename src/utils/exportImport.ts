@@ -475,37 +475,280 @@ export async function copyAssessmentDataToClipboard(options: ComprehensiveCSVExp
 }
 
 /**
- * Exports students list to CSV format
+ * Exports students list to CSV format with UTF-8 BOM for Microsoft Excel compatibility
  */
-export function exportStudentsToCSV(students: Student[], className: string): void {
-  const headers = ['ID', 'Student ID', 'Full Name (Khmer)', 'Full Name (Latin)', 'Gender', 'Date of Birth', 'Guardian Name', 'Guardian Phone', 'Conduct Rating', 'Behavior Points', 'Present Days', 'Absent Excused', 'Absent Unexcused', 'Notes'];
+export function exportStudentsToCSV(
+  students: Student[], 
+  className: string, 
+  customFileName?: string
+): void {
+  const headers = [
+    'ល.រ (No.)',
+    'អត្តលេខ (Student ID)',
+    'គោត្តនាម-នាម (Khmer Name)',
+    'ឈ្មោះជាឡាតាំង (Latin Name)',
+    'ភេទ (Gender)',
+    'ថ្ងៃខែឆ្នាំកំណើត (DOB)',
+    'ឈ្មោះអាណាព្យាបាល (Guardian)',
+    'លេខទូរស័ព្ទ (Phone)',
+    'កម្រិតមារយាទ (Conduct)',
+    'ពិន្ទុអាកប្បកិរិយា (Behavior)',
+    'វត្តមាន (Present Days)',
+    'អវត្តមានមានច្បាប់ (Absent Excused)',
+    'អវត្តមានឥតច្បាប់ (Absent Unexcused)',
+    'សម្គាល់ (Notes)'
+  ];
   
-  const rows = students.map(s => [
-    s.id,
-    s.studentId,
-    `"${s.name.replace(/"/g, '""')}"`,
-    `"${(s.nameLatin || '').replace(/"/g, '""')}"`,
-    s.gender,
-    s.dob || '',
-    `"${(s.guardianName || '').replace(/"/g, '""')}"`,
-    s.guardianPhone || '',
-    formatConductRating(s.conductRating, 'km'),
-    s.behaviorScore || 5,
-    s.attendanceCount?.present ?? 0,
+  const rows = students.map((s, idx) => [
+    idx + 1,
+    formatCSVCell(s.studentId),
+    formatCSVCell(s.name),
+    formatCSVCell(s.nameLatin || ''),
+    formatCSVCell(s.gender === 'Female' ? 'ស្រី (Female)' : 'ប្រុស (Male)'),
+    formatCSVCell(s.dob || ''),
+    formatCSVCell(s.guardianName || ''),
+    formatCSVCell(s.guardianPhone || ''),
+    formatCSVCell(formatConductRating(s.conductRating, 'km')),
+    s.behaviorScore ?? 5,
+    s.attendanceCount?.present ?? 100,
     s.attendanceCount?.absentExcused ?? 0,
     s.attendanceCount?.absentUnexcused ?? 0,
-    `"${(s.notes || '').replace(/"/g, '""')}"`,
+    formatCSVCell(s.notes || ''),
   ]);
 
   const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
+  const fileName = customFileName || `បញ្ជីសិស្ស_${className.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.csv`;
   link.setAttribute('href', url);
-  link.setAttribute('download', `Roster_${className.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.csv`);
+  link.setAttribute('download', fileName);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+/**
+ * Exports students list to JSON format
+ */
+export function exportStudentsToJSON(students: Student[], className: string, customFileName?: string): void {
+  const jsonString = JSON.stringify(students, null, 2);
+  const blob = new Blob([jsonString], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  const fileName = customFileName || `បញ្ជីសិស្ស_${className.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.json`;
+  link.setAttribute('href', url);
+  link.setAttribute('download', fileName);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+/**
+ * Downloads a sample CSV template for importing students
+ */
+export function downloadStudentCSVTemplate(): void {
+  const headers = [
+    'Student ID (អត្តលេខ)',
+    'Khmer Name (គោត្តនាម-នាម)',
+    'Latin Name (ឈ្មោះជាឡាតាំង)',
+    'Gender (ភេទ)',
+    'Date of Birth (ថ្ងៃខែឆ្នាំកំណើត YYYY-MM-DD)',
+    'Guardian Name (អាណាព្យាបាល)',
+    'Guardian Phone (ទូរស័ព្ទ)',
+    'Notes (សម្គាល់)'
+  ];
+
+  const sampleRows = [
+    ['STU-6001', 'ចាន់ សុខា', 'Chan Sokha', 'ប្រុស', '2014-03-15', 'ចាន់ សុផល', '012 345 678', 'សិស្សពូកែ'],
+    ['STU-6002', 'សុខ គន្ធា', 'Sok Kunthea', 'ស្រី', '2014-05-20', 'សុខ វណ្ណា', '098 765 432', ''],
+    ['STU-6003', 'ម៉ៅ វីរៈ', 'Mao Virak', 'ប្រុស', '2014-01-10', 'ម៉ៅ ចំរើន', '089 112 233', '']
+  ];
+
+  const csvContent = '\uFEFF' + [
+    headers.join(','), 
+    ...sampleRows.map(r => r.map(c => `"${c.replace(/"/g, '""')}"`).join(','))
+  ].join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `គំរូនាំចូលបញ្ជីសិស្ស_MoEYS_Template.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+/**
+ * Flexible Smart Parser for CSV, TSV (pasted from Excel), or JSON
+ */
+export function parseStudentsFlexible(rawText: string): Partial<Student>[] {
+  const text = rawText.trim();
+  if (!text) return [];
+
+  // Check if text is JSON array
+  if (text.startsWith('[') && text.endsWith(']')) {
+    try {
+      const parsed = JSON.parse(text);
+      if (Array.isArray(parsed)) {
+        return parsed.map((item, idx) => ({
+          studentId: item.studentId || item.id || `STU-${String(idx + 1).padStart(4, '0')}`,
+          name: item.name || item.nameKm || item.khmerName || 'សិស្សមិនបញ្ជាក់ឈ្មោះ',
+          nameLatin: item.nameLatin || item.latinName || item.englishName || '',
+          gender: (item.gender || '').toLowerCase().startsWith('f') || item.gender === 'ស្រី' ? 'Female' : 'Male',
+          dob: item.dob || item.birthDate || '2014-01-01',
+          guardianName: item.guardianName || item.parentName || '',
+          guardianPhone: item.guardianPhone || item.phone || '',
+          conductRating: item.conductRating || 'ល្អ',
+          behaviorScore: item.behaviorScore ?? 5,
+          notes: item.notes || item.remark || '',
+          attendanceCount: item.attendanceCount || { present: 100, absentExcused: 0, absentUnexcused: 0, late: 0 }
+        }));
+      }
+    } catch {
+      // Fall through to delimiter-based parser
+    }
+  }
+
+  // Split lines
+  const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
+  if (lines.length === 0) return [];
+
+  // Detect delimiter in first line
+  const firstLine = lines[0];
+  let delimiter = ',';
+  if (firstLine.includes('\t')) {
+    delimiter = '\t'; // Tab-separated from Excel / Google Sheets
+  } else if (firstLine.includes(';') && !firstLine.includes(',')) {
+    delimiter = ';';
+  }
+
+  const parseLine = (line: string): string[] => {
+    if (delimiter === '\t') {
+      return line.split('\t').map(v => v.trim().replace(/^"|"$/g, ''));
+    }
+    const values: string[] = [];
+    let insideQuote = false;
+    let currentVal = '';
+    for (const char of line) {
+      if (char === '"') {
+        insideQuote = !insideQuote;
+      } else if (char === delimiter && !insideQuote) {
+        values.push(currentVal.trim().replace(/^"|"$/g, ''));
+        currentVal = '';
+      } else {
+        currentVal += char;
+      }
+    }
+    values.push(currentVal.trim().replace(/^"|"$/g, ''));
+    return values;
+  };
+
+  const headerCells = parseLine(lines[0]).map(h => h.toLowerCase().trim());
+
+  // Check if first line is a header
+  const isHeader = headerCells.some(h => 
+    h.includes('name') || h.includes('ឈ្មោះ') || h.includes('id') || h.includes('អត្តលេខ') || h.includes('gender') || h.includes('ភេទ')
+  );
+
+  let idIdx = -1;
+  let nameIdx = -1;
+  let latinIdx = -1;
+  let genderIdx = -1;
+  let dobIdx = -1;
+  let guardianIdx = -1;
+  let phoneIdx = -1;
+  let notesIdx = -1;
+
+  if (isHeader) {
+    headerCells.forEach((h, idx) => {
+      if (h.includes('id') || h.includes('អត្តលេខ') || h.includes('code')) {
+        if (idIdx === -1) idIdx = idx;
+      } else if (h.includes('latin') || h.includes('ឡាតាំង') || h.includes('english') || h.includes('en')) {
+        latinIdx = idx;
+      } else if (h.includes('ឈ្មោះ') || h.includes('name') || h.includes('គោត្តនាម')) {
+        if (nameIdx === -1) nameIdx = idx;
+      } else if (h.includes('ភេទ') || h.includes('gender') || h.includes('sex')) {
+        genderIdx = idx;
+      } else if (h.includes('dob') || h.includes('កំណើត') || h.includes('birth')) {
+        dobIdx = idx;
+      } else if (h.includes('អាណាព្យាបាល') || h.includes('guardian') || h.includes('parent')) {
+        guardianIdx = idx;
+      } else if (h.includes('phone') || h.includes('ទូរស័ព្ទ') || h.includes('tel')) {
+        phoneIdx = idx;
+      } else if (h.includes('note') || h.includes('សម្គាល់') || h.includes('remark')) {
+        notesIdx = idx;
+      }
+    });
+  }
+
+  const startIdx = isHeader ? 1 : 0;
+  const result: Partial<Student>[] = [];
+
+  for (let i = startIdx; i < lines.length; i++) {
+    const row = parseLine(lines[i]);
+    if (row.length === 0 || (row.length === 1 && !row[0])) continue;
+
+    let studentId = '';
+    let name = '';
+    let nameLatin = '';
+    let gender: 'Male' | 'Female' = 'Male';
+    let dob = '2014-01-01';
+    let guardianName = '';
+    let guardianPhone = '';
+    let notes = '';
+
+    if (isHeader) {
+      studentId = idIdx >= 0 && row[idIdx] ? row[idIdx] : `STU-${String(result.length + 1).padStart(4, '0')}`;
+      name = nameIdx >= 0 && row[nameIdx] ? row[nameIdx] : (row[0] || `សិស្ស ${result.length + 1}`);
+      nameLatin = latinIdx >= 0 && row[latinIdx] ? row[latinIdx] : '';
+      const rawGender = genderIdx >= 0 && row[genderIdx] ? row[genderIdx].toLowerCase() : '';
+      gender = (rawGender.startsWith('f') || rawGender.includes('ស្រី') || rawGender === 'ស') ? 'Female' : 'Male';
+      dob = dobIdx >= 0 && row[dobIdx] ? row[dobIdx] : '2014-01-01';
+      guardianName = guardianIdx >= 0 && row[guardianIdx] ? row[guardianIdx] : '';
+      guardianPhone = phoneIdx >= 0 && row[phoneIdx] ? row[phoneIdx] : '';
+      notes = notesIdx >= 0 && row[notesIdx] ? row[notesIdx] : '';
+    } else {
+      // Default positional fallback: [ID, Name, LatinName, Gender, DOB, Guardian, Phone, Notes] or [Name, Gender]
+      if (row.length === 1) {
+        name = row[0];
+        studentId = `STU-${String(result.length + 1).padStart(4, '0')}`;
+      } else if (row.length === 2) {
+        studentId = row[0];
+        name = row[1];
+      } else {
+        studentId = row[0] || `STU-${String(result.length + 1).padStart(4, '0')}`;
+        name = row[1] || `សិស្ស ${result.length + 1}`;
+        nameLatin = row[2] || '';
+        const rawGender = (row[3] || '').toLowerCase();
+        gender = (rawGender.startsWith('f') || rawGender.includes('ស្រី') || rawGender === 'ស') ? 'Female' : 'Male';
+        dob = row[4] || '2014-01-01';
+        guardianName = row[5] || '';
+        guardianPhone = row[6] || '';
+        notes = row[7] || '';
+      }
+    }
+
+    if (name.trim()) {
+      result.push({
+        id: `stu_${Date.now()}_${i}_${Math.random().toString(36).slice(2, 6)}`,
+        studentId: studentId.trim(),
+        name: name.trim(),
+        nameLatin: nameLatin.trim(),
+        gender,
+        dob: dob.trim(),
+        guardianName: guardianName.trim(),
+        guardianPhone: guardianPhone.trim(),
+        conductRating: 'ល្អ',
+        behaviorScore: 5,
+        notes: notes.trim(),
+        attendanceCount: { present: 100, absentExcused: 0, absentUnexcused: 0, late: 0 }
+      });
+    }
+  }
+
+  return result;
 }
 
 /**

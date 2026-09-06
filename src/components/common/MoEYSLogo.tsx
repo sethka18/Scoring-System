@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useGradebook } from '../../context/GradebookContext';
 
 interface MoEYSLogoProps {
   className?: string;
   size?: number | string;
   showText?: boolean;
+  customLogoUrl?: string;
+  forceOfficialSvg?: boolean;
 }
 
 /**
@@ -12,13 +15,50 @@ interface MoEYSLogoProps {
  * - Sacred Garuda (គ្រុឌ) / Royal Swan and sacred lotus flame iconography
  * - Official MoEYS Navy and Gold Royal Palette (#0a2558, #c89524)
  * - Stylized rays of enlightenment, wisdom book and sacred floral frame
+ * - Supports custom uploaded logo image with fallback to the official vector SVG
  */
 export const MoEYSLogo: React.FC<MoEYSLogoProps> = ({ 
   className = "w-10 h-10", 
   size,
-  showText = false 
+  showText = false,
+  customLogoUrl,
+  forceOfficialSvg = false
 }) => {
+  const { schoolProfile } = useGradebook();
+  const [imageError, setImageError] = useState(false);
+
   const style = size ? { width: size, height: size } : undefined;
+
+  // Active custom MoEYS logo URL: passed prop > schoolProfile.moeysLogoUrl
+  const activeLogo = !forceOfficialSvg 
+    ? (customLogoUrl !== undefined ? customLogoUrl : schoolProfile?.moeysLogoUrl)
+    : undefined;
+
+  if (activeLogo && !imageError) {
+    return (
+      <div className={`inline-flex items-center gap-2 select-none flex-shrink-0 ${className}`} style={style}>
+        <div className="w-full h-full rounded-2xl overflow-hidden flex items-center justify-center bg-white dark:bg-slate-800 p-0.5 shadow-2xs">
+          <img
+            src={activeLogo}
+            alt="MoEYS Logo"
+            onError={() => setImageError(true)}
+            className="w-full h-full object-contain"
+            referrerPolicy="no-referrer"
+          />
+        </div>
+        {showText && (
+          <div className="leading-tight">
+            <div className="font-heading font-black text-xs text-indigo-950 dark:text-white uppercase tracking-tight">
+              ក្រសួងអប់រំ យុវជន និងកីឡា
+            </div>
+            <div className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              MoEYS Gradebook
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className={`inline-flex items-center gap-2 select-none ${className}`} style={style}>
