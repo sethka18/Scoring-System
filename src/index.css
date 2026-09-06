@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', 'Kantumruy Pro', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, .font-heading {
+    font-family: 'Outfit', 'Kantumruy Pro', system-ui, -apple-system, sans-serif;
+  }
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Print specific optimizations for MoEYS Gradebook (A4 Default, A5 for Track Book) */
+@media print {
+  html, body {
+    background-color: white !important;
+    color: #0f172a !important;
+    font-size: 10.5pt;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .page-break-inside-avoid {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .page-break-after {
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  .print-card {
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: none !important;
+    background: white !important;
+  }
+
+  /* Default A4 portrait for Rankings, Honor Roll, School Hub, and General Sheets */
+  @page {
+    size: A4 portrait;
+    margin: 10mm 10mm 10mm 10mm;
+  }
+
+  /* When data-print-size="a5" is set on html root or for .print-a5-book */
+  html[data-print-size="a5"] {
+    font-size: 9pt;
+  }
+
+  /* Specific A5 booklet container */
+  .print-a5-container {
+    max-width: 148mm !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    font-size: 8.5pt !important;
+    line-height: 1.35 !important;
+  }
+
+  .print-a5-container table th,
+  .print-a5-container table td {
+    padding: 3px 5px !important;
+    font-size: 8pt !important;
+  }
+
+  .print-a5-container h1 {
+    font-size: 13pt !important;
+  }
+
+  .print-a5-container h2 {
+    font-size: 10.5pt !important;
+  }
+
+  body.body-print-preview-active {
+    background-color: white !important;
+  }
+
+  body.body-print-preview-active #print-preview-document-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
