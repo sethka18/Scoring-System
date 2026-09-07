@@ -5,11 +5,16 @@ import {
   ChevronDown, 
   BookOpen,
   Sun,
-  Moon
+  Moon,
+  Plus,
+  Edit3,
+  Building2
 } from 'lucide-react';
 import { SchoolLogo } from '../common/SchoolLogo';
 import { PWAInstallButton } from '../pwa/PWAInstallButton';
 import { SchoolProfileSettingsModal } from '../school/SchoolProfileSettingsModal';
+import { ClassModal } from '../school/ClassModal';
+import { ClassSection } from '../../types';
 
 export const Header: React.FC = () => {
   const {
@@ -27,6 +32,8 @@ export const Header: React.FC = () => {
 
   const [showClassDropdown, setShowClassDropdown] = useState(false);
   const [isSchoolSettingsOpen, setIsSchoolSettingsOpen] = useState(false);
+  const [isClassModalOpen, setIsClassModalOpen] = useState(false);
+  const [classModalInitial, setClassModalInitial] = useState<ClassSection | null>(null);
 
   return (
     <header className="no-print bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 shadow-xs transition-colors duration-200">
@@ -77,39 +84,97 @@ export const Header: React.FC = () => {
             </button>
 
             {showClassDropdown && (
-              <div className="absolute top-full mt-2 w-72 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-2 z-50 animate-in fade-in slide-in-from-top-2">
-                <div className="px-4 py-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-                  {language === 'km' ? 'ជ្រើសរើសថ្នាក់រៀន' : 'Select Active Class'}
-                </div>
-                {classes.map((cls) => (
+              <div className="absolute top-full mt-2 w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-2 z-50 animate-in fade-in slide-in-from-top-2">
+                <div className="px-4 py-2 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+                  <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                    {language === 'km' ? 'ជ្រើសរើសថ្នាក់រៀន' : 'Select Active Class'}
+                  </span>
                   <button
-                    key={cls.id}
                     onClick={() => {
-                      setActiveClassId(cls.id);
+                      setClassModalInitial(null);
+                      setIsClassModalOpen(true);
                       setShowClassDropdown(false);
                     }}
-                    className={`w-full text-left px-4 py-3 text-xs sm:text-sm flex items-center justify-between transition hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer ${
-                      cls.id === activeClassId ? 'bg-indigo-50/90 dark:bg-indigo-950/50 text-indigo-950 dark:text-indigo-200 font-black border-l-4 border-indigo-600 dark:border-indigo-400' : 'text-slate-700 dark:text-slate-300 font-bold'
-                    }`}
+                    className="inline-flex items-center space-x-1 text-[11px] font-black text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition cursor-pointer"
                   >
-                    <div>
-                      <div className="font-black text-slate-900 dark:text-white">{language === 'km' ? cls.nameKm : cls.name}</div>
-                      <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">{cls.roomNumber}</div>
-                    </div>
-                    <span className="text-[10px] font-black uppercase tracking-wider bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md text-slate-600 dark:text-slate-400">
-                      {cls.studentIds?.length || 0} {language === 'km' ? 'នាក់' : 'students'}
-                    </span>
+                    <Plus className="w-3 h-3" />
+                    <span>{language === 'km' ? 'ថ្នាក់ថ្មី' : 'New Class'}</span>
                   </button>
-                ))}
-                <div className="border-t border-slate-100 dark:border-slate-800 mt-2 pt-2 px-3">
+                </div>
+
+                <div className="max-h-64 overflow-y-auto py-1">
+                  {classes.map((cls) => (
+                    <div
+                      key={cls.id}
+                      className={`group px-3 py-2 text-xs sm:text-sm flex items-center justify-between transition hover:bg-slate-50 dark:hover:bg-slate-800/80 ${
+                        cls.id === activeClassId 
+                          ? 'bg-indigo-50/90 dark:bg-indigo-950/50 text-indigo-950 dark:text-indigo-200 font-black border-l-4 border-indigo-600 dark:border-indigo-400' 
+                          : 'text-slate-700 dark:text-slate-300 font-bold'
+                      }`}
+                    >
+                      <button
+                        onClick={() => {
+                          setActiveClassId(cls.id);
+                          setShowClassDropdown(false);
+                        }}
+                        className="flex-1 text-left cursor-pointer pr-2"
+                      >
+                        <div className="font-black text-slate-900 dark:text-white flex items-center space-x-1.5">
+                          <span>{language === 'km' ? cls.nameKm : cls.name}</span>
+                          {cls.id === activeClassId && (
+                            <span className="text-[9px] px-1.5 py-0.2 bg-indigo-200 dark:bg-indigo-800 text-indigo-900 dark:text-indigo-100 rounded-md uppercase font-black">
+                              {language === 'km' ? 'កំពុងប្រើ' : 'Active'}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                          {cls.roomNumber || `Grade ${cls.gradeLevel}`}
+                        </div>
+                      </button>
+
+                      <div className="flex items-center space-x-1 flex-shrink-0">
+                        <span className="text-[10px] font-black uppercase tracking-wider bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md text-slate-600 dark:text-slate-400">
+                          {cls.studentIds?.length || 0} {language === 'km' ? 'នាក់' : 'sts'}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setClassModalInitial(cls);
+                            setIsClassModalOpen(true);
+                            setShowClassDropdown(false);
+                          }}
+                          className="p-1 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer"
+                          title={language === 'km' ? `កែប្រែ ${cls.nameKm}` : `Edit ${cls.name}`}
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="border-t border-slate-100 dark:border-slate-800 mt-1 pt-2 px-3 space-y-1">
+                  <button
+                    onClick={() => {
+                      setClassModalInitial(null);
+                      setIsClassModalOpen(true);
+                      setShowClassDropdown(false);
+                    }}
+                    className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl bg-indigo-900 hover:bg-indigo-950 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-xs font-black uppercase tracking-wider transition cursor-pointer shadow-xs"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>{language === 'km' ? 'បង្កើតថ្នាក់រៀនថ្មី' : '+ Create New Class'}</span>
+                  </button>
                   <button
                     onClick={() => {
                       setShowClassDropdown(false);
-                      setActiveTab('roster');
+                      setActiveTab('school_hub');
                     }}
-                    className="w-full text-center text-xs font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 py-1.5 cursor-pointer"
+                    className="w-full flex items-center justify-center space-x-1 text-center text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white py-1 cursor-pointer"
                   >
-                    + {language === 'km' ? 'គ្រប់គ្រងថ្នាក់ & បញ្ជី' : 'Manage All Classes'}
+                    <Building2 className="w-3.5 h-3.5" />
+                    <span>{language === 'km' ? 'មើលគ្រប់ថ្នាក់ទាំងអស់ (Hub)' : 'View All Classes Hub'}</span>
                   </button>
                 </div>
               </div>
@@ -153,6 +218,15 @@ export const Header: React.FC = () => {
       <SchoolProfileSettingsModal 
         isOpen={isSchoolSettingsOpen} 
         onClose={() => setIsSchoolSettingsOpen(false)} 
+      />
+
+      <ClassModal
+        isOpen={isClassModalOpen}
+        initialClass={classModalInitial}
+        onClose={() => {
+          setIsClassModalOpen(false);
+          setClassModalInitial(null);
+        }}
       />
     </header>
   );

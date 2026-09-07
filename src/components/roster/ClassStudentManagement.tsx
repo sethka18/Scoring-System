@@ -38,6 +38,7 @@ import {
 import { formatConductRating, CONDUCT_OPTIONS } from '../../utils/calculations';
 import { Student, Gender, ClassSection } from '../../types';
 import { PrintPreviewModal } from '../common/PrintPreviewModal';
+import { ClassModal } from '../school/ClassModal';
 
 export const ClassStudentManagement: React.FC = () => {
   const { 
@@ -804,161 +805,15 @@ export const ClassStudentManagement: React.FC = () => {
         </div>
       )}
 
-      {/* Add New Class Modal */}
-      {(showAddClassModal || editingClass) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
-            <h3 className="font-heading font-bold text-lg text-slate-900 pb-3 border-b border-slate-100">
-              {editingClass 
-                ? (language === 'km' ? 'កែប្រែព័ត៌មានថ្នាក់' : 'Edit Class Section')
-                : (language === 'km' ? 'បង្កើតថ្នាក់រៀនថ្មី' : 'Create New Class Section')}
-            </h3>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const form = e.target as any;
-                const name = form.name.value;
-                const nameKm = form.nameKm.value;
-                const gradeLevel = Number(form.gradeLevel.value);
-                const academicYear = form.academicYear.value;
-                const roomNumber = form.roomNumber.value;
-                const teacherName = form.teacherName.value;
-                const teacherNameKm = form.teacherNameKm.value;
-                const schoolName = form.schoolName.value;
-                const schoolNameKm = form.schoolNameKm.value;
-
-                if (editingClass) {
-                  updateClass(editingClass.id, {
-                    name, nameKm, gradeLevel, academicYear, roomNumber, teacherName, teacherNameKm, schoolName, schoolNameKm
-                  });
-                  setEditingClass(null);
-                } else {
-                  addClass({
-                    name, nameKm, gradeLevel, academicYear, roomNumber, teacherName, teacherNameKm, schoolName, schoolNameKm
-                  });
-                  setShowAddClassModal(false);
-                }
-              }}
-              className="space-y-3 mt-4 text-xs sm:text-sm"
-            >
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">
-                  {language === 'km' ? 'ឈ្មោះថ្នាក់ (English / Code)' : 'Class Name (English)'} *
-                </label>
-                <input
-                  name="name"
-                  defaultValue={editingClass?.name || 'Grade 6B'}
-                  required
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">
-                  {language === 'km' ? 'ឈ្មោះថ្នាក់ជាភាសាខ្មែរ' : 'Class Name (Khmer)'} *
-                </label>
-                <input
-                  name="nameKm"
-                  defaultValue={editingClass?.nameKm || 'ថ្នាក់ទី៦(ខ)'}
-                  required
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    {language === 'km' ? 'កម្រិតថ្នាក់ (Grade 1-6)' : 'Grade Level'}
-                  </label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={6}
-                    name="gradeLevel"
-                    defaultValue={editingClass?.gradeLevel || 6}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    {language === 'km' ? 'ឆ្នាំសិក្សា' : 'Academic Year'}
-                  </label>
-                  <input
-                    name="academicYear"
-                    defaultValue={editingClass?.academicYear || '២០២៦-២០២៧'}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    {language === 'km' ? 'គ្រូបន្ទុកថ្នាក់' : 'Teacher (English)'}
-                  </label>
-                  <input
-                    name="teacherName"
-                    defaultValue={editingClass?.teacherName || 'Teacher Name'}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    {language === 'km' ? 'គ្រូបន្ទុកថ្នាក់ (ខ្មែរ)' : 'Teacher (Khmer)'}
-                  </label>
-                  <input
-                    name="teacherNameKm"
-                    defaultValue={editingClass?.teacherNameKm || 'លោកគ្រូ/អ្នកគ្រូ'}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">
-                  {language === 'km' ? 'បន្ទប់រៀន / អគារ' : 'Room Number'}
-                </label>
-                <input
-                  name="roomNumber"
-                  defaultValue={editingClass?.roomNumber || 'Room 12'}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">
-                  {language === 'km' ? 'ឈ្មោះសាលា (ខ្មែរ)' : 'School Name (Khmer)'}
-                </label>
-                <input
-                  name="schoolNameKm"
-                  defaultValue={editingClass?.schoolNameKm || 'សាលាបឋមសិក្សាហ៊ុនណេងប្រទង'}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200"
-                />
-              </div>
-
-              <div className="flex items-center justify-end space-x-2 pt-3 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowAddClassModal(false);
-                    setEditingClass(null);
-                  }}
-                  className="px-4 py-2 rounded-lg border border-slate-200 text-slate-600"
-                >
-                  {language === 'km' ? 'បោះបង់' : 'Cancel'}
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-lg bg-indigo-600 text-white font-semibold"
-                >
-                  {language === 'km' ? 'រក្សាទុក' : 'Save'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Class Add / Edit Modal */}
+      <ClassModal
+        isOpen={showAddClassModal || Boolean(editingClass)}
+        initialClass={editingClass}
+        onClose={() => {
+          setShowAddClassModal(false);
+          setEditingClass(null);
+        }}
+      />
 
       {/* Bulk Delete Confirmation Modal */}
       {showDeleteConfirmModal && (
