@@ -33,7 +33,7 @@ import { calculatePeriodRankings, formatConductRating } from '../../utils/calcul
 import confetti from 'canvas-confetti';
 import { StudentPhotoModal } from '../common/StudentPhotoModal';
 import { TelegramShareModal } from '../common/TelegramShareModal';
-import { MoEYSLogo } from '../common/MoEYSLogo';
+import { SchoolLogo } from '../common/SchoolLogo';
 import { PrintToPdfButton } from '../common/PrintToPdfButton';
 import { Student, Subject } from '../../types';
 
@@ -381,6 +381,7 @@ export const RankingsAndHonorRoll: React.FC = () => {
   const {
     language,
     activeClass,
+    schoolProfile,
     classStudents,
     subjects,
     periods,
@@ -676,7 +677,7 @@ export const RankingsAndHonorRoll: React.FC = () => {
         <div className="text-center pb-6 border-b-2 border-slate-900/80 mb-6">
           <div className="flex justify-between items-start text-left text-xs font-semibold text-slate-700 mb-2">
             <div className="flex items-center space-x-3">
-              <MoEYSLogo size={52} />
+              <SchoolLogo size={52} customLogoUrl={schoolProfile?.logoUrl} />
               <div>
                 <p className="font-extrabold text-slate-900 text-xs uppercase tracking-tight">
                   ក្រសួងអប់រំ យុវជន និងកីឡា
@@ -684,7 +685,7 @@ export const RankingsAndHonorRoll: React.FC = () => {
                 <p className={`font-black ${activeThemeConfig.headerAccent} text-sm uppercase`}>
                   {language === 'km' ? activeClass?.schoolNameKm : activeClass?.schoolName}
                 </p>
-                <p className="text-slate-600 font-bold text-[11px]">{language === 'km' ? `ថ្នាក់៖ ${activeClass?.nameKm} • បន្ទប់ ${activeClass?.roomNumber}` : `Class: ${activeClass?.name} • Room ${activeClass?.roomNumber}`}</p>
+                <p className="text-slate-600 font-bold text-[11px]">{language === 'km' ? `ថ្នាក់៖ ${activeClass?.nameKm}` : `Class: ${activeClass?.name}`}</p>
               </div>
             </div>
 

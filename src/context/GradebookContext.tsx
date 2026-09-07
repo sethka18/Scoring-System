@@ -39,6 +39,16 @@ import {
   generateDefaultTimetable
 } from '../data/calendarScheduleData';
 import { formatConductRating } from '../utils/calculations';
+import { 
+  getSavedSyncKey, 
+  saveSyncKey, 
+  pushDataToCloud, 
+  pullDataFromCloud, 
+  isAutoSyncEnabled, 
+  setAutoSyncEnabled as saveAutoSyncEnabled, 
+  SyncStatusInfo, 
+  SyncPayload 
+} from '../utils/cloudSync';
 
 export type NavTab = 
   | 'school_hub' 
@@ -190,6 +200,17 @@ interface GradebookContextType {
   fluencyRecords: FluencyTestRecord[];
   saveFluencyRecord: (record: FluencyTestRecord) => void;
   deleteFluencyRecord: (id: string) => void;
+
+  // Cloud Synchronization (Multi-Device)
+  syncKey: string;
+  setSyncKey: (key: string) => void;
+  syncStatus: SyncStatusInfo;
+  syncNow: () => Promise<void>;
+  pullFromCloudNow: () => Promise<void>;
+  autoSyncEnabled: boolean;
+  setAutoSyncEnabled: (enabled: boolean) => void;
+  isSyncModalOpen: boolean;
+  setIsSyncModalOpen: (open: boolean) => void;
 
   toasts: ToastNotification[];
   showToast: (message: string, type?: 'success' | 'info' | 'warning' | 'error') => void;
@@ -993,7 +1014,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const resetClassTimetable = (classId: string) => {
     const cls = classes.find(c => c.id === classId);
     const teacher = cls?.teacherNameKm || 'ស៊ុន ណារិទ្ធ';
-    const room = cls?.roomNumber ? `បន្ទប់ ${cls.roomNumber}` : 'បន្ទប់ ០១';
+    const room = '';
     const newSlots = generateDefaultTimetable(classId, teacher, room);
 
     setTimetableSlotsState(prev => {
@@ -1254,6 +1275,166 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   };
 
+  // ==========================================
+  // Cross-Device Cloud Synchronization
+  // ==========================================
+  const [syncKey, setSyncKeyState] = useState<string>(() => getSavedSyncKey());
+  const [autoSyncEnabled, setAutoSyncEnabledState] = useState<boolean>(() => isAutoSyncEnabled());
+  const [syncStatus, setSyncStatus] = useState<SyncStatusInfo>({
+    state: 'idle',
+    lastSyncedAt: null,
+    syncKey: getSavedSyncKey()
+  });
+  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+
+  const setSyncKey = (newKey: string) => {
+    const clean = newKey.trim().toUpperCase();
+    saveSyncKey(clean);
+    setSyncKeyState(clean);
+    setSyncStatus(prev => ({ ...prev, syncKey: clean }));
+  };
+
+  const setAutoSyncEnabled = (enabled: boolean) => {
+    saveAutoSyncEnabled(enabled);
+    setAutoSyncEnabledState(enabled);
+  };
+
+  const getFullPayload = (): SyncPayload => ({
+    version: 2,
+    updatedAt: Date.now(),
+    schoolProfile,
+    classes,
+    students,
+    scores: scoresMatrix as any,
+    monthlyExams: [],
+    annualRankings: [],
+    attendanceRecords,
+    homeworkAssignments: [],
+    fluencyTests: fluencyRecords as any,
+    timetableSlots,
+    curriculumPrograms,
+    questionBank: [],
+    examPapers: []
+  });
+
+  const syncNow = async () => {
+    setSyncStatus(prev => ({ ...prev, state: 'syncing' }));
+    try {
+      const payload = getFullPayload();
+      const res = await pushDataToCloud(syncKey, payload);
+      if (res.success) {
+        setSyncStatus({
+          state: 'synced',
+          lastSyncedAt: res.updatedAt,
+          syncKey
+        });
+      } else {
+        setSyncStatus(prev => ({ ...prev, state: 'error' }));
+      }
+    } catch (err: any) {
+      setSyncStatus(prev => ({ ...prev, state: 'error', errorMessage: err?.message }));
+      throw err;
+    }
+  };
+
+  const pullFromCloudNow = async () => {
+    setSyncStatus(prev => ({ ...prev, state: 'syncing' }));
+    try {
+      const res = await pullDataFromCloud(syncKey);
+      if (res.success && res.data) {
+        const d = res.data;
+        if (d.schoolProfile) setSchoolProfileState(d.schoolProfile);
+        if (Array.isArray(d.classes) && d.classes.length) setClasses(d.classes);
+        if (Array.isArray(d.students) && d.students.length) setStudents(d.students);
+        if (d.scores && typeof d.scores === 'object') setScoresMatrix(d.scores);
+        if (Array.isArray(d.attendanceRecords)) setAttendanceRecords(d.attendanceRecords);
+        if (Array.isArray(d.timetableSlots)) setTimetableSlotsState(d.timetableSlots);
+        if (Array.isArray(d.curriculumPrograms)) setCurriculumPrograms(d.curriculumPrograms);
+        if (Array.isArray(d.fluencyTests)) setFluencyRecords(d.fluencyTests);
+
+        setSyncStatus({
+          state: 'synced',
+          lastSyncedAt: res.updatedAt || Date.now(),
+          syncKey
+        });
+      } else {
+        setSyncStatus(prev => ({ ...prev, state: 'error' }));
+        throw new Error('មិនមានទិន្នន័យលើ Cloud សម្រាប់កូដបន្សីនេះទេ');
+      }
+    } catch (err: any) {
+      setSyncStatus(prev => ({ ...prev, state: 'error', errorMessage: err?.message }));
+      throw err;
+    }
+  };
+
+  // Check URL params on initial mount for pairing
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramKey = urlParams.get('syncKey') || urlParams.get('sync') || urlParams.get('pair');
+    if (paramKey && paramKey.trim()) {
+      const cleanKey = paramKey.trim().toUpperCase();
+      setSyncKey(cleanKey);
+      
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+
+      pullDataFromCloud(cleanKey).then(res => {
+        if (res.success && res.data) {
+          const d = res.data;
+          if (d.schoolProfile) setSchoolProfileState(d.schoolProfile);
+          if (Array.isArray(d.classes) && d.classes.length) setClasses(d.classes);
+          if (Array.isArray(d.students) && d.students.length) setStudents(d.students);
+          if (d.scores && typeof d.scores === 'object') setScoresMatrix(d.scores);
+          if (Array.isArray(d.attendanceRecords)) setAttendanceRecords(d.attendanceRecords);
+          if (Array.isArray(d.timetableSlots)) setTimetableSlotsState(d.timetableSlots);
+          if (Array.isArray(d.curriculumPrograms)) setCurriculumPrograms(d.curriculumPrograms);
+          if (Array.isArray(d.fluencyTests)) setFluencyRecords(d.fluencyTests);
+          setSyncStatus({
+            state: 'synced',
+            lastSyncedAt: res.updatedAt || Date.now(),
+            syncKey: cleanKey
+          });
+          showToast(language === 'km' ? 'បានភ្ជាប់ និងទាញយកទិន្នន័យពី Cloud ជោគជ័យ!' : 'Connected & synced from Cloud successfully!', 'success');
+        }
+      }).catch(err => {
+        console.error('Auto pull failed:', err);
+      });
+    }
+  }, []);
+
+  // Background Debounced Auto-Sync when data changes
+  useEffect(() => {
+    if (!autoSyncEnabled || !syncKey) return;
+    const timer = setTimeout(() => {
+      const payload = getFullPayload();
+      pushDataToCloud(syncKey, payload).then(res => {
+        if (res.success) {
+          setSyncStatus({
+            state: 'synced',
+            lastSyncedAt: res.updatedAt,
+            syncKey
+          });
+        }
+      }).catch(err => {
+        console.error('Debounced auto-sync failed:', err);
+      });
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [
+    autoSyncEnabled,
+    syncKey,
+    classes,
+    students,
+    scoresMatrix,
+    attendanceRecords,
+    schoolProfile,
+    timetableSlots,
+    curriculumPrograms,
+    fluencyRecords
+  ]);
+
   return (
     <GradebookContext.Provider
       value={{
@@ -1336,6 +1517,15 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         fluencyRecords,
         saveFluencyRecord,
         deleteFluencyRecord,
+        syncKey,
+        setSyncKey,
+        syncStatus,
+        syncNow,
+        pullFromCloudNow,
+        autoSyncEnabled,
+        setAutoSyncEnabled,
+        isSyncModalOpen,
+        setIsSyncModalOpen,
       }}
     >
       {children}

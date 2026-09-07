@@ -22,6 +22,7 @@ import { WholeYearAnalytics } from './components/analytics/WholeYearAnalytics';
 import { ReportCardView } from './components/reports/ReportCardView';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { ToastContainer } from './components/common/ToastContainer';
+import { CloudSyncModal } from './components/sync/CloudSyncModal';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { OfflineIndicator } from './components/pwa/OfflineIndicator';
 import { PWAUpdateNotification } from './components/pwa/PWAUpdateNotification';
@@ -65,6 +66,7 @@ const AppShell: React.FC = () => {
         <MainContent />
       </div>
       <ToastContainer />
+      <CloudSyncModal />
       
       {/* PWA Offline Indicator and Update Lifecycle Notification */}
       <OfflineIndicator language={language} />

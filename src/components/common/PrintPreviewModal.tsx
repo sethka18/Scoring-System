@@ -28,7 +28,6 @@ import {
   Info,
   Loader2
 } from 'lucide-react';
-import { MoEYSLogo } from './MoEYSLogo';
 import { SchoolLogo } from './SchoolLogo';
 import { exportElementToPdf } from '../../utils/pdfExport';
 import { formatConductRating } from '../../utils/calculations';
@@ -1068,7 +1067,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
                       <div className="flex justify-between items-start text-xs font-semibold text-slate-800">
                         {/* School / Ministry Info */}
                         <div className="text-left flex items-start space-x-3">
-                          <MoEYSLogo size={42} />
+                          <SchoolLogo size={42} customLogoUrl={schoolProfile?.logoUrl} />
                           <div>
                             <p className="font-extrabold text-slate-950 uppercase text-xs tracking-wide">
                               {language === 'km' ? 'ក្រសួងអប់រំ យុវជន និងកីឡា' : 'Ministry of Education, Youth and Sport'}
@@ -1104,10 +1103,6 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
                         <div className="flex flex-wrap items-center justify-center gap-x-3 text-xs font-bold text-indigo-950 mt-1">
                           <span>
                             {language === 'km' ? `ថ្នាក់ទី៖ ${activeClass?.nameKm || activeClass?.name || '៦ក'}` : `Class: ${activeClass?.name || 'Grade 6A'}`}
-                          </span>
-                          <span>•</span>
-                          <span>
-                            {language === 'km' ? `បន្ទប់លេខ៖ ${activeClass?.roomNumber || '០១'}` : `Room: ${activeClass?.roomNumber || '01'}`}
                           </span>
                           <span>•</span>
                           <span>

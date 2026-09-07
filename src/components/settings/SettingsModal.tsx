@@ -436,24 +436,15 @@ export const SettingsModal: React.FC = () => {
 
             <div>
               <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                {language === 'km' ? 'បន្ទប់រៀន / ឆ្នាំសិក្សា' : 'Room & Academic Year'}
+                {language === 'km' ? 'ឆ្នាំសិក្សា' : 'Academic Year'}
               </label>
-              <div className="grid grid-cols-2 gap-2">
-                <input
-                  type="text"
-                  value={classInfo.roomNumber}
-                  onChange={(e) => setClassInfo({ ...classInfo, roomNumber: e.target.value })}
-                  placeholder="Room 12"
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
-                />
-                <input
-                  type="text"
-                  value={schoolProfileData.academicYear}
-                  onChange={(e) => setSchoolProfileData({ ...schoolProfileData, academicYear: e.target.value })}
-                  placeholder="២០២៥-២០២៦"
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
-                />
-              </div>
+              <input
+                type="text"
+                value={schoolProfileData.academicYear}
+                onChange={(e) => setSchoolProfileData({ ...schoolProfileData, academicYear: e.target.value })}
+                placeholder="២០២៥-២០២៦"
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+              />
             </div>
           </div>
         </div>

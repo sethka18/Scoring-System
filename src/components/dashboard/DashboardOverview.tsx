@@ -206,7 +206,7 @@ export const DashboardOverview: React.FC = () => {
             <div className="h-full bg-indigo-600 rounded-full" style={{ width: '85%' }}></div>
           </div>
           <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-600">
-            <span>{activeClass?.roomNumber}</span>
+            <span>{language === 'km' ? `គ្រូបន្ទុក៖ ${activeClass?.teacherNameKm}` : `Teacher: ${activeClass?.teacherName}`}</span>
             <span className="text-slate-300">•</span>
             <span>{classes.length} {language === 'km' ? 'ថ្នាក់សរុប' : 'CLASSES'}</span>
           </div>

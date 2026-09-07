@@ -13,7 +13,7 @@ import {
   Edit3
 } from 'lucide-react';
 import { PrintToPdfButton } from '../common/PrintToPdfButton';
-import { MoEYSLogo } from '../common/MoEYSLogo';
+import { SchoolLogo } from '../common/SchoolLogo';
 
 interface PrintableExamPaperProps {
   examPaper: ExamPaper;
@@ -145,9 +145,9 @@ export const PrintableExamPaper: React.FC<PrintableExamPaperProps> = ({
               </div>
             </div>
 
-            {/* Center: MoEYS Logo */}
+            {/* Center: School Logo */}
             <div className="hidden sm:flex flex-col items-center">
-              <MoEYSLogo size={52} />
+              <SchoolLogo size={52} customLogoUrl={schoolProfile?.logoUrl} />
             </div>
 
             {/* Right: Kingdom / Motto */}

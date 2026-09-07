@@ -8,7 +8,9 @@ import {
   Moon,
   Plus,
   Edit3,
-  Building2
+  Building2,
+  Cloud,
+  RefreshCw
 } from 'lucide-react';
 import { SchoolLogo } from '../common/SchoolLogo';
 import { PWAInstallButton } from '../pwa/PWAInstallButton';
@@ -28,6 +30,8 @@ export const Header: React.FC = () => {
     classStudents,
     schoolProfile,
     setActiveTab,
+    syncStatus,
+    setIsSyncModalOpen,
   } = useGradebook();
 
   const [showClassDropdown, setShowClassDropdown] = useState(false);
@@ -127,8 +131,8 @@ export const Header: React.FC = () => {
                             </span>
                           )}
                         </div>
-                        <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                          {cls.roomNumber || `Grade ${cls.gradeLevel}`}
+                        <div className="text-[10px] font-extrabold tracking-wider text-slate-400 dark:text-slate-500">
+                          {language === 'km' ? (cls.teacherNameKm || `ថ្នាក់ទី ${cls.gradeLevel}`) : (cls.teacherName || `Grade ${cls.gradeLevel}`)}
                         </div>
                       </button>
 
@@ -186,6 +190,31 @@ export const Header: React.FC = () => {
             
             {/* PWA In-App Install Button */}
             <PWAInstallButton language={language} variant="header" />
+
+            {/* Cloud Sync Cross-Device Status Button */}
+            <button
+              onClick={() => setIsSyncModalOpen(true)}
+              className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-2 rounded-xl border transition cursor-pointer shadow-2xs ${
+                syncStatus.state === 'synced'
+                  ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50'
+                  : syncStatus.state === 'syncing'
+                  ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-800 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100'
+                  : 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-400 hover:bg-amber-100'
+              }`}
+              title={language === 'km' ? 'ប្រព័ន្ធបន្សីទិន្នន័យឆ្លងឧបករណ៍ (Cloud Sync) - ចុចដើម្បីស្កេនភ្ជាប់ទូរស័ព្ទ' : 'Cloud Sync - Click to pair mobile device'}
+            >
+              <Cloud className="w-4 h-4 shrink-0" />
+              <span className="hidden md:inline text-xs font-black tracking-tight">
+                {syncStatus.state === 'synced' ? (language === 'km' ? 'បានបន្សី' : 'Synced') :
+                 syncStatus.state === 'syncing' ? (language === 'km' ? 'កំពុងបន្សី...' : 'Syncing...') :
+                 (language === 'km' ? 'Cloud Sync' : 'Cloud Sync')}
+              </span>
+              <span className={`w-2 h-2 rounded-full shrink-0 ${
+                syncStatus.state === 'synced' ? 'bg-emerald-500 animate-pulse' :
+                syncStatus.state === 'syncing' ? 'bg-indigo-500 animate-ping' :
+                'bg-amber-500'
+              }`} />
+            </button>
 
             {/* Theme Toggle Button */}
             <button

@@ -47,7 +47,6 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { PrintToPdfButton } from '../common/PrintToPdfButton';
-import { MoEYSLogo } from '../common/MoEYSLogo';
 
 export interface KhmerReadingEvaluatorProps {
   selectedStudentId: string;

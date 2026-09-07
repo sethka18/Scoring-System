@@ -17,7 +17,7 @@ import {
   Building2,
   X
 } from 'lucide-react';
-import { MoEYSLogo } from '../common/MoEYSLogo';
+import { SchoolLogo } from '../common/SchoolLogo';
 import { PrintToPdfButton } from '../common/PrintToPdfButton';
 import { STANDARD_PERIOD_TIMES, DAYS_OF_WEEK } from '../../data/calendarScheduleData';
 
@@ -28,6 +28,7 @@ export const SchoolScheduleView: React.FC = () => {
     activeClassId, 
     setActiveClassId, 
     activeClass, 
+    schoolProfile, 
     subjects, 
     timetableSlots, 
     updateTimetableSlot, 
@@ -98,7 +99,7 @@ export const SchoolScheduleView: React.FC = () => {
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center space-x-4">
             <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 p-1.5 shadow-lg shrink-0 flex items-center justify-center border border-white/20">
-              <MoEYSLogo size={56} />
+              <SchoolLogo size={56} customLogoUrl={schoolProfile?.logoUrl} />
             </div>
             <div>
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-800/60 border border-indigo-400/30 text-amber-300 text-xs font-black tracking-wider uppercase mb-1.5">
@@ -111,8 +112,8 @@ export const SchoolScheduleView: React.FC = () => {
               </h1>
               <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1">
                 {language === 'km' 
-                  ? `គ្រូបន្ទុកថ្នាក់៖ ${activeClass?.teacherNameKm} • បន្ទប់រៀន៖ ${activeClass?.roomNumber} • សរុប ${totalPeriodsPerWeek} ម៉ោង/សប្តាហ៍` 
-                  : `Teacher: ${activeClass?.teacherName} • Room: ${activeClass?.roomNumber} • Total ${totalPeriodsPerWeek} Periods/Week`}
+                  ? `គ្រូបន្ទុកថ្នាក់៖ ${activeClass?.teacherNameKm} • សរុប ${totalPeriodsPerWeek} ម៉ោង/សប្តាហ៍` 
+                  : `Teacher: ${activeClass?.teacherName} • Total ${totalPeriodsPerWeek} Periods/Week`}
               </p>
             </div>
           </div>
@@ -231,11 +232,11 @@ export const SchoolScheduleView: React.FC = () => {
         <div className="text-center pb-5 border-b-2 border-slate-900 mb-6">
           <div className="flex justify-between items-start text-xs font-semibold text-slate-800 mb-2">
             <div className="text-left flex items-center space-x-3">
-              <MoEYSLogo size={46} />
+              <SchoolLogo size={46} customLogoUrl={schoolProfile?.logoUrl} />
               <div>
                 <p className="font-extrabold uppercase text-slate-950">{activeClass?.schoolNameKm}</p>
                 <p className="text-slate-600 font-bold text-[11px]">
-                  {language === 'km' ? `ថ្នាក់ទី ${activeClass?.gradeLevel} (${activeClass?.nameKm}) • បន្ទប់ ${activeClass?.roomNumber}` : `Grade ${activeClass?.gradeLevel} (${activeClass?.name}) • Room ${activeClass?.roomNumber}`}
+                  {language === 'km' ? `ថ្នាក់ទី ${activeClass?.gradeLevel} (${activeClass?.nameKm})` : `Grade ${activeClass?.gradeLevel} (${activeClass?.name})`}
                 </p>
                 <p className="text-slate-500 text-[10px]">
                   {language === 'km' ? `គ្រូបន្ទុកថ្នាក់៖ ${activeClass?.teacherNameKm}` : `Class Teacher: ${activeClass?.teacherName}`}
@@ -414,18 +415,6 @@ export const SchoolScheduleView: React.FC = () => {
                   type="text"
                   value={teacherNameKm}
                   onChange={(e) => setTeacherNameKm(e.target.value)}
-                  className="w-full text-xs font-bold bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block uppercase text-[11px] mb-1">
-                  {language === 'km' ? 'បន្ទប់រៀន' : 'Room Number'}
-                </label>
-                <input
-                  type="text"
-                  value={roomNumber}
-                  onChange={(e) => setRoomNumber(e.target.value)}
                   className="w-full text-xs font-bold bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                 />
               </div>

@@ -204,7 +204,7 @@ export const INITIAL_CLASSES: ClassSection[] = [
     nameKm: 'ថ្នាក់ទី៦',
     gradeLevel: 6,
     academicYear: '២០២៥-២០២៦',
-    roomNumber: 'បន្ទប់ ១២ (អគារ A)',
+    roomNumber: '',
     teacherName: 'Mr. Phan Sethka',
     teacherNameKm: 'លោកគ្រូ ផាន់ សេដ្ឋកា',
     schoolName: 'Hun Neng Pratong Primary School',

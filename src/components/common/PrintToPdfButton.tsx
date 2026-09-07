@@ -11,7 +11,7 @@ import {
   X,
   Loader2
 } from 'lucide-react';
-import { MoEYSLogo } from './MoEYSLogo';
+import { SchoolLogo } from './SchoolLogo';
 import { exportElementToPdf, exportMultipleElementsToPdf } from '../../utils/pdfExport';
 
 interface PrintToPdfButtonProps {
@@ -233,7 +233,7 @@ export const PrintToPdfButton: React.FC<PrintToPdfButtonProps> = ({
             </button>
 
             <div className="flex items-center space-x-3 mb-4">
-              <MoEYSLogo size={36} />
+              <SchoolLogo size={36} />
               <div>
                 <h3 className="font-heading font-black text-base text-indigo-950 dark:text-indigo-300">
                   {language === 'km' ? 'ការទាញយក PDF ផ្លូវការ & បោះពុម្ព' : 'Official PDF Export & Print Guide'}

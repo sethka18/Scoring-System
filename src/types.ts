@@ -131,7 +131,7 @@ export interface ClassSection {
   nameKm: string;
   gradeLevel: number; // 1 to 6
   academicYear: string; // "2026-2027"
-  roomNumber: string;
+  roomNumber?: string;
   teacherName: string;
   teacherNameKm: string;
   schoolName: string;

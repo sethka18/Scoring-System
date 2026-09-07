@@ -84,7 +84,7 @@ export const ClassModal: React.FC<ClassModalProps> = ({
       setNameKm(`ថ្នាក់ទី${defaultGrade}(${suffixLetterKm})`);
       setName(`Grade ${defaultGrade}${suffixLetterEn}`);
       setAcademicYear(schoolProfile.academicYear || '២០២៥-២០២៦');
-      setRoomNumber(`Room 0${defaultGrade} (អគារ A)`);
+      setRoomNumber('');
       setTeacherNameKm('លោកគ្រូ សុខ សម្ភស្ស');
       setTeacherName('Mr. Sok Samphors');
       setSchoolNameKm(schoolProfile.schoolNameKm || 'សាលាបឋមសិក្សាហ៊ុនណេងប្រទង');
@@ -131,7 +131,7 @@ export const ClassModal: React.FC<ClassModalProps> = ({
         nameKm: trimmedNameKm,
         name: trimmedName,
         academicYear: academicYear.trim() || '២០២៥-២០២៦',
-        roomNumber: roomNumber.trim() || 'Room 1',
+        roomNumber: '',
         teacherNameKm: teacherNameKm.trim() || 'លោកគ្រូ/អ្នកគ្រូ',
         teacherName: teacherName.trim() || 'Teacher',
         schoolNameKm: schoolNameKm.trim() || schoolProfile.schoolNameKm,
@@ -188,7 +188,7 @@ export const ClassModal: React.FC<ClassModalProps> = ({
         nameKm: trimmedNameKm,
         name: trimmedName,
         academicYear: academicYear.trim() || schoolProfile.academicYear || '២០២៥-២០២៦',
-        roomNumber: roomNumber.trim() || `Room 0${gradeLevel}`,
+        roomNumber: '',
         teacherNameKm: teacherNameKm.trim() || 'លោកគ្រូ/អ្នកគ្រូ',
         teacherName: teacherName.trim() || 'Teacher',
         schoolNameKm: schoolNameKm.trim() || schoolProfile.schoolNameKm,
@@ -314,32 +314,18 @@ export const ClassModal: React.FC<ClassModalProps> = ({
             </div>
           </div>
 
-          {/* Academic Year & Room */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">
-                {language === 'km' ? 'ឆ្នាំសិក្សា' : 'Academic Year'}
-              </label>
-              <input
-                type="text"
-                value={academicYear}
-                onChange={(e) => setAcademicYear(e.target.value)}
-                placeholder="២០២៥-២០២៦"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">
-                {language === 'km' ? 'បន្ទប់រៀន / អគារ' : 'Room / Building'}
-              </label>
-              <input
-                type="text"
-                value={roomNumber}
-                onChange={(e) => setRoomNumber(e.target.value)}
-                placeholder="Room 12 (អគារ B)"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm"
-              />
-            </div>
+          {/* Academic Year */}
+          <div>
+            <label className="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">
+              {language === 'km' ? 'ឆ្នាំសិក្សា' : 'Academic Year'}
+            </label>
+            <input
+              type="text"
+              value={academicYear}
+              onChange={(e) => setAcademicYear(e.target.value)}
+              placeholder="២០២៥-២០២៦"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm"
+            />
           </div>
 
           {/* Teacher Names (Khmer & English) */}

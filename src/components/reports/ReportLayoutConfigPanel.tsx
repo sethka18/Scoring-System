@@ -32,7 +32,6 @@ import {
 } from './reportLayoutTypes';
 import { OfficialSchoolStamp } from './OfficialSchoolStamp';
 import { SchoolLogo } from '../common/SchoolLogo';
-import { MoEYSLogo } from '../common/MoEYSLogo';
 
 interface ReportLayoutConfigPanelProps {
   isOpen: boolean;
@@ -390,31 +389,19 @@ export const ReportLayoutConfigPanel: React.FC<ReportLayoutConfigPanelProps> = (
                 </h3>
                 <p className="text-xs text-slate-500">
                   {language === 'km' 
-                    ? 'ជ្រើសរើសរបៀបបង្ហាញឡូហ្គោក្រសួង ឬផ្ទុកឡើងឡូហ្គោផ្លូវការរបស់សាលាបឋមសិក្សាផ្ទាល់'
-                    : 'Display the national MoEYS emblem, your custom primary school crest, or both side-by-side'}
+                    ? 'ជ្រើសរើសរបៀបបង្ហាញឡូហ្គោសាលា ឬផ្ទុកឡើងឡូហ្គោផ្លូវការរបស់សាលាបឋមសិក្សាផ្ទាល់'
+                    : 'Display the school emblem or upload your custom school logo'}
                 </p>
               </div>
 
               {/* Logo Mode Selection */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 {[
                   {
-                    mode: 'dual' as ReportLogoMode,
-                    titleKm: 'បង្ហាញទាំងពីរ (Dual)',
-                    descKm: 'សញ្ញាសម្គាល់ MoEYS + ឡូហ្គោសាលា',
-                    icon: <Layers className="w-4 h-4 text-indigo-600" />,
-                  },
-                  {
                     mode: 'school_only' as ReportLogoMode,
-                    titleKm: 'ឡូហ្គោសាលា (School)',
-                    descKm: 'បង្ហាញតែឡូហ្គោផ្ទាល់ខ្លួន',
-                    icon: <Building2 className="w-4 h-4 text-sky-600" />,
-                  },
-                  {
-                    mode: 'moeys_only' as ReportLogoMode,
-                    titleKm: 'សញ្ញាសម្គាល់ក្រសួង (MoEYS)',
-                    descKm: 'រូបសញ្ញាសម្គាល់ផ្លូវការក្រសួង',
-                    icon: <ShieldCheck className="w-4 h-4 text-amber-600" />,
+                    titleKm: 'ឡូហ្គោសាលា (School Logo)',
+                    descKm: 'បង្ហាញឡូហ្គោសាលា ឬសញ្ញាសម្គាល់ផ្លូវការ',
+                    icon: <Building2 className="w-4 h-4 text-indigo-600" />,
                   },
                   {
                     mode: 'minimal' as ReportLogoMode,
@@ -423,7 +410,7 @@ export const ReportLayoutConfigPanel: React.FC<ReportLayoutConfigPanelProps> = (
                     icon: <FileText className="w-4 h-4 text-slate-600" />,
                   },
                 ].map((item) => {
-                  const isSelected = config.logoMode === item.mode;
+                  const isSelected = config.logoMode === item.mode || (item.mode === 'school_only' && (config.logoMode === 'dual' || config.logoMode === 'moeys_only'));
                   return (
                     <button
                       key={item.mode}
@@ -462,7 +449,7 @@ export const ReportLayoutConfigPanel: React.FC<ReportLayoutConfigPanelProps> = (
                           referrerPolicy="no-referrer"
                         />
                       ) : (
-                        <MoEYSLogo size={36} />
+                        <SchoolLogo size={36} />
                       )}
                     </div>
 
@@ -470,7 +457,7 @@ export const ReportLayoutConfigPanel: React.FC<ReportLayoutConfigPanelProps> = (
                       <h4 className="font-heading font-black text-slate-900 text-xs sm:text-sm">
                         {config.customLogoUrl || schoolProfile?.logoUrl 
                           ? (language === 'km' ? 'ឡូហ្គោសាលាបច្ចុប្បន្ន' : 'Current School Logo')
-                          : (language === 'km' ? 'មិនទាន់មានឡូហ្គោផ្ទាល់ខ្លួន (កំពុងប្រើសញ្ញាសម្គាល់ MoEYS)' : 'Using official MoEYS Emblem')}
+                          : (language === 'km' ? 'ឡូហ្គោស្តង់ដារ (សញ្ញាសម្គាល់ផ្លូវការ)' : 'Default Official Emblem')}
                       </h4>
                       <p className="text-xs text-slate-500 mt-0.5">
                         {language === 'km'

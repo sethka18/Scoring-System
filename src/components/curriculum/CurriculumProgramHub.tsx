@@ -18,7 +18,7 @@ import {
   FileCheck2,
   ListTodo
 } from 'lucide-react';
-import { MoEYSLogo } from '../common/MoEYSLogo';
+import { SchoolLogo } from '../common/SchoolLogo';
 import { PrintToPdfButton } from '../common/PrintToPdfButton';
 import { CurriculumUploadModal } from './CurriculumUploadModal';
 
@@ -26,6 +26,7 @@ export const CurriculumProgramHub: React.FC = () => {
   const { 
     language, 
     activeClass, 
+    schoolProfile,
     subjects, 
     curriculumPrograms, 
     updateCurriculumLesson, 
@@ -82,7 +83,7 @@ export const CurriculumProgramHub: React.FC = () => {
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center space-x-4">
             <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 p-1.5 shadow-lg shrink-0 flex items-center justify-center border border-white/20">
-              <MoEYSLogo size={56} />
+              <SchoolLogo size={56} customLogoUrl={schoolProfile?.logoUrl} />
             </div>
             <div>
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-800/60 border border-indigo-400/30 text-amber-300 text-xs font-black tracking-wider uppercase mb-1.5">
@@ -282,7 +283,7 @@ export const CurriculumProgramHub: React.FC = () => {
         <div className="text-center pb-5 border-b-2 border-slate-900 mb-6">
           <div className="flex justify-between items-start text-xs font-semibold text-slate-800 mb-2">
             <div className="text-left flex items-center space-x-3">
-              <MoEYSLogo size={46} />
+              <SchoolLogo size={46} customLogoUrl={schoolProfile?.logoUrl} />
               <div>
                 <p className="font-extrabold uppercase text-slate-950">{activeClass?.schoolNameKm}</p>
                 <p className="text-slate-600 font-bold text-[11px]">

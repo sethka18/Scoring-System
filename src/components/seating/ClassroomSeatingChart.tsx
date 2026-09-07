@@ -614,7 +614,7 @@ export const ClassroomSeatingChart: React.FC = () => {
                       {schoolProfile?.district || activeClass?.district || 'ស្រុកព្រៃឈរ'} • {schoolProfile?.province || activeClass?.province || 'ខេត្តកំពង់ចាម'}
                     </p>
                     <p className="text-slate-700 font-bold text-xs mt-0.5">
-                      {language === 'km' ? `ថ្នាក់ទី ${activeClass?.gradeLevel} (${activeClass?.nameKm}) • បន្ទប់ ${activeClass?.roomNumber}` : `Grade ${activeClass?.gradeLevel} (${activeClass?.name}) • Room ${activeClass?.roomNumber}`}
+                      {language === 'km' ? `ថ្នាក់ទី ${activeClass?.gradeLevel} (${activeClass?.nameKm})` : `Grade ${activeClass?.gradeLevel} (${activeClass?.name})`}
                     </p>
                   </div>
                 </div>

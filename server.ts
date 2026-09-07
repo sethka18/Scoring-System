@@ -162,6 +162,35 @@ async function startServer() {
     });
   });
 
+  // In-memory Cloud Sync Store for multi-device sync
+  const serverSyncStore: Record<string, { data: any; updatedAt: number }> = {};
+
+  app.get('/api/sync/:key', (req, res) => {
+    const key = (req.params.key || '').toUpperCase();
+    if (!key) {
+      return res.status(400).json({ error: 'Missing sync key' });
+    }
+    const entry = serverSyncStore[key];
+    if (!entry) {
+      return res.status(404).json({ error: 'No cloud data found for key' });
+    }
+    return res.json({ success: true, key, data: entry.data, updatedAt: entry.updatedAt });
+  });
+
+  app.post('/api/sync/:key', (req, res) => {
+    const key = (req.params.key || '').toUpperCase();
+    if (!key) {
+      return res.status(400).json({ error: 'Missing sync key' });
+    }
+    const { data, timestamp } = req.body;
+    if (!data) {
+      return res.status(400).json({ error: 'Missing sync payload data' });
+    }
+    const updatedAt = timestamp || Date.now();
+    serverSyncStore[key] = { data, updatedAt };
+    return res.json({ success: true, key, updatedAt });
+  });
+
   // AI Quick Exam Generator Endpoint
   app.post('/api/generate-exam', async (req, res) => {
     const { 

@@ -28,7 +28,6 @@ import {
 } from 'lucide-react';
 import { calculatePeriodRankings, calculateYearlySummaries, formatConductRating } from '../../utils/calculations';
 import { SchoolLogo } from '../common/SchoolLogo';
-import { MoEYSLogo } from '../common/MoEYSLogo';
 import { PrintToPdfButton } from '../common/PrintToPdfButton';
 import { TelegramShareModal } from '../common/TelegramShareModal';
 import { PrintOptionsModal, ReportPrintOptions, DEFAULT_PRINT_OPTIONS } from './PrintOptionsModal';
@@ -334,7 +333,7 @@ export const ReportCardView: React.FC = () => {
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-0 select-none">
             {activeLayout.showWatermark && (
               <div className="opacity-[0.04] transform scale-150">
-                <MoEYSLogo size={320} />
+                <SchoolLogo size={320} customLogoUrl={effectiveLogoUrl} />
               </div>
             )}
             {(activeLayout.stampPosition === 'center_watermark' || activeLayout.stampPosition === 'both') && activeLayout.stampMode !== 'none' && (
@@ -375,11 +374,7 @@ export const ReportCardView: React.FC = () => {
             {/* Left Header: School Info and Logo */}
             <div className="text-left flex items-center space-x-2.5">
               {activeLayout.logoMode !== 'minimal' && (
-                activeLayout.logoMode === 'moeys_only' ? (
-                  <MoEYSLogo size={logoPixelSize} />
-                ) : (
-                  <SchoolLogo size={logoPixelSize} customLogoUrl={effectiveLogoUrl} />
-                )
+                <SchoolLogo size={logoPixelSize} customLogoUrl={effectiveLogoUrl} />
               )}
               <div>
                 <p className="font-extrabold text-slate-900 uppercase text-xs">
@@ -389,12 +384,12 @@ export const ReportCardView: React.FC = () => {
                   {schoolProfile?.district || activeClass?.district || 'ស្រុកព្រៃឈរ'} • {schoolProfile?.province || activeClass?.province || 'ខេត្តកំពង់ចាម'}
                 </p>
                 <p className="text-slate-600 font-bold text-[11px]">
-                  {language === 'km' ? `ថ្នាក់ទី ${activeClass?.gradeLevel} (${activeClass?.nameKm}) • បន្ទប់ ${activeClass?.roomNumber}` : `Grade ${activeClass?.gradeLevel} (${activeClass?.name}) • Room ${activeClass?.roomNumber}`}
+                  {language === 'km' ? `ថ្នាក់ទី ${activeClass?.gradeLevel} (${activeClass?.nameKm})` : `Grade ${activeClass?.gradeLevel} (${activeClass?.name})`}
                 </p>
               </div>
             </div>
 
-            {/* Right Header: Kingdom of Cambodia + Optional MoEYS Logo in Dual Mode */}
+            {/* Right Header: Kingdom of Cambodia */}
             <div className="text-right flex items-center space-x-2.5">
               <div>
                 <p className="font-black text-slate-900 text-xs">
@@ -405,11 +400,6 @@ export const ReportCardView: React.FC = () => {
                 </p>
                 <p className="text-[11px] text-amber-700 tracking-widest font-serif select-none leading-none mt-0.5">❖ ❖ ❖</p>
               </div>
-              {activeLayout.logoMode === 'dual' && (
-                <div className="hidden sm:block">
-                  <MoEYSLogo size={Math.round(logoPixelSize * 0.9)} />
-                </div>
-              )}
             </div>
           </div>
 
@@ -864,7 +854,7 @@ export const ReportCardView: React.FC = () => {
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-0 select-none">
             {activeLayout.showWatermark && (
               <div className="opacity-[0.04] transform scale-150">
-                <MoEYSLogo size={340} />
+                <SchoolLogo size={340} customLogoUrl={effectiveLogoUrl} />
               </div>
             )}
             {(activeLayout.stampPosition === 'center_watermark' || activeLayout.stampPosition === 'both') && activeLayout.stampMode !== 'none' && (
@@ -893,7 +883,7 @@ export const ReportCardView: React.FC = () => {
           </div>
         )}
 
-        {/* Top Header with MoEYS / School Logo */}
+        {/* Top Header with School Logo */}
         <div className={`text-center pb-5 mb-5 relative z-1 ${
           activeLayout.layoutStyle === 'honor_formal' 
             ? 'border-b-2 border-amber-600' 
@@ -905,11 +895,7 @@ export const ReportCardView: React.FC = () => {
             {/* Left Header: School Info and Logo */}
             <div className="text-left flex items-center space-x-2.5">
               {activeLayout.logoMode !== 'minimal' && (
-                activeLayout.logoMode === 'moeys_only' ? (
-                  <MoEYSLogo size={logoPixelSize} />
-                ) : (
-                  <SchoolLogo size={logoPixelSize} customLogoUrl={effectiveLogoUrl} />
-                )
+                <SchoolLogo size={logoPixelSize} customLogoUrl={effectiveLogoUrl} />
               )}
               <div>
                 <p className="font-extrabold text-slate-900 uppercase text-xs">
@@ -918,11 +904,11 @@ export const ReportCardView: React.FC = () => {
                 <p className="text-slate-500 font-medium text-[10px]">
                   {schoolProfile?.district || activeClass?.district || 'ស្រុកព្រៃឈរ'} • {schoolProfile?.province || activeClass?.province || 'ខេត្តកំពង់ចាម'}
                 </p>
-                <p className="text-slate-600 font-bold text-[11px]">{language === 'km' ? `ថ្នាក់ទី ${activeClass?.gradeLevel} (${activeClass?.nameKm}) • បន្ទប់ ${activeClass?.roomNumber}` : `Grade ${activeClass?.gradeLevel} (${activeClass?.name}) • Room ${activeClass?.roomNumber}`}</p>
+                <p className="text-slate-600 font-bold text-[11px]">{language === 'km' ? `ថ្នាក់ទី ${activeClass?.gradeLevel} (${activeClass?.nameKm})` : `Grade ${activeClass?.gradeLevel} (${activeClass?.name})`}</p>
               </div>
             </div>
 
-            {/* Right Header: Kingdom of Cambodia + Optional MoEYS Logo in Dual Mode */}
+            {/* Right Header: Kingdom of Cambodia */}
             <div className="text-right flex items-center space-x-2.5">
               <div>
                 <p className="font-black text-slate-900 text-xs">
@@ -933,11 +919,6 @@ export const ReportCardView: React.FC = () => {
                 </p>
                 <p className="text-[11px] text-amber-700 tracking-widest font-serif select-none leading-none mt-0.5">❖ ❖ ❖</p>
               </div>
-              {activeLayout.logoMode === 'dual' && (
-                <div className="hidden sm:block">
-                  <MoEYSLogo size={Math.round(logoPixelSize * 0.9)} />
-                </div>
-              )}
             </div>
           </div>
 
@@ -1590,7 +1571,7 @@ export const ReportCardView: React.FC = () => {
 
         <div className="flex items-center space-x-2 text-[11px] font-bold text-slate-500">
           <span className="hidden sm:inline">
-            ឡូហ្គោ៖ {layoutConfig.logoMode === 'dual' ? 'ទ្វេ (សាលា+MoEYS)' : layoutConfig.logoMode === 'school_only' ? 'សាលាតែមួយ' : layoutConfig.logoMode === 'moeys_only' ? 'MoEYS' : 'អក្សរសុទ្ធ'}
+            ឡូហ្គោ៖ {layoutConfig.logoMode === 'minimal' ? 'អក្សរសុទ្ធ' : 'ឡូហ្គោសាលា'}
           </span>
           <span className="text-slate-300">•</span>
           <span className="hidden sm:inline">

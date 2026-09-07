@@ -43,7 +43,7 @@ export interface ReportLayoutConfig {
 
 export const DEFAULT_REPORT_LAYOUT_CONFIG: ReportLayoutConfig = {
   layoutStyle: 'standard',
-  logoMode: 'dual',
+  logoMode: 'school_only',
   customLogoUrl: '',
   logoSize: 'md',
 

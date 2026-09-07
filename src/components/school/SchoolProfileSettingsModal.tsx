@@ -18,7 +18,6 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { SchoolLogo } from '../common/SchoolLogo';
-import { MoEYSLogo } from '../common/MoEYSLogo';
 
 interface SchoolProfileSettingsModalProps {
   isOpen: boolean;
@@ -29,7 +28,7 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
   isOpen,
   onClose,
 }) => {
-  const { schoolProfile, updateSchoolProfile, resetSchoolLogo, resetMoEYSLogo, language, showToast } = useGradebook();
+  const { schoolProfile, updateSchoolProfile, resetSchoolLogo, language, showToast } = useGradebook();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [formData, setFormData] = useState<SchoolProfile>({
@@ -45,11 +44,9 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
     phone: schoolProfile.phone || '',
     email: schoolProfile.email || '',
     logoUrl: schoolProfile.logoUrl || '',
-    moeysLogoUrl: schoolProfile.moeysLogoUrl || '',
     academicYear: schoolProfile.academicYear || '២០២៥-២០២៦',
   });
 
-  const [activeLogoTarget, setActiveLogoTarget] = useState<'school' | 'moeys'>('school');
   const [activePresetTab, setActivePresetTab] = useState<'upload' | 'url'>('upload');
   const [urlInput, setUrlInput] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
@@ -70,18 +67,11 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
         phone: schoolProfile.phone || '',
         email: schoolProfile.email || '',
         logoUrl: schoolProfile.logoUrl || '',
-        moeysLogoUrl: schoolProfile.moeysLogoUrl || '',
         academicYear: schoolProfile.academicYear || '២០២៥-២០២៦',
       });
-      setUrlInput(activeLogoTarget === 'school' ? (schoolProfile.logoUrl || '') : (schoolProfile.moeysLogoUrl || ''));
+      setUrlInput(schoolProfile.logoUrl || '');
     }
-  }, [isOpen, schoolProfile, activeLogoTarget]);
-
-  // Update urlInput when switching activeLogoTarget
-  const handleSwitchLogoTarget = (target: 'school' | 'moeys') => {
-    setActiveLogoTarget(target);
-    setUrlInput(target === 'school' ? (formData.logoUrl || '') : (formData.moeysLogoUrl || ''));
-  };
+  }, [isOpen, schoolProfile]);
 
   if (!isOpen) return null;
 
@@ -106,19 +96,11 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
     const reader = new FileReader();
     reader.onload = (e) => {
       const dataUrl = e.target?.result as string;
-      if (activeLogoTarget === 'school') {
-        setFormData(prev => ({ ...prev, logoUrl: dataUrl }));
-        showToast(
-          language === 'km' ? 'បានបញ្ចូលឡូហ្គូសាលារៀនជោគជ័យ' : 'School logo uploaded successfully',
-          'success'
-        );
-      } else {
-        setFormData(prev => ({ ...prev, moeysLogoUrl: dataUrl }));
-        showToast(
-          language === 'km' ? 'បានបញ្ចូលឡូហ្គូក្រសួងជោគជ័យ' : 'MoEYS logo uploaded successfully',
-          'success'
-        );
-      }
+      setFormData(prev => ({ ...prev, logoUrl: dataUrl }));
+      showToast(
+        language === 'km' ? 'បានបញ្ចូលឡូហ្គូសាលារៀនជោគជ័យ' : 'School logo uploaded successfully',
+        'success'
+      );
     };
     reader.readAsDataURL(file);
   };
@@ -141,37 +123,20 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
 
   const handleApplyUrl = () => {
     if (!urlInput.trim()) return;
-    if (activeLogoTarget === 'school') {
-      setFormData(prev => ({ ...prev, logoUrl: urlInput.trim() }));
-      showToast(
-        language === 'km' ? 'បានកំណត់តំណភ្ជាប់ឡូហ្គូសាលារៀន' : 'School logo URL applied',
-        'success'
-      );
-    } else {
-      setFormData(prev => ({ ...prev, moeysLogoUrl: urlInput.trim() }));
-      showToast(
-        language === 'km' ? 'បានកំណត់តំណភ្ជាប់ឡូហ្គូក្រសួង' : 'MoEYS logo URL applied',
-        'success'
-      );
-    }
+    setFormData(prev => ({ ...prev, logoUrl: urlInput.trim() }));
+    showToast(
+      language === 'km' ? 'បានកំណត់តំណភ្ជាប់ឡូហ្គូសាលារៀន' : 'School logo URL applied',
+      'success'
+    );
   };
 
   const handleResetCurrentLogo = () => {
-    if (activeLogoTarget === 'school') {
-      setFormData(prev => ({ ...prev, logoUrl: '' }));
-      setUrlInput('');
-      showToast(
-        language === 'km' ? 'បានកំណត់ឡូហ្គូសាលាឡើងវិញ' : 'Reset school logo to default',
-        'info'
-      );
-    } else {
-      setFormData(prev => ({ ...prev, moeysLogoUrl: '' }));
-      setUrlInput('');
-      showToast(
-        language === 'km' ? 'បានប្តូរទៅសញ្ញាសម្គាល់ផ្លូវការក្រសួងដើម' : 'Reset to official MoEYS seal',
-        'info'
-      );
-    }
+    setFormData(prev => ({ ...prev, logoUrl: '' }));
+    setUrlInput('');
+    showToast(
+      language === 'km' ? 'បានកំណត់ឡូហ្គូសាលាឡើងវិញជាសញ្ញាសម្គាល់ផ្លូវការ' : 'Reset school logo to official emblem',
+      'info'
+    );
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -225,11 +190,11 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center space-x-2 text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                 <ImageIcon className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                <span>{language === 'km' ? 'កែប្រែឡូហ្គូសាលា & ឡូហ្គូក្រសួងអប់រំ' : 'Edit School Logo & MoEYS Logo'}</span>
+                <span>{language === 'km' ? 'ឡូហ្គូសាលារៀន (School Logo)' : 'School Logo'}</span>
               </div>
               
-              {/* Reset current active logo */}
-              {((activeLogoTarget === 'school' && formData.logoUrl) || (activeLogoTarget === 'moeys' && formData.moeysLogoUrl)) && (
+              {/* Reset to default official emblem */}
+              {formData.logoUrl && (
                 <button
                   type="button"
                   onClick={handleResetCurrentLogo}
@@ -237,92 +202,45 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
                 >
                   <RotateCcw className="w-3 h-3" />
                   <span>
-                    {activeLogoTarget === 'school' 
-                      ? (language === 'km' ? 'កំណត់ឡូហ្គូសាលាឡើងវិញ' : 'Reset School Logo')
-                      : (language === 'km' ? 'កំណត់ឡូហ្គូក្រសួងដើម' : 'Reset to MoEYS Default')}
+                    {language === 'km' ? 'កំណត់ឡូហ្គូឡើងវិញ (សញ្ញាសម្គាល់ផ្លូវការ)' : 'Reset to Official Emblem'}
                   </span>
                 </button>
               )}
             </div>
 
-            {/* Logo Target Switcher Cards (School Logo vs MoEYS Logo) */}
-            <div className="grid grid-cols-2 gap-3">
-              {/* School Logo Card */}
-              <div 
-                onClick={() => handleSwitchLogoTarget('school')}
-                className={`p-3 rounded-2xl border-2 transition cursor-pointer flex flex-col sm:flex-row items-center gap-3 ${
-                  activeLogoTarget === 'school'
-                    ? 'border-indigo-600 bg-indigo-50/60 dark:bg-indigo-950/40 shadow-xs ring-2 ring-indigo-500/20'
-                    : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-indigo-300'
-                }`}
-              >
-                <div className="w-16 h-16 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-1 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
-                  <SchoolLogo 
-                    customLogoUrl={formData.logoUrl} 
-                    size={56} 
-                    className="w-full h-full"
-                  />
-                </div>
-                <div className="text-center sm:text-left min-w-0">
-                  <div className="flex items-center justify-center sm:justify-start space-x-1">
-                    <span className="font-heading font-black text-xs text-slate-900 dark:text-white truncate">
-                      {language === 'km' ? '១. ឡូហ្គូសាលារៀន' : '1. School Logo'}
-                    </span>
-                    {activeLogoTarget === 'school' && (
-                      <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                    )}
-                  </div>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
-                    {formData.logoUrl ? (language === 'km' ? 'រូបភាពផ្ទាល់ខ្លួន' : 'Custom') : (language === 'km' ? 'ឡូហ្គូស្តង់ដារ' : 'Default')}
-                  </p>
-                </div>
+            {/* School Logo Preview & Status */}
+            <div className="p-4 rounded-2xl border-2 border-indigo-100 dark:border-indigo-950/60 bg-white dark:bg-slate-900 flex flex-col sm:flex-row items-center gap-4">
+              <div className="w-20 h-20 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-1.5 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+                <SchoolLogo 
+                  customLogoUrl={formData.logoUrl} 
+                  size={72} 
+                  className="w-full h-full"
+                />
               </div>
-
-              {/* MoEYS Logo Card */}
-              <div 
-                onClick={() => handleSwitchLogoTarget('moeys')}
-                className={`p-3 rounded-2xl border-2 transition cursor-pointer flex flex-col sm:flex-row items-center gap-3 ${
-                  activeLogoTarget === 'moeys'
-                    ? 'border-indigo-600 bg-indigo-50/60 dark:bg-indigo-950/40 shadow-xs ring-2 ring-indigo-500/20'
-                    : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-indigo-300'
-                }`}
-              >
-                <div className="w-16 h-16 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-1 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
-                  <MoEYSLogo 
-                    customLogoUrl={formData.moeysLogoUrl} 
-                    size={56} 
-                    className="w-full h-full"
-                  />
-                </div>
-                <div className="text-center sm:text-left min-w-0">
-                  <div className="flex items-center justify-center sm:justify-start space-x-1">
-                    <span className="font-heading font-black text-xs text-slate-900 dark:text-white truncate">
-                      {language === 'km' ? '២. ឡូហ្គូក្រសួង MoEYS' : '2. MoEYS Logo'}
+              <div className="text-center sm:text-left min-w-0 flex-1">
+                <div className="flex items-center justify-center sm:justify-start space-x-1.5">
+                  <span className="font-heading font-black text-sm text-slate-900 dark:text-white">
+                    {language === 'km' ? 'ឡូហ្គូផ្លូវការសាលារៀន' : 'Official School Logo'}
+                  </span>
+                  {formData.logoUrl ? (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-black">
+                      {language === 'km' ? 'រូបភាពផ្ទាល់ខ្លួន' : 'Custom'}
                     </span>
-                    {activeLogoTarget === 'moeys' && (
-                      <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                    )}
-                  </div>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
-                    {formData.moeysLogoUrl ? (language === 'km' ? 'រូបភាពផ្ទាល់ខ្លួន' : 'Custom') : (language === 'km' ? 'ត្រាផ្លូវការក្រសួង' : 'Official Seal')}
-                  </p>
+                  ) : (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-black">
+                      {language === 'km' ? 'សញ្ញាសម្គាល់ផ្លូវការ (Standard Emblem)' : 'Official Emblem'}
+                    </span>
+                  )}
                 </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  {language === 'km' 
+                    ? 'ឡូហ្គូនេះនឹងត្រូវបង្ហាញលើក្បាលលិខិត ព្រឹត្តិបត្រពិន្ទុ កាលវិភាគ ប័ណ្ណសរសើរ និងឯកសារបោះពុម្ពទាំងអស់។'
+                    : 'This logo appears across headers, report cards, timetables, and certificates.'}
+                </p>
               </div>
             </div>
 
-            {/* Currently Editing Banner */}
-            <div className="bg-indigo-50/50 dark:bg-indigo-950/30 px-3 py-2 rounded-xl flex items-center justify-between text-xs">
-              <span className="font-extrabold text-indigo-900 dark:text-indigo-300">
-                {activeLogoTarget === 'school'
-                  ? (language === 'km' ? 'កំពុងជ្រើសរើសកែប្រែ៖ ឡូហ្គូសាលារៀន' : 'Editing: School Logo')
-                  : (language === 'km' ? 'កំពុងជ្រើសរើសកែប្រែ៖ ឡូហ្គូក្រសួងអប់រំ យុវជន និងកីឡា (MoEYS)' : 'Editing: Ministry of Education (MoEYS) Logo')}
-              </span>
-              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500">
-                {activeLogoTarget === 'school' ? 'PNG, JPG, SVG' : 'PNG, JPG, SVG'}
-              </span>
-            </div>
-
-            {/* Upload Controls for Active Logo */}
+            {/* Upload Controls for School Logo */}
             <div className="space-y-2.5">
               <div className="flex items-center space-x-2 text-xs">
                 <button
@@ -370,9 +288,7 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
                   />
                   <Upload className="w-5 h-5 mx-auto text-indigo-500 mb-1.5" />
                   <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                    {activeLogoTarget === 'school'
-                      ? (language === 'km' ? 'ចុចទីនេះ ឬទម្លាក់រូបភាពឡូហ្គូសាលា' : 'Click or drag & drop school logo here')
-                      : (language === 'km' ? 'ចុចទីនេះ ឬទម្លាក់រូបភាពឡូហ្គូក្រសួង MoEYS' : 'Click or drag & drop MoEYS logo here')}
+                    {language === 'km' ? 'ចុចទីនេះ ឬទម្លាក់រូបភាពឡូហ្គូសាលារៀន' : 'Click or drag & drop school logo here'}
                   </p>
                   <p className="text-[10px] text-slate-400 mt-0.5">
                     PNG, JPG, SVG, WebP (អតិបរមា 2MB)
@@ -382,7 +298,7 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
                 <div className="flex items-center space-x-2">
                   <input
                     type="url"
-                    placeholder={activeLogoTarget === 'school' ? "https://example.com/school-logo.png" : "https://example.com/moeys-logo.png"}
+                    placeholder="https://example.com/school-logo.png"
                     value={urlInput}
                     onChange={(e) => setUrlInput(e.target.value)}
                     className="flex-1 px-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"

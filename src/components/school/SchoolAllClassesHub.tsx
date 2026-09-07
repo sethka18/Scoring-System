@@ -147,8 +147,7 @@ export const SchoolAllClassesHub: React.FC = () => {
         classSection.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         classSection.nameKm.includes(searchQuery) ||
         classSection.teacherName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        classSection.teacherNameKm.includes(searchQuery) ||
-        classSection.roomNumber.toLowerCase().includes(searchQuery.toLowerCase());
+        classSection.teacherNameKm.includes(searchQuery);
       
       return matchGrade && matchSearch;
     });
@@ -225,7 +224,7 @@ export const SchoolAllClassesHub: React.FC = () => {
         name: formClassName,
         nameKm: formClassNameKm,
         gradeLevel: formGradeLevel,
-        roomNumber: formRoomNumber,
+        roomNumber: '',
         teacherName: formTeacherName,
         teacherNameKm: formTeacherNameKm,
       });
@@ -278,7 +277,7 @@ export const SchoolAllClassesHub: React.FC = () => {
         nameKm: formClassNameKm,
         gradeLevel: formGradeLevel,
         academicYear: schoolProfile?.academicYear || activeClass?.academicYear || '២០២៥-២០២៦',
-        roomNumber: formRoomNumber,
+        roomNumber: '',
         teacherName: formTeacherName,
         teacherNameKm: formTeacherNameKm,
         schoolName: schoolProfile?.schoolName || 'Hun Neng Pratong Primary School',
@@ -563,10 +562,7 @@ export const SchoolAllClassesHub: React.FC = () => {
                             </span>
                           )}
                         </div>
-                        <div className="text-xs text-slate-500 flex items-center space-x-2">
-                          <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                          <span>{classSection.roomNumber}</span>
-                        </div>
+
                       </div>
 
                       {/* Class GPA Badge */}
@@ -777,7 +773,7 @@ export const SchoolAllClassesHub: React.FC = () => {
                         {classSection.name} • {classSection.teacherNameKm} ({language === 'km' ? 'គ្រូបន្ទុក' : 'Teacher'})
                       </h3>
                       <span className="text-[11px] text-slate-300">
-                        {classSection.roomNumber} • {top5Students.length} {language === 'km' ? 'សិស្សឆ្នើម' : 'top scholars'}
+                        {top5Students.length} {language === 'km' ? 'សិស្សឆ្នើម' : 'top scholars'}
                       </span>
                     </div>
                   </div>
@@ -1004,7 +1000,7 @@ export const SchoolAllClassesHub: React.FC = () => {
                         if (!editingClass) {
                           setFormClassName(`Grade ${g}A`);
                           setFormClassNameKm(`ថ្នាក់ទី${g}(ក)`);
-                          setFormRoomNumber(`Room 0${g} (អគារ B)`);
+                          setFormRoomNumber('');
                         }
                       }}
                       className={`py-2 rounded-xl text-xs font-black transition cursor-pointer ${
@@ -1079,19 +1075,7 @@ export const SchoolAllClassesHub: React.FC = () => {
                 </div>
               </div>
 
-              {/* Room Number */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  {language === 'km' ? 'លេខបន្ទប់រៀន / អគារ' : 'Room Number / Building'}
-                </label>
-                <input
-                  type="text"
-                  value={formRoomNumber}
-                  onChange={(e) => setFormRoomNumber(e.target.value)}
-                  placeholder="Room 12 (អគារ A)"
-                  className="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
+
 
               {/* Auto-seed sample students (for new class only) */}
               {!editingClass && (
