@@ -1074,11 +1074,11 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
                             </p>
                             <p className="text-slate-700 font-bold text-[11px]">
                               {language === 'km' 
-                                ? (schoolProfile?.schoolNameKm || activeClass?.schoolNameKm || 'សាលាបឋមសិក្សាព្រៃឈរ') 
-                                : (schoolProfile?.schoolName || activeClass?.schoolName || 'Prey Chhor Primary School')}
+                                ? (schoolProfile?.schoolNameKm || activeClass?.schoolNameKm || 'សាលាបឋមសិក្សាហ៊ុនណេងប្រទង') 
+                                : (schoolProfile?.schoolName || activeClass?.schoolName || 'Hun Neng Pratong Primary School')}
                             </p>
                             <p className="text-slate-500 font-medium text-[10px]">
-                              {schoolProfile?.district || activeClass?.district || 'ស្រុកព្រៃឈរ'} • {schoolProfile?.province || activeClass?.province || 'ខេត្តកំពង់ចាម'}
+                              {schoolProfile?.district || activeClass?.district || 'ស្រុកស្ទឹងត្រង់'} • {schoolProfile?.province || activeClass?.province || 'ខេត្តកំពង់ចាម'}
                             </p>
                           </div>
                         </div>
@@ -1110,7 +1110,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
                           </span>
                           <span>•</span>
                           <span>
-                            {language === 'km' ? `គ្រូបន្ទុកថ្នាក់៖ ${activeClass?.teacherName || 'លោកគ្រូ អ្នកគ្រូ'}` : `Teacher: ${activeClass?.teacherName || 'Homeroom Teacher'}`}
+                            {language === 'km' ? `គ្រូបន្ទុកថ្នាក់៖ ${activeClass?.teacherNameKm || activeClass?.teacherName || 'លោកគ្រូ អ្នកគ្រូ'}` : `Teacher: ${activeClass?.teacherNameKm || activeClass?.teacherName || 'Homeroom Teacher'}`}
                           </span>
                         </div>
                       </div>
@@ -1273,7 +1273,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
                           (ហត្ថលេខា)
                         </div>
                         <p className="font-bold text-slate-900">
-                          {activeClass?.teacherName || 'គ្រូបន្ទុកថ្នាក់'}
+                          {activeClass?.teacherNameKm || activeClass?.teacherName || 'គ្រូបន្ទុកថ្នាក់'}
                         </p>
                       </div>
                     </div>

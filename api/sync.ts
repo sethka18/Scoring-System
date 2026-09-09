@@ -1,6 +1,14 @@
 // Vercel Serverless Function for Cloud Sync
 import type { IncomingMessage, ServerResponse } from 'http';
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '50mb',
+    },
+  },
+};
+
 interface ExtendedRequest extends IncomingMessage {
   query?: Record<string, string>;
   body?: any;

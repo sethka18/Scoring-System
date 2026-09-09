@@ -1450,7 +1450,7 @@ export const KhmerReadingEvaluator: React.FC<KhmerReadingEvaluatorProps> = ({
                 <div>
                   <p>គ្រូបន្ទុកថ្នាក់</p>
                   <div className="h-16" />
-                  <p className="font-bold">{activeClass?.teacherName || 'លោកគ្រូ / អ្នកគ្រូ'}</p>
+                  <p className="font-bold">{activeClass?.teacherNameKm || activeClass?.teacherName || 'លោកគ្រូ / អ្នកគ្រូ'}</p>
                 </div>
               </div>
             </div>

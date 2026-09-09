@@ -35,16 +35,16 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
     schoolName: schoolProfile.schoolName || '',
     schoolNameKm: schoolProfile.schoolNameKm || '',
     province: schoolProfile.province || 'ខេត្តកំពង់ចាម',
-    district: schoolProfile.district || 'ស្រុកព្រៃឈរ',
-    commune: schoolProfile.commune || 'ឃុំព្រៃឈរ',
-    village: schoolProfile.village || '',
+    district: schoolProfile.district || 'ស្រុកស្ទឹងត្រង់',
+    commune: schoolProfile.commune || 'ឃុំអូរម្លូ',
+    village: schoolProfile.village || 'ភូមិប្រទង',
     schoolCode: schoolProfile.schoolCode || '',
     principalName: schoolProfile.principalName || '',
     principalNameKm: schoolProfile.principalNameKm || '',
     phone: schoolProfile.phone || '',
     email: schoolProfile.email || '',
     logoUrl: schoolProfile.logoUrl || '',
-    academicYear: schoolProfile.academicYear || '២០២៥-២០២៦',
+    academicYear: schoolProfile.academicYear || '២០២៦-២០២៧',
   });
 
   const [activePresetTab, setActivePresetTab] = useState<'upload' | 'url'>('upload');
@@ -58,16 +58,16 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
         schoolName: schoolProfile.schoolName || '',
         schoolNameKm: schoolProfile.schoolNameKm || '',
         province: schoolProfile.province || 'ខេត្តកំពង់ចាម',
-        district: schoolProfile.district || 'ស្រុកព្រៃឈរ',
-        commune: schoolProfile.commune || 'ឃុំព្រៃឈរ',
-        village: schoolProfile.village || '',
+        district: schoolProfile.district || 'ស្រុកស្ទឹងត្រង់',
+        commune: schoolProfile.commune || 'ឃុំអូរម្លូ',
+        village: schoolProfile.village || 'ភូមិប្រទង',
         schoolCode: schoolProfile.schoolCode || '',
         principalName: schoolProfile.principalName || '',
         principalNameKm: schoolProfile.principalNameKm || '',
         phone: schoolProfile.phone || '',
         email: schoolProfile.email || '',
         logoUrl: schoolProfile.logoUrl || '',
-        academicYear: schoolProfile.academicYear || '២០២៥-២០២៦',
+        academicYear: schoolProfile.academicYear || '២០២៦-២០២៧',
       });
       setUrlInput(schoolProfile.logoUrl || '');
     }
@@ -369,7 +369,7 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
                 </label>
                 <input
                   type="text"
-                  placeholder="២០២៥-២០២៦"
+                  placeholder="២០២៦-២០២៧"
                   value={formData.academicYear || ''}
                   onChange={(e) => setFormData({ ...formData, academicYear: e.target.value })}
                   className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
@@ -392,7 +392,7 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
                 </label>
                 <input
                   type="text"
-                  placeholder="ឧ. ស្រុកព្រៃឈរ"
+                  placeholder="ឧ. ស្រុកស្ទឹងត្រង់"
                   value={formData.district}
                   onChange={(e) => setFormData({ ...formData, district: e.target.value })}
                   className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
@@ -405,7 +405,7 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
                 </label>
                 <input
                   type="text"
-                  placeholder="ឧ. ឃុំព្រៃឈរ"
+                  placeholder="ឧ. ឃុំអូរម្លូ"
                   value={formData.commune}
                   onChange={(e) => setFormData({ ...formData, commune: e.target.value })}
                   className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"

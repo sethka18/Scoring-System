@@ -65,15 +65,15 @@ export const SettingsModal: React.FC = () => {
     schoolName: schoolProfile?.schoolName || '',
     schoolNameKm: schoolProfile?.schoolNameKm || '',
     province: schoolProfile?.province || 'ខេត្តកំពង់ចាម',
-    district: schoolProfile?.district || 'ស្រុកព្រៃឈរ',
-    commune: schoolProfile?.commune || 'ឃុំព្រៃឈរ',
-    village: schoolProfile?.village || '',
+    district: schoolProfile?.district || 'ស្រុកស្ទឹងត្រង់',
+    commune: schoolProfile?.commune || 'ឃុំអូរម្លូ',
+    village: schoolProfile?.village || 'ភូមិប្រទង',
     schoolCode: schoolProfile?.schoolCode || '',
     principalNameKm: schoolProfile?.principalNameKm || '',
     phone: schoolProfile?.phone || '',
     email: schoolProfile?.email || '',
     logoUrl: schoolProfile?.logoUrl || '',
-    academicYear: schoolProfile?.academicYear || activeClass?.academicYear || '២០២៥-២០២៦',
+    academicYear: schoolProfile?.academicYear || activeClass?.academicYear || '២០២៦-២០២៧',
   });
 
   const [classInfo, setClassInfo] = useState({
@@ -372,7 +372,7 @@ export const SettingsModal: React.FC = () => {
                 type="text"
                 value={schoolProfileData.district}
                 onChange={(e) => setSchoolProfileData({ ...schoolProfileData, district: e.target.value })}
-                placeholder="ស្រុកព្រៃឈរ"
+                placeholder="ស្រុកស្ទឹងត្រង់"
                 className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500"
               />
             </div>
@@ -385,7 +385,7 @@ export const SettingsModal: React.FC = () => {
                 type="text"
                 value={schoolProfileData.commune}
                 onChange={(e) => setSchoolProfileData({ ...schoolProfileData, commune: e.target.value })}
-                placeholder="ឃុំព្រៃឈរ"
+                placeholder="ឃុំអូរម្លូ"
                 className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500"
               />
             </div>
@@ -442,7 +442,7 @@ export const SettingsModal: React.FC = () => {
                 type="text"
                 value={schoolProfileData.academicYear}
                 onChange={(e) => setSchoolProfileData({ ...schoolProfileData, academicYear: e.target.value })}
-                placeholder="២០២៥-២០២៦"
+                placeholder="២០២៦-២០២៧"
                 className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
               />
             </div>

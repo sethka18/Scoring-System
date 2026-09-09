@@ -112,8 +112,8 @@ export interface SchoolProfile {
   schoolName: string; // English / Latin, e.g. "Hun Neng Pratong Primary School"
   schoolNameKm: string; // Khmer, e.g. "សាលាបឋមសិក្សាហ៊ុនណេងប្រទង"
   province: string; // e.g. "ខេត្តកំពង់ចាម"
-  district: string; // e.g. "ស្រុកព្រៃឈរ"
-  commune: string; // e.g. "ឃុំព្រៃឈរ"
+  district: string; // e.g. "ស្រុកស្ទឹងត្រង់"
+  commune: string; // e.g. "ឃុំអូរម្លូ"
   village?: string; // e.g. "ភូមិប្រទង"
   schoolCode?: string; // e.g. "030704"
   principalName?: string;
@@ -122,7 +122,7 @@ export interface SchoolProfile {
   email?: string;
   logoUrl?: string; // Custom school logo (Base64 data URL or web link)
   moeysLogoUrl?: string; // Custom Ministry of Education / MoEYS logo (Base64 data URL or web link)
-  academicYear?: string; // e.g. "២០២៥-២០២៦"
+  academicYear?: string; // e.g. "២០២៦-២០២៧"
 }
 
 export interface ClassSection {
@@ -208,11 +208,13 @@ export interface TimetableSlot {
   id: string;
   classId: string;
   dayOfWeek: 1 | 2 | 3 | 4 | 5 | 6; // 1 = Monday (ច័ន្ទ) to 6 = Saturday (សៅរ៍)
-  periodNumber: number; // 1, 2, 3, 4, 5
+  periodNumber: number; // 0 (morning assembly), 1 to 5 (academic), 6 (afternoon assembly)
   shift: 'morning' | 'afternoon';
-  startTime: string; // e.g. "07:00"
-  endTime: string; // e.g. "07:45"
+  startTime: string; // e.g. "07:10"
+  endTime: string; // e.g. "07:50"
   subjectId: string;
+  subTopicKm?: string; // Special lesson tag, e.g. "សរ.អាន", "គស.ក្តី", "អ.ផ្ទាល់"
+  customTitleKm?: string; // Special display name e.g. "បំណិនជីវិតតាមមូលដ្ឋាន / គំនូរ...", "គោរពទង់ជាតិ", "អនាម័យថ្នាក់រៀន"
   teacherName?: string;
   teacherNameKm?: string;
   room?: string;
@@ -231,11 +233,20 @@ export interface CurriculumLesson {
   lessonTitleEn: string;
   objectivesKm?: string;
   objectivesEn?: string;
-  hoursCount: number; // e.g. 2 hours
+  hoursCount: number; // e.g. 1 hour
   semester: 1 | 2;
   status: 'upcoming' | 'in_progress' | 'completed';
   startDate?: string;
   endDate?: string;
+  // Official MoEYS Distribution Fields
+  dateStr?: string; // Calendar date, e.g. "ចន្ទ_10_11_25"
+  monthKm?: string; // Month name, e.g. "វិច្ឆិកា", "ធ្នូ", "មករា", etc.
+  subLessonCode?: string; // Sub-lesson number, e.g. "1.1.1"
+  pageSs?: string | number; // Student textbook page (សស)
+  pageSk?: string | number; // Teacher guide page (សក)
+  pageSc?: string | number; // Teacher guide page alias (សគ/សក)
+  notes?: string; // Special notes, e.g. ថ្ងៃបុណ្យ, តេស្តប្រចាំខែ, វិស្សមកាល
+  isExamOrHoliday?: boolean; // Highlighted banner rows
 }
 
 export interface CurriculumProgram {

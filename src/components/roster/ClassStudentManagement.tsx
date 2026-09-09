@@ -303,7 +303,7 @@ export const ClassStudentManagement: React.FC = () => {
                 </span>
               </div>
               <p className="text-xs font-bold text-slate-400 mt-1">
-                {language === 'km' ? `គ្រូបន្ទុកថ្នាក់៖ ${activeClass?.teacherNameKm}` : `HOMEROOM TEACHER: ${activeClass?.teacherName}`}
+                {language === 'km' ? `គ្រូបន្ទុកថ្នាក់៖ ${activeClass?.teacherNameKm || activeClass?.teacherName}` : `HOMEROOM TEACHER: ${activeClass?.teacherNameKm || activeClass?.teacherName}`}
               </p>
             </div>
           </div>

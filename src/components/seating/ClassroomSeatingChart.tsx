@@ -611,7 +611,7 @@ export const ClassroomSeatingChart: React.FC = () => {
                       {schoolProfile?.schoolNameKm || activeClass?.schoolNameKm || 'សាលាបឋមសិក្សាហ៊ុនណេងប្រទង'}
                     </p>
                     <p className="text-slate-600 text-xs font-medium">
-                      {schoolProfile?.district || activeClass?.district || 'ស្រុកព្រៃឈរ'} • {schoolProfile?.province || activeClass?.province || 'ខេត្តកំពង់ចាម'}
+                      {schoolProfile?.district || activeClass?.district || 'ស្រុកស្ទឹងត្រង់'} • {schoolProfile?.province || activeClass?.province || 'ខេត្តកំពង់ចាម'}
                     </p>
                     <p className="text-slate-700 font-bold text-xs mt-0.5">
                       {language === 'km' ? `ថ្នាក់ទី ${activeClass?.gradeLevel} (${activeClass?.nameKm})` : `Grade ${activeClass?.gradeLevel} (${activeClass?.name})`}
@@ -623,7 +623,7 @@ export const ClassroomSeatingChart: React.FC = () => {
                   <p className="font-bold text-sm tracking-wider uppercase">ព្រះរាជាណាចក្រកម្ពុជា</p>
                   <p className="font-semibold text-xs">ជាតិ សាសនា ព្រះមហាក្សត្រ</p>
                   <p className="font-mono text-xs mt-1 text-slate-600 font-bold">
-                    {language === 'km' ? `ឆ្នាំសិក្សា៖ ${schoolProfile?.academicYear || activeClass?.academicYear || '២០២៥-២០២៦'}` : `Year: ${schoolProfile?.academicYear || activeClass?.academicYear}`}
+                    {language === 'km' ? `ឆ្នាំសិក្សា៖ ${schoolProfile?.academicYear || activeClass?.academicYear || '២០២៦-២០២៧'}` : `Year: ${schoolProfile?.academicYear || activeClass?.academicYear || '2026-2027'}`}
                   </p>
                 </div>
               </div>

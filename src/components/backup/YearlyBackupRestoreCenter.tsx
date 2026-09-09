@@ -67,7 +67,7 @@ export const YearlyBackupRestoreCenter: React.FC = () => {
   });
 
   // Archive creation form
-  const [archiveYear, setArchiveYear] = useState<string>(activeClass?.academicYear || '២០២៥-២០២៦');
+  const [archiveYear, setArchiveYear] = useState<string>(activeClass?.academicYear || '២០២៦-២០២៧');
   const [isCreatingArchive, setIsCreatingArchive] = useState(false);
 
   // Pre-import verification modal
@@ -77,7 +77,7 @@ export const YearlyBackupRestoreCenter: React.FC = () => {
 
   // New academic year rollover modal
   const [showRolloverModal, setShowRolloverModal] = useState(false);
-  const [nextAcademicYear, setNextAcademicYear] = useState<string>('២០២៦-២០២៧');
+  const [nextAcademicYear, setNextAcademicYear] = useState<string>('២០២៧-២០២៨');
   const [promoteGrades, setPromoteGrades] = useState(true);
 
   // Local storage usage measurement
@@ -123,7 +123,7 @@ export const YearlyBackupRestoreCenter: React.FC = () => {
       version: '2.5.0',
       system: 'MoEYS Primary Gradebook & School Management System',
       exportedAt: new Date().toISOString(),
-      academicYear: activeClass?.academicYear || '២០២៥-២០២៦',
+      academicYear: activeClass?.academicYear || '២០២៦-២០២៧',
       schoolName: activeClass?.schoolNameKm || 'សាលាបឋមសិក្សាគំរូ',
       activeClassId: activeClass?.id,
       classes,
@@ -154,7 +154,7 @@ export const YearlyBackupRestoreCenter: React.FC = () => {
     const archiveId = `archive_${Date.now()}`;
     const newArchive: YearlyAcademicArchive = {
       id: archiveId,
-      academicYear: archiveYear.trim() || '២០២៥-២០២៦',
+      academicYear: archiveYear.trim() || '២០២៦-២០២៧',
       archivedAt: new Date().toISOString(),
       schoolName: activeClass?.schoolNameKm || 'សាលាបឋមសិក្សាគំរូ',
       classesCount: classes.length,
@@ -643,7 +643,7 @@ export const YearlyBackupRestoreCenter: React.FC = () => {
                 type="text"
                 value={archiveYear}
                 onChange={(e) => setArchiveYear(e.target.value)}
-                placeholder="២០២៥-២០២៦"
+                placeholder="២០២៦-២០២៧"
                 className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white"
               />
             </div>

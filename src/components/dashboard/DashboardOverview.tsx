@@ -139,25 +139,10 @@ export const DashboardOverview: React.FC = () => {
   const topStudents = yearlySummaries.slice(0, 5);
 
   return (
-    <div className="space-y-6">
-      
-      {/* Teacher Instruction / Deadline Alert Notice */}
-      <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 flex items-start space-x-3 text-amber-950 shadow-2xs">
-        <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-        <div className="flex-1 text-xs sm:text-sm leading-relaxed">
-          <span className="font-black uppercase tracking-wider text-amber-900 mr-1.5">
-            {language === 'km' ? 'សេចក្តីជូនដំណឹងគ្រូបន្ទុក៖' : 'OFFICIAL TEACHER NOTICE:'}
-          </span>
-          <span className="font-semibold text-amber-900/90">
-            {language === 'km' 
-              ? 'សូមលោកគ្រូ-អ្នកគ្រូបញ្ចូលពិន្ទុឱ្យបានមុនថ្ងៃទី២០ ជារៀងរាល់ខែ សម្រាប់តារាងចំ.ថ្នាក់ និងតារាងកិត្តិយស។'
-              : 'Please enter continuous assessment scores before the 20th of each month for monthly ranking and honor rolls.'}
-          </span>
-        </div>
-      </div>
+    <div className="space-y-4 sm:space-y-6">
 
       {/* 4 Summary Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         
         {/* Card 1: Total Students */}
         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs hover:shadow-xs transition">

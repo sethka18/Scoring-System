@@ -4,12 +4,34 @@
 
 @layer base {
   body {
-    font-family: 'Plus Jakarta Sans', 'Kantumruy Pro', system-ui, -apple-system, sans-serif;
+    font-family: 'Kantumruy Pro', 'Siemreap', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    letter-spacing: normal;
   }
 
   h1, h2, h3, h4, .font-heading {
-    font-family: 'Outfit', 'Kantumruy Pro', system-ui, -apple-system, sans-serif;
+    font-family: 'Outfit', 'Kantumruy Pro', 'Siemreap', system-ui, -apple-system, sans-serif;
+    letter-spacing: normal;
   }
+}
+
+/* Khmer Royal & Formal Header Font */
+.font-moul {
+  font-family: 'Moul', cursive, serif !important;
+  letter-spacing: normal !important;
+  line-height: 1.6 !important;
+}
+
+/* Modern Clean Khmer Body Font */
+.font-khmer {
+  font-family: 'Kantumruy Pro', 'Siemreap', system-ui, sans-serif !important;
+  letter-spacing: normal !important;
+}
+
+/* Khmer Bold Display Heading */
+.font-khmer-heading {
+  font-family: 'Kantumruy Pro', 'Siemreap', system-ui, sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: normal !important;
 }
 
 .dark {

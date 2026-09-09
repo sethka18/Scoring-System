@@ -25,7 +25,9 @@ import {
   Search,
   X,
   Sparkles,
-  GraduationCap
+  GraduationCap,
+  Award,
+  HeartHandshake
 } from 'lucide-react';
 
 interface NavItemDef {
@@ -155,6 +157,24 @@ export const Navigation: React.FC = () => {
           descKm: 'បញ្ចូលពិន្ទុប្រចាំខែ និងឆមាស',
           descEn: 'Monthly & semester grade entry',
           icon: TableProperties 
+        },
+        { 
+          id: 'skills_assessment', 
+          labelEn: 'Skills Assessment (App. 3)', 
+          labelKm: 'វាយតម្លៃបំណិន (ឧបសម្ព័ន្ធ៣)', 
+          descKm: 'វាយតម្លៃបំណិន ១៨ សកម្មភាព (ទម្ងន់ ១០%)',
+          descEn: '18 practical skill activities assessment',
+          icon: Award,
+          badge: 'ឧបសម្ព័ន្ធ៣'
+        },
+        { 
+          id: 'attitude_assessment', 
+          labelEn: 'Attitude Assessment (App. 4)', 
+          labelKm: 'វាយតម្លៃចរិយា (ឧបសម្ព័ន្ធ៤)', 
+          descKm: 'វាយតម្លៃចរិយា ៧៤ លក្ខណៈវិនិច្ឆ័យ ៥ ជំពូក (ទម្ងន់ ១០%)',
+          descEn: '74 attitude criteria across 5 categories',
+          icon: HeartHandshake,
+          badge: 'ឧបសម្ព័ន្ធ៤'
         },
         { 
           id: 'exam_bank', 
@@ -369,11 +389,11 @@ export const Navigation: React.FC = () => {
         {/* Tier 2: Selected Category's Sub-Items Strip */}
         <div className="py-2 flex items-center justify-between gap-2">
           
-          {/* Sub Items Wrap Container (fits without scrolling on most screens, wraps gracefully) */}
+          {/* Sub Items Container (horizontal scroll on mobile, wraps cleanly on larger screens) */}
           <div 
             ref={subScrollRef}
             onWheel={handleWheel}
-            className="flex flex-wrap items-center gap-1.5 sm:gap-2 flex-1"
+            className="flex overflow-x-auto md:flex-wrap items-center gap-1.5 sm:gap-2 flex-1 scrollbar-none py-0.5 touch-pan-x"
           >
             {activeCategoryObj.items.map((item) => {
               const Icon = item.icon;

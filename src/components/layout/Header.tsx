@@ -42,24 +42,24 @@ export const Header: React.FC = () => {
   return (
     <header className="no-print bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 shadow-xs transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-18">
+        <div className="flex items-center justify-between h-15 sm:h-18 gap-1.5 sm:gap-4">
           
           {/* Logo & School Name with Configurable School Emblem */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
             <button 
               type="button"
-              className="h-11 w-11 flex items-center justify-center flex-shrink-0 cursor-pointer rounded-2xl hover:scale-105 transition-transform" 
+              className="h-9 w-9 sm:h-11 sm:w-11 flex items-center justify-center flex-shrink-0 cursor-pointer rounded-2xl hover:scale-105 transition-transform" 
               onClick={() => setIsSchoolSettingsOpen(true)} 
               title={language === 'km' ? 'ចុចដើម្បីប្តូរព័ត៌មានសាលារៀន & ឡូហ្គូ' : 'Click to edit school profile & logo'}
             >
-              <SchoolLogo size={44} customLogoUrl={schoolProfile.logoUrl} />
+              <SchoolLogo size={36} customLogoUrl={schoolProfile.logoUrl} />
             </button>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center space-x-1.5 sm:space-x-2">
                 <button
                   type="button"
                   onClick={() => setIsSchoolSettingsOpen(true)}
-                  className="text-left font-heading font-black text-base sm:text-lg text-indigo-950 dark:text-white uppercase tracking-tight leading-tight hover:text-indigo-600 dark:hover:text-indigo-400 transition cursor-pointer"
+                  className="text-left font-heading font-black text-xs sm:text-base md:text-lg text-indigo-950 dark:text-white uppercase tracking-tight leading-tight hover:text-indigo-600 dark:hover:text-indigo-400 transition cursor-pointer max-w-[100px] xs:max-w-[150px] sm:max-w-none truncate"
                   title={language === 'km' ? 'ចុចដើម្បីប្តូរព័ត៌មានសាលារៀន & ឡូហ្គូ' : 'Click to edit school profile'}
                 >
                   {language === 'km' ? (schoolProfile.schoolNameKm || activeClass?.schoolNameKm) : (schoolProfile.schoolName || activeClass?.schoolName)}
@@ -67,24 +67,24 @@ export const Header: React.FC = () => {
               </div>
               <p className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 hidden sm:block mt-0.5">
                 {language === 'km' 
-                  ? `${schoolProfile.district || 'ស្រុកព្រៃឈរ'} • ${schoolProfile.province || 'ខេត្តកំពង់ចាម'} • ឆ្នាំសិក្សា ${schoolProfile.academicYear || activeClass?.academicYear}`
-                  : `${schoolProfile.district || 'District'} • ${schoolProfile.province || 'Province'} • Year ${schoolProfile.academicYear || activeClass?.academicYear}`}
+                  ? `${schoolProfile.district || 'ស្រុកស្ទឹងត្រង់'} • ${schoolProfile.province || 'ខេត្តកំពង់ចាម'} • ឆ្នាំសិក្សា ${schoolProfile.academicYear || activeClass?.academicYear || '២០២៦-២០២៧'}`
+                  : `${schoolProfile.district || 'District'} • ${schoolProfile.province || 'Province'} • Year ${schoolProfile.academicYear || activeClass?.academicYear || '2026-2027'}`}
               </p>
             </div>
           </div>
 
           {/* Center Class Selector */}
-          <div className="relative">
+          <div className="relative shrink-0">
             <button
               onClick={() => setShowClassDropdown(!showClassDropdown)}
-              className="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 text-slate-900 dark:text-slate-100 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition border border-slate-200 dark:border-slate-700 cursor-pointer shadow-2xs"
+              className="flex items-center space-x-1.5 sm:space-x-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 text-slate-900 dark:text-slate-100 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition border border-slate-200 dark:border-slate-700 cursor-pointer shadow-2xs"
             >
-              <BookOpen className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-              <span>{language === 'km' ? activeClass?.nameKm : activeClass?.name}</span>
-              <span className="bg-indigo-600 dark:bg-indigo-500 text-white text-[10px] px-2 py-0.5 rounded-lg font-black tracking-normal">
+              <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+              <span className="truncate max-w-[70px] xs:max-w-[100px] sm:max-w-none">{language === 'km' ? activeClass?.nameKm : activeClass?.name}</span>
+              <span className="hidden xs:inline-block bg-indigo-600 dark:bg-indigo-500 text-white text-[10px] px-1.5 sm:px-2 py-0.5 rounded-lg font-black tracking-normal">
                 {classStudents.length} {language === 'km' ? 'នាក់' : 'STS'}
               </span>
-              <ChevronDown className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+              <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-500 dark:text-slate-400 shrink-0" />
             </button>
 
             {showClassDropdown && (
@@ -132,7 +132,7 @@ export const Header: React.FC = () => {
                           )}
                         </div>
                         <div className="text-[10px] font-extrabold tracking-wider text-slate-400 dark:text-slate-500">
-                          {language === 'km' ? (cls.teacherNameKm || `ថ្នាក់ទី ${cls.gradeLevel}`) : (cls.teacherName || `Grade ${cls.gradeLevel}`)}
+                          {cls.teacherNameKm || cls.teacherName || (language === 'km' ? `ថ្នាក់ទី ${cls.gradeLevel}` : `Grade ${cls.gradeLevel}`)}
                         </div>
                       </button>
 

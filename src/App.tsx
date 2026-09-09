@@ -9,6 +9,8 @@ import { SchoolScheduleView } from './components/schedule/SchoolScheduleView';
 import { CurriculumProgramHub } from './components/curriculum/CurriculumProgramHub';
 import { ClassStudentManagement } from './components/roster/ClassStudentManagement';
 import { AssessmentScoringHub } from './components/scoring/AssessmentScoringHub';
+import { SkillsAssessmentView } from './components/assessment/SkillsAssessmentView';
+import { AttitudeAssessmentView } from './components/assessment/AttitudeAssessmentView';
 import { DailyAttendanceTracker } from './components/attendance/DailyAttendanceTracker';
 import { ClassroomToolsHub } from './components/tools/ClassroomToolsHub';
 import { InteractiveMiniGamesHub } from './components/games/InteractiveMiniGamesHub';
@@ -46,6 +48,8 @@ const MainContent: React.FC = () => {
       {activeTab === 'curriculum' && <CurriculumProgramHub />}
       {activeTab === 'roster' && <ClassStudentManagement />}
       {activeTab === 'scoring' && <AssessmentScoringHub />}
+      {activeTab === 'skills_assessment' && <SkillsAssessmentView />}
+      {activeTab === 'attitude_assessment' && <AttitudeAssessmentView />}
       {activeTab === 'rankings' && <RankingsAndHonorRoll />}
       {activeTab === 'analytics' && <WholeYearAnalytics />}
       {activeTab === 'report_card' && <ReportCardView />}

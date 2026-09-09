@@ -39,6 +39,8 @@ import {
   DEFAULT_REPORT_LAYOUT_CONFIG, 
   MOEYS_LAYOUT_STYLES 
 } from './reportLayoutTypes';
+import { MultiPillarStudentReportModal } from './MultiPillarStudentReportModal';
+import { exportSingleStudentMultiSheetExcel, exportAllStudentsClassWorkbook } from '../../utils/multiSheetExcelExport';
 
 // Khmer numerals mapping
 const KHMER_DIGITS = ['០', '១', '២', '៣', '៤', '៥', '៦', '៧', '៨', '៩'];
@@ -118,6 +120,32 @@ export const ReportCardView: React.FC = () => {
   const [isTelegramModalOpen, setIsTelegramModalOpen] = useState(false);
   const [isPrintOptionsOpen, setIsPrintOptionsOpen] = useState(false);
   const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+  const [isMultiPillarModalOpen, setIsMultiPillarModalOpen] = useState(false);
+
+  const handleExportSingleStudentExcel = () => {
+    if (!currentStudent) return;
+    exportSingleStudentMultiSheetExcel({
+      student: currentStudent,
+      periods,
+      subjects,
+      scoresMatrix,
+      weights,
+      schoolProfile,
+      activeClass,
+    });
+  };
+
+  const handleExportClassExcel = () => {
+    exportAllStudentsClassWorkbook(
+      classStudents,
+      periods,
+      subjects,
+      scoresMatrix,
+      weights,
+      schoolProfile,
+      activeClass
+    );
+  };
 
   // Date management per period and yearly
   const classId = activeClass?.id || 'default';
@@ -322,6 +350,27 @@ export const ReportCardView: React.FC = () => {
     const logoPixelSize = activeLayout.logoSize === 'sm' ? 36 : activeLayout.logoSize === 'lg' ? 56 : 46;
     const effectiveLogoUrl = activeLayout.customLogoUrl || schoolProfile?.logoUrl || activeClass?.logoUrl;
 
+    const periodMonthDisplay = (() => {
+      const p = currentPeriod?.nameKm?.trim() || '';
+      if (!p) return 'ខែ';
+      if (p.startsWith('ខែ') || p.startsWith('ប្រឡង') || p.startsWith('ឆមាស')) {
+        return p;
+      }
+      return `ខែ${p}`;
+    })();
+
+    const monthlyReportHeading = activeLayout.layoutStyle === 'honor_formal'
+      ? (language === 'km' 
+          ? (periodMonthDisplay.startsWith('ប្រឡង') || periodMonthDisplay.startsWith('ឆមាស')
+              ? `សន្លឹកលទ្ធផលសិក្សាកិត្តិយស ${periodMonthDisplay}`
+              : `សន្លឹកលទ្ធផលសិក្សាកិត្តិយសប្រចាំ${periodMonthDisplay}`)
+          : `HONOR ROLL REPORT CARD - ${currentPeriod?.nameEn || periodMonthDisplay}`)
+      : (language === 'km' 
+          ? (periodMonthDisplay.startsWith('ប្រឡង') || periodMonthDisplay.startsWith('ឆមាស')
+              ? `លទ្ធផលសិក្សា ${periodMonthDisplay}`
+              : `លទ្ធផលសិក្សាប្រចាំ${periodMonthDisplay}`)
+          : `STUDENT REPORT CARD - ${currentPeriod?.nameEn || periodMonthDisplay}`);
+
     return (
       <div 
         id={batchPrintMode ? `monthly-card-${stu.id}` : "active-report-card-container"}
@@ -381,7 +430,7 @@ export const ReportCardView: React.FC = () => {
                   {language === 'km' ? (schoolProfile?.schoolNameKm || activeClass?.schoolNameKm) : (schoolProfile?.schoolName || activeClass?.schoolName)}
                 </p>
                 <p className="text-slate-500 font-medium text-[10px]">
-                  {schoolProfile?.district || activeClass?.district || 'ស្រុកព្រៃឈរ'} • {schoolProfile?.province || activeClass?.province || 'ខេត្តកំពង់ចាម'}
+                  {schoolProfile?.district || activeClass?.district || 'ស្រុកស្ទឹងត្រង់'} • {schoolProfile?.province || activeClass?.province || 'ខេត្តកំពង់ចាម'}
                 </p>
                 <p className="text-slate-600 font-bold text-[11px]">
                   {language === 'km' ? `ថ្នាក់ទី ${activeClass?.gradeLevel} (${activeClass?.nameKm})` : `Grade ${activeClass?.gradeLevel} (${activeClass?.name})`}
@@ -410,10 +459,15 @@ export const ReportCardView: React.FC = () => {
               ? 'text-indigo-950'
               : 'text-slate-950'
           }`}>
-            {activeLayout.layoutStyle === 'honor_formal' ? 'សន្លឹកលទ្ធផលសិក្សាកិត្តិយសប្រចាំខែ' : 'លទ្ធផលសិក្សាប្រចាំខែ'}
+            {monthlyReportHeading}
           </h1>
           <div className="flex flex-wrap items-center justify-center gap-x-2 text-xs font-black text-indigo-900 mt-0.5 uppercase tracking-wider">
-            <span>ប្រចាំ៖ {currentPeriod.nameKm} • ឆ្នាំសិក្សា {activeClass?.academicYear}</span>
+            <span>ឆ្នាំសិក្សា {activeClass?.academicYear}</span>
+            {currentPeriod?.lunarDateKm && (
+              <span className="font-semibold text-slate-600 normal-case hidden sm:inline">
+                • {currentPeriod.lunarDateKm}
+              </span>
+            )}
             {effectiveDateDisplay && effectiveDateDisplay !== 'ថ្ងៃទី......... ខែ......... ឆ្នាំ២០២...' && (
               <span className="font-bold text-slate-600 normal-case hidden sm:inline">
                 • កាលបរិច្ឆេទចេញ៖ {effectiveDateDisplay}
@@ -765,7 +819,7 @@ export const ReportCardView: React.FC = () => {
                 )}
               </div>
               <p className="font-black text-slate-900">
-                {language === 'km' ? activeClass?.teacherNameKm : activeClass?.teacherName}
+                {activeClass?.teacherNameKm || activeClass?.teacherName}
               </p>
             </div>
 
@@ -902,7 +956,7 @@ export const ReportCardView: React.FC = () => {
                   {language === 'km' ? (schoolProfile?.schoolNameKm || activeClass?.schoolNameKm) : (schoolProfile?.schoolName || activeClass?.schoolName)}
                 </p>
                 <p className="text-slate-500 font-medium text-[10px]">
-                  {schoolProfile?.district || activeClass?.district || 'ស្រុកព្រៃឈរ'} • {schoolProfile?.province || activeClass?.province || 'ខេត្តកំពង់ចាម'}
+                  {schoolProfile?.district || activeClass?.district || 'ស្រុកស្ទឹងត្រង់'} • {schoolProfile?.province || activeClass?.province || 'ខេត្តកំពង់ចាម'}
                 </p>
                 <p className="text-slate-600 font-bold text-[11px]">{language === 'km' ? `ថ្នាក់ទី ${activeClass?.gradeLevel} (${activeClass?.nameKm})` : `Grade ${activeClass?.gradeLevel} (${activeClass?.name})`}</p>
               </div>
@@ -1228,7 +1282,7 @@ export const ReportCardView: React.FC = () => {
                 )}
               </div>
               <p className="font-bold text-slate-900">
-                {language === 'km' ? activeClass?.teacherNameKm : activeClass?.teacherName}
+                {activeClass?.teacherNameKm || activeClass?.teacherName}
               </p>
             </div>
           </div>
@@ -1490,6 +1544,28 @@ export const ReportCardView: React.FC = () => {
               <span>{language === 'km' ? 'មើលទិដ្ឋភាពបោះពុម្ព' : 'Print Preview'}</span>
             </button>
 
+            {/* Multi-Pillar Student Assessment & Multi-Sheet Excel */}
+            <button
+              onClick={() => setIsMultiPillarModalOpen(true)}
+              className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-xs transition cursor-pointer"
+              title="របាយការណ៍សិស្ស វិជ្ជា (៨០%), បំណិន (១០%), ចរិយា (១០%) និងទាញយក Excel សន្លឹកច្រើន"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5 text-amber-300" />
+              <span>របាយការណ៍ ៣ វិស័យ (វិជ្ជា-បំណិន-ចរិយា)</span>
+              <span className="px-1.5 py-0.5 rounded-md bg-emerald-800 text-[10px] text-amber-300 font-bold">
+                Excel
+              </span>
+            </button>
+
+            <button
+              onClick={handleExportSingleStudentExcel}
+              className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-800 font-bold text-xs transition cursor-pointer"
+              title="ទាញយកសន្លឹកកិច្ចការ Excel សិស្សនេះ (Sheet វិជ្ជា, បំណិន, ចរិយា, សរុប)"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-700" />
+              <span>ទាញយក Excel (.xlsx)</span>
+            </button>
+
             {/* Print Options Settings Button */}
             <button
               onClick={() => setIsPrintOptionsOpen(true)}
@@ -1649,6 +1725,15 @@ export const ReportCardView: React.FC = () => {
             : renderYearlyReportCard(item, opts, layoutConfig)
         }
       />
+
+      {/* Multi-Pillar Student Assessment Modal (Knowledge 80% + Skills 10% + Attitude Appendix 4 10%) */}
+      {currentStudent && (
+        <MultiPillarStudentReportModal
+          isOpen={isMultiPillarModalOpen}
+          onClose={() => setIsMultiPillarModalOpen(false)}
+          initialStudentId={currentStudent.id}
+        />
+      )}
 
     </div>
   );

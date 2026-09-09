@@ -151,7 +151,20 @@ function generateCurriculumFallbackQuestions(topic: string, grade: number, diffi
 async function startServer() {
   const app = express();
 
-  app.use(express.json());
+  // Increase body size limit to 50MB to accommodate multi-class rosters and score databases
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+  // Custom body error handler
+  app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (err && err.type === 'entity.too.large') {
+      return res.status(413).json({ 
+        error: 'Payload Too Large', 
+        message: 'The submitted data exceeds the allowed size limit.' 
+      });
+    }
+    next(err);
+  });
 
   // Health check endpoint
   app.get('/api/health', (req, res) => {

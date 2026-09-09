@@ -65,7 +65,7 @@ export const ClassModal: React.FC<ClassModalProps> = ({
       setGradeLevel(initialClass.gradeLevel || 6);
       setNameKm(initialClass.nameKm || '');
       setName(initialClass.name || '');
-      setAcademicYear(initialClass.academicYear || schoolProfile.academicYear || '២០២៥-២០២៦');
+      setAcademicYear(initialClass.academicYear || schoolProfile.academicYear || '២០២៦-២០២៧');
       setRoomNumber(initialClass.roomNumber || '');
       setTeacherNameKm(initialClass.teacherNameKm || '');
       setTeacherName(initialClass.teacherName || '');
@@ -83,7 +83,7 @@ export const ClassModal: React.FC<ClassModalProps> = ({
       setGradeLevel(defaultGrade);
       setNameKm(`ថ្នាក់ទី${defaultGrade}(${suffixLetterKm})`);
       setName(`Grade ${defaultGrade}${suffixLetterEn}`);
-      setAcademicYear(schoolProfile.academicYear || '២០២៥-២០២៦');
+      setAcademicYear(schoolProfile.academicYear || '២០២៦-២០២៧');
       setRoomNumber('');
       setTeacherNameKm('លោកគ្រូ សុខ សម្ភស្ស');
       setTeacherName('Mr. Sok Samphors');
@@ -130,10 +130,10 @@ export const ClassModal: React.FC<ClassModalProps> = ({
         gradeLevel,
         nameKm: trimmedNameKm,
         name: trimmedName,
-        academicYear: academicYear.trim() || '២០២៥-២០២៦',
+        academicYear: academicYear.trim() || '២០២៦-២០២៧',
         roomNumber: '',
         teacherNameKm: teacherNameKm.trim() || 'លោកគ្រូ/អ្នកគ្រូ',
-        teacherName: teacherName.trim() || 'Teacher',
+        teacherName: teacherNameKm.trim() || teacherName.trim() || 'លោកគ្រូ/អ្នកគ្រូ',
         schoolNameKm: schoolNameKm.trim() || schoolProfile.schoolNameKm,
         schoolName: schoolName.trim() || schoolProfile.schoolName,
       });
@@ -187,10 +187,10 @@ export const ClassModal: React.FC<ClassModalProps> = ({
         gradeLevel,
         nameKm: trimmedNameKm,
         name: trimmedName,
-        academicYear: academicYear.trim() || schoolProfile.academicYear || '២០២៥-២០២៦',
+        academicYear: academicYear.trim() || schoolProfile.academicYear || '២០២៦-២០២៧',
         roomNumber: '',
         teacherNameKm: teacherNameKm.trim() || 'លោកគ្រូ/អ្នកគ្រូ',
-        teacherName: teacherName.trim() || 'Teacher',
+        teacherName: teacherNameKm.trim() || teacherName.trim() || 'លោកគ្រូ/អ្នកគ្រូ',
         schoolNameKm: schoolNameKm.trim() || schoolProfile.schoolNameKm,
         schoolName: schoolName.trim() || schoolProfile.schoolName,
         district: schoolProfile.district,
@@ -323,37 +323,26 @@ export const ClassModal: React.FC<ClassModalProps> = ({
               type="text"
               value={academicYear}
               onChange={(e) => setAcademicYear(e.target.value)}
-              placeholder="២០២៥-២០២៦"
+              placeholder="២០២៦-២០២៧"
               className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm"
             />
           </div>
 
-          {/* Teacher Names (Khmer & English) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">
-                {language === 'km' ? 'គ្រូបន្ទុកថ្នាក់ (ភាសាខ្មែរ)' : 'Homeroom Teacher (Khmer)'}
-              </label>
-              <input
-                type="text"
-                value={teacherNameKm}
-                onChange={(e) => setTeacherNameKm(e.target.value)}
-                placeholder="លោកគ្រូ សុខ សម្ភស្ស"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">
-                {language === 'km' ? 'គ្រូបន្ទុកថ្នាក់ (អក្សរឡាតាំង)' : 'Homeroom Teacher (Latin)'}
-              </label>
-              <input
-                type="text"
-                value={teacherName}
-                onChange={(e) => setTeacherName(e.target.value)}
-                placeholder="Mr. Sok Samphors"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm"
-              />
-            </div>
+          {/* Teacher Name (Khmer) */}
+          <div>
+            <label className="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1">
+              {language === 'km' ? 'ឈ្មោះគ្រូបន្ទុកថ្នាក់' : 'Homeroom Teacher Name'}
+            </label>
+            <input
+              type="text"
+              value={teacherNameKm}
+              onChange={(e) => {
+                setTeacherNameKm(e.target.value);
+                setTeacherName(e.target.value);
+              }}
+              placeholder="លោកគ្រូ សុខ សម្ភស្ស"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm"
+            />
           </div>
 
           {/* School Name */}

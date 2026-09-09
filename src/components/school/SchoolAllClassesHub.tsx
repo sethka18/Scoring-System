@@ -225,7 +225,7 @@ export const SchoolAllClassesHub: React.FC = () => {
         nameKm: formClassNameKm,
         gradeLevel: formGradeLevel,
         roomNumber: '',
-        teacherName: formTeacherName,
+        teacherName: formTeacherNameKm || formTeacherName,
         teacherNameKm: formTeacherNameKm,
       });
       showToast(
@@ -276,14 +276,14 @@ export const SchoolAllClassesHub: React.FC = () => {
         name: formClassName,
         nameKm: formClassNameKm,
         gradeLevel: formGradeLevel,
-        academicYear: schoolProfile?.academicYear || activeClass?.academicYear || '២០២៥-២០២៦',
+        academicYear: schoolProfile?.academicYear || activeClass?.academicYear || '២០២៦-២០២៧',
         roomNumber: '',
-        teacherName: formTeacherName,
+        teacherName: formTeacherNameKm || formTeacherName,
         teacherNameKm: formTeacherNameKm,
         schoolName: schoolProfile?.schoolName || 'Hun Neng Pratong Primary School',
         schoolNameKm: schoolProfile?.schoolNameKm || 'សាលាបឋមសិក្សាហ៊ុនណេងប្រទង',
-        district: schoolProfile?.district || 'ស្រុកព្រៃឈរ',
-        commune: schoolProfile?.commune || 'ឃុំព្រៃឈរ',
+        district: schoolProfile?.district || 'ស្រុកស្ទឹងត្រង់',
+        commune: schoolProfile?.commune || 'ឃុំអូរម្លូ',
         province: schoolProfile?.province || 'ខេត្តកំពង់ចាម',
         logoUrl: schoolProfile?.logoUrl || '',
         studentIds: newStudentIds,
@@ -316,61 +316,59 @@ export const SchoolAllClassesHub: React.FC = () => {
           <School className="w-80 h-80 text-white" />
         </div>
 
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="flex items-center space-x-4">
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex items-center space-x-3 sm:space-x-4">
             <button
               type="button"
               onClick={() => setIsSchoolProfileModalOpen(true)}
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 p-1.5 shadow-lg shrink-0 flex items-center justify-center border border-white/20 hover:scale-105 transition cursor-pointer"
+              className="w-14 h-14 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-2xl bg-white/10 p-1.5 shadow-lg shrink-0 flex items-center justify-center border border-white/20 hover:scale-105 transition cursor-pointer"
               title={language === 'km' ? 'ចុចដើម្បីប្តូរព័ត៌មានសាលារៀន & ឡូហ្គូ' : 'Click to edit school profile & logo'}
             >
-              <SchoolLogo size={56} customLogoUrl={schoolProfile?.logoUrl} />
+              <SchoolLogo size={52} customLogoUrl={schoolProfile?.logoUrl} />
             </button>
-            <div>
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-800/60 border border-indigo-400/30 text-amber-300 text-xs font-black tracking-wider uppercase mb-1.5">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>{language === 'km' ? 'ក្រសួងអប់រំ យុវជន និងកីឡា • ប្រព័ន្ធគ្រប់គ្រងសាលារៀន' : 'MoEYS Cambodia • School Management System'}</span>
-              </div>
-              <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            <div className="min-w-0 flex-1">
+              <h1 className="font-heading text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight truncate sm:whitespace-normal">
                 {schoolProfile?.schoolNameKm || activeClass?.schoolNameKm || 'សាលាបឋមសិក្សាហ៊ុនណេងប្រទង'}
               </h1>
-              <p className="text-sm text-slate-300 font-medium">
-                {schoolProfile?.district || 'ស្រុកព្រៃឈរ'} • {schoolProfile?.commune || 'ឃុំព្រៃឈរ'} • {schoolProfile?.province || 'ខេត្តកំពង់ចាម'} • {language === 'km' ? 'ឆ្នាំសិក្សា៖' : 'Academic Year:'} {schoolProfile?.academicYear || activeClass?.academicYear || '២០២៥-២០២៦'}
+              <p className="text-xs sm:text-sm text-slate-300 font-medium truncate sm:whitespace-normal mt-0.5">
+                {schoolProfile?.district || 'ស្រុកស្ទឹងត្រង់'} • {schoolProfile?.commune || 'ឃុំអូរម្លូ'} • {schoolProfile?.province || 'ខេត្តកំពង់ចាម'} • {language === 'km' ? 'ឆ្នាំសិក្សា៖' : 'Academic Year:'} {schoolProfile?.academicYear || activeClass?.academicYear || '២០២៦-២០២៧'}
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full md:w-auto">
             <button
               onClick={() => setIsSchoolProfileModalOpen(true)}
-              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-black text-xs border border-white/20 shadow-md transition cursor-pointer"
+              className="inline-flex items-center justify-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-black text-xs border border-white/20 shadow-md transition cursor-pointer text-center"
             >
-              <School className="w-4 h-4 text-amber-300" />
-              <span>{language === 'km' ? 'កំណត់ព័ត៌មានសាលា & ឡូហ្គូ' : 'School Profile & Logo'}</span>
+              <School className="w-4 h-4 text-amber-300 shrink-0" />
+              <span className="truncate">{language === 'km' ? 'ព័ត៌មានសាលា' : 'Profile'}</span>
             </button>
             <button
               onClick={handleOpenAddModal}
-              className="inline-flex items-center space-x-2 px-4.5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-black text-xs shadow-lg shadow-amber-950/20 transition cursor-pointer"
+              className="inline-flex items-center justify-center space-x-1.5 sm:space-x-2 px-3 sm:px-4.5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-black text-xs shadow-lg shadow-amber-950/20 transition cursor-pointer text-center"
             >
-              <Plus className="w-4 h-4" />
-              <span>{language === 'km' ? '+ បង្កើតថ្នាក់ថ្មី' : '+ Add New Class'}</span>
+              <Plus className="w-4 h-4 shrink-0" />
+              <span className="truncate">{language === 'km' ? '+ បង្កើតថ្នាក់' : '+ Add Class'}</span>
             </button>
             <button
               onClick={() => {
                 setActiveTab('rankings');
               }}
-              className="inline-flex items-center space-x-2 px-4.5 py-2.5 rounded-xl bg-indigo-800/80 hover:bg-indigo-700 text-white font-black text-xs border border-indigo-400/30 shadow-md transition cursor-pointer"
+              className="inline-flex items-center justify-center space-x-1.5 sm:space-x-2 px-3 sm:px-4.5 py-2.5 rounded-xl bg-indigo-800/80 hover:bg-indigo-700 text-white font-black text-xs border border-indigo-400/30 shadow-md transition cursor-pointer text-center"
             >
-              <Crown className="w-4 h-4 text-amber-400" />
-              <span>{language === 'km' ? 'តារាងកិត្តិយស Top 5' : 'Honor Hall Top 5'}</span>
+              <Crown className="w-4 h-4 text-amber-400 shrink-0" />
+              <span className="truncate">{language === 'km' ? 'តារាង Top 5' : 'Honor Top 5'}</span>
             </button>
-            <PrintToPdfButton
-              pageSize="a4"
-              variant="outline"
-              size="md"
-              labelKm="បោះពុម្ព A4 / PDF"
-              labelEn="Print A4 / PDF"
-            />
+            <div className="flex justify-center">
+              <PrintToPdfButton
+                pageSize="a4"
+                variant="outline"
+                size="md"
+                labelKm="បោះពុម្ព A4"
+                labelEn="Print A4"
+              />
+            </div>
           </div>
         </div>
 
@@ -433,14 +431,14 @@ export const SchoolAllClassesHub: React.FC = () => {
       </div>
 
       {/* 2. Navigation Mode Tabs & Grade Filters */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3.5">
+      <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
         
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           {/* Main Tabs */}
-          <div className="flex rounded-xl bg-slate-100 p-1 font-black text-xs">
+          <div className="flex overflow-x-auto scrollbar-none rounded-xl bg-slate-100 p-1 font-black text-xs shrink-0 max-w-full">
             <button
               onClick={() => setViewMode('classes')}
-              className={`px-4 py-2 rounded-lg transition flex items-center space-x-1.5 cursor-pointer ${
+              className={`px-3 sm:px-4 py-2 rounded-lg transition flex items-center space-x-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 viewMode === 'classes' ? 'bg-white text-indigo-950 shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -449,21 +447,21 @@ export const SchoolAllClassesHub: React.FC = () => {
             </button>
             <button
               onClick={() => setViewMode('school_top5')}
-              className={`px-4 py-2 rounded-lg transition flex items-center space-x-1.5 cursor-pointer ${
+              className={`px-3 sm:px-4 py-2 rounded-lg transition flex items-center space-x-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 viewMode === 'school_top5' ? 'bg-white text-indigo-950 shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Crown className="w-3.5 h-3.5 text-amber-500" />
-              <span>{language === 'km' ? 'សិស្សឆ្នើម Top 5 ទូទាំងសាលា' : 'School Top 5 Showcase'}</span>
+              <span>{language === 'km' ? 'សិស្សឆ្នើម Top 5' : 'Top 5'}</span>
             </button>
             <button
               onClick={() => setViewMode('analytics')}
-              className={`px-4 py-2 rounded-lg transition flex items-center space-x-1.5 cursor-pointer ${
+              className={`px-3 sm:px-4 py-2 rounded-lg transition flex items-center space-x-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 viewMode === 'analytics' ? 'bg-white text-indigo-950 shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <BarChart3 className="w-3.5 h-3.5 text-emerald-600" />
-              <span>{language === 'km' ? 'ស្ថិតិប្រៀបធៀបតាមកម្រិត' : 'Grade Analytics'}</span>
+              <span>{language === 'km' ? 'ស្ថិតិតាមកម្រិត' : 'Analytics'}</span>
             </button>
           </div>
 
@@ -585,8 +583,8 @@ export const SchoolAllClassesHub: React.FC = () => {
                         <div className="text-xs font-black text-slate-900 truncate">
                           {classSection.teacherNameKm}
                         </div>
-                        <div className="text-[11px] text-slate-500 truncate">
-                          {classSection.teacherName} • {language === 'km' ? 'គ្រូបន្ទុកថ្នាក់' : 'Homeroom Teacher'}
+                        <div className="text-[11px] text-slate-500 truncate font-medium">
+                          {language === 'km' ? 'គ្រូបន្ទុកថ្នាក់' : 'Homeroom Teacher'}
                         </div>
                       </div>
                       <div className="text-right text-xs">
@@ -1045,34 +1043,22 @@ export const SchoolAllClassesHub: React.FC = () => {
                 </div>
               </div>
 
-              {/* Teacher Names */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    {language === 'km' ? 'ឈ្មោះគ្រូបន្ទុក (ភាសាខ្មែរ)' : 'Homeroom Teacher (Khmer)'}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formTeacherNameKm}
-                    onChange={(e) => setFormTeacherNameKm(e.target.value)}
-                    placeholder="លោកគ្រូ សុខ សម្ភស្ស"
-                    className="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    {language === 'km' ? 'ឈ្មោះគ្រូបន្ទុក (អក្សរឡាតាំង)' : 'Homeroom Teacher (Latin)'}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formTeacherName}
-                    onChange={(e) => setFormTeacherName(e.target.value)}
-                    placeholder="Mr. Sok Samphors"
-                    className="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
+              {/* Teacher Name */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  {language === 'km' ? 'ឈ្មោះគ្រូបន្ទុកថ្នាក់' : 'Homeroom Teacher Name'}
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formTeacherNameKm}
+                  onChange={(e) => {
+                    setFormTeacherNameKm(e.target.value);
+                    setFormTeacherName(e.target.value);
+                  }}
+                  placeholder="លោកគ្រូ សុខ សម្ភស្ស"
+                  className="w-full px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500"
+                />
               </div>
 
 

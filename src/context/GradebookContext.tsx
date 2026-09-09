@@ -59,6 +59,8 @@ export type NavTab =
   | 'homework'
   | 'roster' 
   | 'scoring' 
+  | 'skills_assessment'
+  | 'attitude_assessment'
   | 'exam_bank'
   | 'fluency_exam'
   | 'rankings' 
@@ -122,6 +124,7 @@ interface GradebookContextType {
   updateCurriculumLesson: (programId: string, lessonId: string, updated: Partial<CurriculumLesson>) => void;
   importCurriculumProgram: (program: CurriculumProgram) => void;
   syncCurriculumToCalendar: (programId: string) => void;
+  resetCurriculumToMoEYS: () => void;
 
   // Attendance State & Actions
   attendanceRecords: DailyAttendanceRecord[];
@@ -259,7 +262,18 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [schoolProfile, setSchoolProfileState] = useState<SchoolProfile>(() => {
     const saved = localStorage.getItem(`${LS_PREFIX}school_profile`);
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { console.error(e); }
+      try { 
+        const parsed = JSON.parse(saved);
+        return {
+          ...DEFAULT_SCHOOL_PROFILE,
+          ...parsed,
+          academicYear: (parsed.academicYear === '២០២៥-២០២៦' || !parsed.academicYear) ? '២០២៦-២០២៧' : parsed.academicYear,
+          village: (parsed.village === 'ភូមិព្រៃឈរ' || !parsed.village) ? 'ភូមិប្រទង' : parsed.village,
+          commune: (parsed.commune === 'ឃុំព្រៃឈរ' || !parsed.commune) ? 'ឃុំអូរម្លូ' : parsed.commune,
+          district: (parsed.district === 'ស្រុកព្រៃឈរ' || !parsed.district) ? 'ស្រុកស្ទឹងត្រង់' : parsed.district,
+          province: parsed.province || 'ខេត្តកំពង់ចាម',
+        };
+      } catch (e) { console.error(e); }
     }
     return DEFAULT_SCHOOL_PROFILE;
   });
@@ -269,7 +283,16 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (saved) {
       try { 
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((cls: ClassSection) => ({
+            ...cls,
+            academicYear: (cls.academicYear === '២០២៥-២០២៦' || !cls.academicYear) ? '២០២៦-២០២៧' : cls.academicYear,
+            commune: (cls.commune === 'ឃុំព្រៃឈរ' || !cls.commune) ? 'ឃុំអូរម្លូ' : cls.commune,
+            district: (cls.district === 'ស្រុកព្រៃឈរ' || !cls.district) ? 'ស្រុកស្ទឹងត្រង់' : cls.district,
+            province: cls.province || 'ខេត្តកំពង់ចាម',
+            teacherName: cls.teacherNameKm || cls.teacherName || 'លោកគ្រូ ផាន សិតការណ៍',
+          }));
+        }
       } catch (e) { console.error(e); }
     }
     return INITIAL_CLASSES;
@@ -305,23 +328,55 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [subjects, setSubjects] = useState<Subject[]>(() => {
     const saved = localStorage.getItem(`${LS_PREFIX}subjects`);
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { console.error(e); }
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const validIds = new Set(DEFAULT_SUBJECTS.map(s => s.id));
+          const filtered = parsed.filter((s: Subject) => validIds.has(s.id));
+          if (filtered.length > 0) {
+            // Ensure all DEFAULT_SUBJECTS exist
+            const existingIds = new Set(filtered.map(s => s.id));
+            const missing = DEFAULT_SUBJECTS.filter(s => !existingIds.has(s.id));
+            const result = [...filtered, ...missing];
+            localStorage.setItem(`${LS_PREFIX}subjects`, JSON.stringify(result));
+            return result;
+          }
+        }
+      } catch (e) { console.error(e); }
     }
+    localStorage.setItem(`${LS_PREFIX}subjects`, JSON.stringify(DEFAULT_SUBJECTS));
     return DEFAULT_SUBJECTS;
   });
 
   const [periods, setPeriods] = useState<AssessmentPeriod[]>(() => {
     const saved = localStorage.getItem(`${LS_PREFIX}periods`);
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { console.error(e); }
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          const hasMarch = parsed.some((p: any) => 
+            p.id === 'month_mar' || p.id === 'p_mar' || p.nameKm?.includes('មីនា') || p.nameEn?.includes('March')
+          );
+          const hasMonthNumber = parsed.some((p: any) => p.nameKm?.includes('ខែទី'));
+          if (!hasMarch && !hasMonthNumber && parsed.length === 8) {
+            return parsed;
+          }
+        }
+      } catch (e) { console.error(e); }
     }
+    try {
+      localStorage.setItem(`${LS_PREFIX}periods`, JSON.stringify(DEFAULT_PERIODS));
+    } catch (e) {}
     return DEFAULT_PERIODS;
   });
 
   const [activePeriodId, setActivePeriodId] = useState<string>(() => {
     const saved = localStorage.getItem(`${LS_PREFIX}active_period`);
-    if (saved) return saved;
-    return 'p_feb';
+    if (saved && saved !== 'p_feb' && saved !== 'month_mar' && saved !== 'p_mar') {
+      const validPeriodIds = DEFAULT_PERIODS.map(p => p.id);
+      if (validPeriodIds.includes(saved)) return saved;
+    }
+    return 'month_dec';
   });
 
   const [scoresMatrix, setScoresMatrix] = useState<Record<string, Record<string, Record<string, any>>>>(() => {
@@ -376,7 +431,18 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>(() => {
     const saved = localStorage.getItem(`${LS_PREFIX}calendar_events`);
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { console.error(e); }
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          const cleaned = parsed
+            .filter((evt: CalendarEvent) => evt.id !== 'evt_eval_mar' && !evt.titleKm?.includes('ខែមីនា'))
+            .map((evt: CalendarEvent) => ({
+              ...evt,
+              titleKm: evt.titleKm ? evt.titleKm.replace(/\s*\(ខែទី[០-៩\d]+\)/g, '') : evt.titleKm,
+            }));
+          return cleaned;
+        }
+      } catch (e) { console.error(e); }
     }
     return DEFAULT_CALENDAR_EVENTS;
   });
@@ -385,8 +451,16 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [timetableSlots, setTimetableSlotsState] = useState<TimetableSlot[]>(() => {
     const saved = localStorage.getItem(`${LS_PREFIX}timetable_slots`);
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { console.error(e); }
+      try {
+        const parsed: TimetableSlot[] = JSON.parse(saved);
+        const hasMoEYSFormat = Array.isArray(parsed) && parsed.some(s => s.startTime === '07:10' || s.startTime === '06:55');
+        const hasThursdayRule = parsed.some(s => s.subjectId === 'sub_lifeskills') && parsed.some(s => s.subjectId === 'sub_meeting');
+        if (hasMoEYSFormat && hasThursdayRule && parsed.length >= 20) {
+          return parsed;
+        }
+      } catch (e) { console.error(e); }
     }
+    localStorage.setItem(`${LS_PREFIX}timetable_slots`, JSON.stringify(INITIAL_TIMETABLE_SLOTS));
     return INITIAL_TIMETABLE_SLOTS;
   });
 
@@ -394,7 +468,33 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [curriculumPrograms, setCurriculumPrograms] = useState<CurriculumProgram[]>(() => {
     const saved = localStorage.getItem(`${LS_PREFIX}curriculum_programs`);
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { console.error(e); }
+      try {
+        const parsed: CurriculumProgram[] = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const programMap = new Map<string, CurriculumProgram>();
+          // Seed with latest authoritative MoEYS programs
+          DEFAULT_CURRICULUM_PROGRAMS.forEach(p => {
+            const existing = parsed.find(item => item.id === p.id || (item.gradeLevel === p.gradeLevel && item.subjectId === p.subjectId));
+            if (existing && existing.lessons) {
+              const statusMap = new Map(existing.lessons.map(l => [l.id, l.status]));
+              const updatedLessons = p.lessons.map(l => ({
+                ...l,
+                status: statusMap.get(l.id) || l.status
+              }));
+              programMap.set(p.id, { ...p, lessons: updatedLessons });
+            } else {
+              programMap.set(p.id, p);
+            }
+          });
+          // Also keep any user-custom imported programs
+          parsed.forEach(p => {
+            if (!programMap.has(p.id)) {
+              programMap.set(p.id, p);
+            }
+          });
+          return Array.from(programMap.values());
+        }
+      } catch (e) { console.error(e); }
     }
     return DEFAULT_CURRICULUM_PROGRAMS;
   });
@@ -1015,11 +1115,14 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const cls = classes.find(c => c.id === classId);
     const teacher = cls?.teacherNameKm || 'ស៊ុន ណារិទ្ធ';
     const room = '';
-    const newSlots = generateDefaultTimetable(classId, teacher, room);
+    const gradeLevel = cls?.gradeLevel || 6;
+    const newSlots = generateDefaultTimetable(classId, gradeLevel, teacher, room);
 
     setTimetableSlotsState(prev => {
       const otherClassSlots = prev.filter(s => s.classId !== classId);
-      return [...otherClassSlots, ...newSlots];
+      const combined = [...otherClassSlots, ...newSlots];
+      localStorage.setItem(`${LS_PREFIX}timetable_slots`, JSON.stringify(combined));
+      return combined;
     });
     showToast(language === 'km' ? 'បានកំណត់កាលវិភាគថ្នាក់នេះតាមស្តង់ដារក្រសួង' : 'Class timetable reset to MoEYS standard');
   };
@@ -1089,6 +1192,16 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         'warning'
       );
     }
+  };
+
+  const resetCurriculumToMoEYS = () => {
+    setCurriculumPrograms(DEFAULT_CURRICULUM_PROGRAMS);
+    localStorage.setItem(`${LS_PREFIX}curriculum_programs`, JSON.stringify(DEFAULT_CURRICULUM_PROGRAMS));
+    showToast(
+      language === 'km' 
+        ? 'បានផ្ទុកកម្មវិធីសិក្សាផ្លូវការក្រសួងអប់រំ (MoEYS) ឡើងវិញដោយជោគជ័យ!' 
+        : 'Official MoEYS curriculum programs refreshed successfully!'
+    );
   };
 
   // Attendance Handler Methods
@@ -1476,6 +1589,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         updateCurriculumLesson,
         importCurriculumProgram,
         syncCurriculumToCalendar,
+        resetCurriculumToMoEYS,
         attendanceRecords,
         markAttendance,
         batchMarkAttendance,

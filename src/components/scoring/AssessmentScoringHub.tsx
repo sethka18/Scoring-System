@@ -279,6 +279,26 @@ export const AssessmentScoringHub: React.FC = () => {
               showToast={showToast}
             />
 
+            {/* Skills Assessment (Appendix 3) */}
+            <button
+              onClick={() => setActiveTab('skills_assessment')}
+              className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/50 text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-800 text-xs font-bold transition cursor-pointer shadow-2xs"
+              title={language === 'km' ? 'វាយតម្លៃបំណិន ១៨ សកម្មភាព (ឧបសម្ព័ន្ធ៣)' : 'Skills Assessment (Appendix 3)'}
+            >
+              <Award className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+              <span>{language === 'km' ? 'វាយតម្លៃបំណិន (ឧបសម្ព័ន្ធ៣)' : 'Skills (App. 3)'}</span>
+            </button>
+
+            {/* Attitude Assessment (Appendix 4) */}
+            <button
+              onClick={() => setActiveTab('attitude_assessment')}
+              className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-900 dark:text-rose-200 border border-rose-200 dark:border-rose-800 text-xs font-bold transition cursor-pointer shadow-2xs"
+              title={language === 'km' ? 'វាយតម្លៃចរិយា ៧៤ លក្ខណៈវិនិច្ឆ័យ (ឧបសម្ព័ន្ធ៤)' : 'Attitude Assessment (Appendix 4)'}
+            >
+              <HeartHandshake className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+              <span>{language === 'km' ? 'វាយតម្លៃចរិយា (ឧបសម្ព័ន្ធ៤)' : 'Attitude (App. 4)'}</span>
+            </button>
+
             {/* Assessment Template Library Button */}
             <button
               onClick={() => {

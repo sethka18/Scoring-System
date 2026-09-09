@@ -227,8 +227,8 @@ export const WholeYearAnalytics: React.FC = () => {
           </h1>
           <p className="font-semibold text-indigo-800 text-sm mt-1">
             {language === 'km' 
-              ? `ឆ្នាំសិក្សា ${activeClass?.academicYear} • គ្រូបន្ទុកថ្នាក់៖ ${activeClass?.teacherNameKm}` 
-              : `Academic Year ${activeClass?.academicYear} • Teacher: ${activeClass?.teacherName}`}
+              ? `ឆ្នាំសិក្សា ${activeClass?.academicYear} • គ្រូបន្ទុកថ្នាក់៖ ${activeClass?.teacherNameKm || activeClass?.teacherName}` 
+              : `Academic Year ${activeClass?.academicYear} • Teacher: ${activeClass?.teacherNameKm || activeClass?.teacherName}`}
           </p>
         </div>
 
@@ -374,7 +374,7 @@ export const WholeYearAnalytics: React.FC = () => {
             </p>
             <div className="h-16"></div>
             <p className="font-bold text-slate-900">
-              {language === 'km' ? activeClass?.teacherNameKm : activeClass?.teacherName}
+              {activeClass?.teacherNameKm || activeClass?.teacherName}
             </p>
           </div>
         </div>

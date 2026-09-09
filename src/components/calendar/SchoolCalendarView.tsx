@@ -39,8 +39,8 @@ export const SchoolCalendarView: React.FC = () => {
     toggleEventCompleted 
   } = useGradebook();
 
-  // Current view date (defaults to current academic month, e.g., Feb 2026 or today)
-  const [currentDate, setCurrentDate] = useState<Date>(new Date(2026, 1, 1)); // Feb 2026 default
+  // Current view date (defaults to current academic month, e.g., Nov 2026 opening)
+  const [currentDate, setCurrentDate] = useState<Date>(new Date(2026, 10, 1)); // Nov 2026 default
   const [viewMode, setViewMode] = useState<'month' | 'agenda'>('month');
   const [selectedTypeFilter, setSelectedTypeFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -53,7 +53,7 @@ export const SchoolCalendarView: React.FC = () => {
   // Form State
   const [eventTitleKm, setEventTitleKm] = useState('');
   const [eventTitleEn, setEventTitleEn] = useState('');
-  const [eventDate, setEventDate] = useState('2026-02-15');
+  const [eventDate, setEventDate] = useState('2026-11-01');
   const [eventEndDate, setEventEndDate] = useState('');
   const [eventTime, setEventTime] = useState('');
   const [eventType, setEventType] = useState<CalendarEventType>('academic');
@@ -73,7 +73,7 @@ export const SchoolCalendarView: React.FC = () => {
   };
 
   const goToToday = () => {
-    setCurrentDate(new Date(2026, 1, 1));
+    setCurrentDate(new Date(2026, 10, 1));
   };
 
   // Month Calendar Calculations

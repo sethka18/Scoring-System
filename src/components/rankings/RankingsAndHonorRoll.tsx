@@ -35,6 +35,7 @@ import { StudentPhotoModal } from '../common/StudentPhotoModal';
 import { TelegramShareModal } from '../common/TelegramShareModal';
 import { SchoolLogo } from '../common/SchoolLogo';
 import { PrintToPdfButton } from '../common/PrintToPdfButton';
+import { OfficialHonorRollPoster } from './OfficialHonorRollPoster';
 import { Student, Subject } from '../../types';
 
 export type HonorHallTheme = 'royal_gold' | 'sapphire_blue' | 'imperial_emerald' | 'crimson_laurel' | 'modern_minimal';
@@ -394,7 +395,7 @@ export const RankingsAndHonorRoll: React.FC = () => {
   } = useGradebook();
 
   const [selectedPeriodId, setSelectedPeriodId] = useState<string>('p_feb');
-  const [viewMode, setViewMode] = useState<'honor_roll' | 'full_ranking'>('honor_roll');
+  const [viewMode, setViewMode] = useState<'honor_poster' | 'honor_cards' | 'full_ranking'>('honor_poster');
   const [sortBy, setSortBy] = useState<SortOption>('total_score');
   const [selectedTheme, setSelectedTheme] = useState<HonorHallTheme>(() => {
     const saved = localStorage.getItem('ls_honor_hall_theme');
@@ -555,8 +556,8 @@ export const RankingsAndHonorRoll: React.FC = () => {
 
             {/* A4 Clean Print to PDF Button */}
             <PrintToPdfButton
-              targetElementId="official-rankings-print-container"
-              documentTitle={`MoEYS_${activeClass?.nameKm || 'Class'}_${viewMode === 'honor_roll' ? 'Top5_Honor_Roll' : 'Full_Rank_Table'}_${currentPeriod.code}`}
+              targetElementId={viewMode === 'honor_poster' ? 'official-honor-poster-a4' : 'official-rankings-print-container'}
+              documentTitle={`MoEYS_${activeClass?.nameKm || 'Class'}_${viewMode === 'honor_poster' ? 'Honor_Roll_Poster' : viewMode === 'honor_cards' ? 'Top5_Honor_Roll' : 'Full_Rank_Table'}_${currentPeriod.code}`}
               pageSize="a4"
               orientation="portrait"
               variant="primary"
@@ -590,22 +591,33 @@ export const RankingsAndHonorRoll: React.FC = () => {
           {/* Left: View Mode & Auto-Sort Options */}
           <div className="flex flex-wrap items-center gap-2">
             {/* View Mode Toggle */}
-            <div className="inline-flex items-center space-x-1 bg-slate-100 p-1 rounded-lg">
+            <div className="inline-flex items-center space-x-1 bg-slate-100 p-1 rounded-xl">
               <button
-                onClick={() => setViewMode('honor_roll')}
-                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition cursor-pointer ${
-                  viewMode === 'honor_roll' ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600'
+                onClick={() => setViewMode('honor_poster')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition cursor-pointer flex items-center gap-1 ${
+                  viewMode === 'honor_poster' ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                🏆 {language === 'km' ? 'តារាងកិត្តិយស Top 5' : 'Top 5 Honor Roll'}
+                <span>🏆</span>
+                <span>{language === 'km' ? 'គំរូតារាងកិត្តិយស (ក្រសួង A4)' : 'Official Honor Poster'}</span>
+              </button>
+              <button
+                onClick={() => setViewMode('honor_cards')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition cursor-pointer flex items-center gap-1 ${
+                  viewMode === 'honor_cards' ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <span>🥇</span>
+                <span>{language === 'km' ? 'កាតកិត្តិយស Top 5' : 'Honor Cards'}</span>
               </button>
               <button
                 onClick={() => setViewMode('full_ranking')}
-                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition cursor-pointer ${
-                  viewMode === 'full_ranking' ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600'
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition cursor-pointer flex items-center gap-1 ${
+                  viewMode === 'full_ranking' ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                📋 {language === 'km' ? 'តារាងចំណាត់ថ្នាក់ពេញលេញ' : 'Full Rank Table'}
+                <span>📋</span>
+                <span>{language === 'km' ? 'តារាងចំណាត់ថ្នាក់ពេញលេញ' : 'Full Rank Table'}</span>
               </button>
             </div>
 
@@ -667,72 +679,82 @@ export const RankingsAndHonorRoll: React.FC = () => {
 
       </div>
 
-      {/* OFFICIAL PRINTABLE CERTIFICATE & HONOR ROLL / RANK SHEET */}
-      <div 
-        id="official-rankings-print-container"
-        className={`rounded-2xl border ${activeThemeConfig.boardBorder} ${activeThemeConfig.boardBg} p-6 sm:p-8 shadow-xs print:p-0 print:border-none print:shadow-none printable-area text-slate-900 transition-all duration-300`}
-      >
-        
-        {/* Official Header with MoEYS Logo matching Cambodian Primary School Standard */}
-        <div className="text-center pb-6 border-b-2 border-slate-900/80 mb-6">
-          <div className="flex justify-between items-start text-left text-xs font-semibold text-slate-700 mb-2">
-            <div className="flex items-center space-x-3">
-              <SchoolLogo size={52} customLogoUrl={schoolProfile?.logoUrl} />
-              <div>
-                <p className="font-extrabold text-slate-900 text-xs uppercase tracking-tight">
-                  ក្រសួងអប់រំ យុវជន និងកីឡា
-                </p>
-                <p className={`font-black ${activeThemeConfig.headerAccent} text-sm uppercase`}>
-                  {language === 'km' ? activeClass?.schoolNameKm : activeClass?.schoolName}
-                </p>
-                <p className="text-slate-600 font-bold text-[11px]">{language === 'km' ? `ថ្នាក់៖ ${activeClass?.nameKm}` : `Class: ${activeClass?.name}`}</p>
-              </div>
-            </div>
+      {/* 1. OFFICIAL MOEYS HONOR ROLL POSTER (A4 PRINTABLE WITH STUDENT PHOTO SLOTS) */}
+      {viewMode === 'honor_poster' && (
+        <OfficialHonorRollPoster
+          topStudents={topAchievers}
+          currentPeriodName={currentPeriod.nameKm}
+          onOpenPhotoModal={(student, rank) => setPhotoModalStudent({ student, rank })}
+        />
+      )}
 
-            <div className="text-right">
-              <p className="font-bold text-slate-900 text-xs">
-                {language === 'km' ? 'ព្រះរាជាណាចក្រកម្ពុជា' : 'Kingdom of Cambodia'}
-              </p>
-              <p className="text-slate-500 font-bold text-[11px]">
-                {language === 'km' ? 'ជាតិ សាសនា ព្រះមហាក្សត្រ' : 'Nation Religion King'}
-              </p>
-              <div className="text-[10px] text-slate-400 mt-1 font-mono">
-                {activeClass?.academicYear}
-              </div>
-            </div>
-          </div>
-
-          <h1 className="font-heading font-extrabold text-xl sm:text-2xl text-slate-900 mt-3 uppercase tracking-wide">
-            {viewMode === 'honor_roll' 
-              ? (language === 'km' ? 'តារាងកិត្តិយសសិស្សឆ្នើមទាំង ៥ រូប (TOP 5 HONOR ROLL)' : 'TOP 5 ACADEMIC HONOR ROLL')
-              : (language === 'km' ? 'តារាងចំណាត់ថ្នាក់លទ្ធផលសិក្សា' : 'CLASS RANKING & SCORE SHEET')}
-          </h1>
+      {/* 2. OFFICIAL PRINTABLE CERTIFICATE & HONOR CARDS / RANK SHEET */}
+      {viewMode !== 'honor_poster' && (
+        <div 
+          id="official-rankings-print-container"
+          className={`rounded-2xl border ${activeThemeConfig.boardBorder} ${activeThemeConfig.boardBg} p-6 sm:p-8 shadow-xs print:p-0 print:border-none print:shadow-none printable-area text-slate-900 transition-all duration-300`}
+        >
           
-          <p className="font-semibold text-slate-800 text-sm mt-1">
-            {language === 'km' 
-              ? `ប្រចាំ៖ ${currentPeriod.nameKm} • ឆ្នាំសិក្សា ${activeClass?.academicYear}` 
-              : `Period: ${currentPeriod.nameEn} • Academic Year ${activeClass?.academicYear}`}
-          </p>
+          {/* Official Header with MoEYS Logo matching Cambodian Primary School Standard */}
+          <div className="text-center pb-6 border-b-2 border-slate-900/80 mb-6">
+            <div className="flex justify-between items-start text-left text-xs font-semibold text-slate-700 mb-2">
+              <div className="flex items-center space-x-3">
+                <SchoolLogo size={52} customLogoUrl={schoolProfile?.logoUrl} />
+                <div>
+                  <p className="font-extrabold text-slate-900 text-xs uppercase tracking-tight">
+                    ក្រសួងអប់រំ យុវជន និងកីឡា
+                  </p>
+                  <p className={`font-black ${activeThemeConfig.headerAccent} text-sm uppercase`}>
+                    {language === 'km' ? activeClass?.schoolNameKm : activeClass?.schoolName}
+                  </p>
+                  <p className="text-slate-600 font-bold text-[11px]">{language === 'km' ? `ថ្នាក់៖ ${activeClass?.nameKm}` : `Class: ${activeClass?.name}`}</p>
+                </div>
+              </div>
 
-          {/* Lunar & Solar Calendar Information */}
-          <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-600 mt-2 pt-2 border-t border-slate-200/60">
-            {currentPeriod.lunarDateKm && (
-              <span>
-                <strong className="text-slate-900">{language === 'km' ? 'ចន្ទគតិ៖ ' : 'Lunar: '}</strong>
-                {language === 'km' ? currentPeriod.lunarDateKm : currentPeriod.lunarDateEn}
-              </span>
-            )}
-            {currentPeriod.solarDate && (
-              <span>
-                <strong className="text-slate-900">{language === 'km' ? 'សុរិយគតិ៖ ' : 'Solar: '}</strong>
-                {currentPeriod.solarDate}
-              </span>
-            )}
+              <div className="text-right">
+                <p className="font-bold text-slate-900 text-xs">
+                  {language === 'km' ? 'ព្រះរាជាណាចក្រកម្ពុជា' : 'Kingdom of Cambodia'}
+                </p>
+                <p className="text-slate-500 font-bold text-[11px]">
+                  {language === 'km' ? 'ជាតិ សាសនា ព្រះមហាក្សត្រ' : 'Nation Religion King'}
+                </p>
+                <div className="text-[10px] text-slate-400 mt-1 font-mono">
+                  {activeClass?.academicYear}
+                </div>
+              </div>
+            </div>
+
+            <h1 className="font-heading font-extrabold text-xl sm:text-2xl text-slate-900 mt-3 uppercase tracking-wide">
+              {viewMode === 'honor_cards' 
+                ? (language === 'km' ? 'តារាងកិត្តិយសសិស្សឆ្នើមទាំង ៥ រូប (TOP 5 HONOR ROLL)' : 'TOP 5 ACADEMIC HONOR ROLL')
+                : (language === 'km' ? 'តារាងចំណាត់ថ្នាក់លទ្ធផលសិក្សា' : 'CLASS RANKING & SCORE SHEET')}
+            </h1>
+            
+            <p className="font-semibold text-slate-800 text-sm mt-1">
+              {language === 'km' 
+                ? `ប្រចាំ៖ ${currentPeriod.nameKm} • ឆ្នាំសិក្សា ${activeClass?.academicYear}` 
+                : `Period: ${currentPeriod.nameEn} • Academic Year ${activeClass?.academicYear}`}
+            </p>
+
+            {/* Lunar & Solar Calendar Information */}
+            <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-600 mt-2 pt-2 border-t border-slate-200/60">
+              {currentPeriod.lunarDateKm && (
+                <span>
+                  <strong className="text-slate-900">{language === 'km' ? 'ចន្ទគតិ៖ ' : 'Lunar: '}</strong>
+                  {language === 'km' ? currentPeriod.lunarDateKm : currentPeriod.lunarDateEn}
+                </span>
+              )}
+              {currentPeriod.solarDate && (
+                <span>
+                  <strong className="text-slate-900">{language === 'km' ? 'សុរិយគតិ៖ ' : 'Solar: '}</strong>
+                  {currentPeriod.solarDate}
+                </span>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* 1. HONOR ROLL VIEW: ALL TOP 5 STUDENTS SHOWCASE (ALL 5 CARDS + TABLE + PHOTO UPLOAD) */}
-        {viewMode === 'honor_roll' && (
+          {/* HONOR CARDS VIEW: ALL TOP 5 STUDENTS SHOWCASE (ALL 5 CARDS + TABLE + PHOTO UPLOAD) */}
+          {viewMode === 'honor_cards' && (
           <div className="space-y-6">
             
             {/* Top 5 Showcase Cards Grid (Styled by Selected Honor Hall Theme) */}
@@ -1193,12 +1215,13 @@ export const RankingsAndHonorRoll: React.FC = () => {
             </p>
             <div className="h-16"></div>
             <p className="font-bold text-slate-900">
-              {language === 'km' ? activeClass?.teacherNameKm : activeClass?.teacherName}
+              {activeClass?.teacherNameKm || activeClass?.teacherName}
             </p>
           </div>
         </div>
 
       </div>
+      )}
 
       {/* Quick Score Edit Modal (Directly test and watch automatic re-ranking in real time) */}
       {quickScoreModal && (
