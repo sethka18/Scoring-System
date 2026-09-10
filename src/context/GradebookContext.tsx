@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { useAuth } from './AuthContext';
 import { 
   ClassSection, 
   Student, 
@@ -80,7 +81,8 @@ export type NavTab =
   | 'backup_restore'
   | 'settings'
   | 'mini_games'
-  | 'student_plan';
+  | 'student_plan'
+  | 'account_management';
 
 interface ToastNotification {
   id: string;
@@ -242,6 +244,15 @@ const GradebookContext = createContext<GradebookContextType | undefined>(undefin
 export const LS_PREFIX = 'primary_gradebook_v2_';
 
 export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  let authContext: any = null;
+  try {
+    authContext = useAuth();
+  } catch (e) {
+    // optional fallback
+  }
+  const currentUser = authContext?.currentUser || null;
+  const currentUserIdRef = useRef<string | null>(null);
+
   const [theme, setThemeState] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem(`${LS_PREFIX}theme`) as 'light' | 'dark';
     if (saved === 'light' || saved === 'dark') return saved;
@@ -750,6 +761,104 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   useEffect(() => {
     localStorage.setItem(`${LS_PREFIX}school_profile`, JSON.stringify(schoolProfile));
   }, [schoolProfile]);
+
+  // Per-user data loading on account switch
+  useEffect(() => {
+    if (!currentUser) return;
+    const uid = currentUser.id;
+    if (currentUserIdRef.current === uid) return;
+    currentUserIdRef.current = uid;
+
+    if (uid === 'user_prekchik') {
+      return;
+    }
+
+    const userProfileKey = `${LS_PREFIX}${uid}_school_profile`;
+    const savedProfile = localStorage.getItem(userProfileKey);
+    if (savedProfile) {
+      try {
+        setSchoolProfileState(JSON.parse(savedProfile));
+      } catch (e) {
+        console.error(e);
+      }
+    } else if (currentUser.schoolNameKm) {
+      setSchoolProfileState(prev => ({
+        ...prev,
+        schoolNameKm: currentUser.schoolNameKm,
+        schoolName: currentUser.schoolNameEn || currentUser.schoolNameKm,
+        province: currentUser.province || prev.province,
+        district: currentUser.district || prev.district,
+      }));
+    }
+
+    const userClassesKey = `${LS_PREFIX}${uid}_classes`;
+    const savedClasses = localStorage.getItem(userClassesKey);
+    if (savedClasses) {
+      try {
+        const parsed = JSON.parse(savedClasses);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setClasses(parsed);
+          const savedActive = localStorage.getItem(`${LS_PREFIX}${uid}_active_class`);
+          if (savedActive && parsed.some((c: any) => c.id === savedActive)) {
+            setActiveClassId(savedActive);
+          } else {
+            setActiveClassId(parsed[0].id);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    const userStudentsKey = `${LS_PREFIX}${uid}_students`;
+    const savedStudents = localStorage.getItem(userStudentsKey);
+    if (savedStudents) {
+      try {
+        const parsed = JSON.parse(savedStudents);
+        if (Array.isArray(parsed)) {
+          setStudents(parsed);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    const userScoresKey = `${LS_PREFIX}${uid}_scores`;
+    const savedScores = localStorage.getItem(userScoresKey);
+    if (savedScores) {
+      try {
+        setScoresMatrix(JSON.parse(savedScores));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, [currentUser]);
+
+  // Per-user data saving for custom users
+  useEffect(() => {
+    if (currentUser && currentUser.id !== 'user_prekchik') {
+      localStorage.setItem(`${LS_PREFIX}${currentUser.id}_classes`, JSON.stringify(classes));
+      localStorage.setItem(`${LS_PREFIX}${currentUser.id}_active_class`, activeClassId);
+    }
+  }, [classes, activeClassId, currentUser]);
+
+  useEffect(() => {
+    if (currentUser && currentUser.id !== 'user_prekchik') {
+      localStorage.setItem(`${LS_PREFIX}${currentUser.id}_students`, JSON.stringify(students));
+    }
+  }, [students, currentUser]);
+
+  useEffect(() => {
+    if (currentUser && currentUser.id !== 'user_prekchik') {
+      localStorage.setItem(`${LS_PREFIX}${currentUser.id}_scores`, JSON.stringify(scoresMatrix));
+    }
+  }, [scoresMatrix, currentUser]);
+
+  useEffect(() => {
+    if (currentUser && currentUser.id !== 'user_prekchik') {
+      localStorage.setItem(`${LS_PREFIX}${currentUser.id}_school_profile`, JSON.stringify(schoolProfile));
+    }
+  }, [schoolProfile, currentUser]);
 
   const setLanguage = (_lang: Language) => {
     setLanguageState('km');

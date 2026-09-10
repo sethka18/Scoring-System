@@ -599,7 +599,18 @@ export interface StudentAgreementPlan {
   locationPlace?: string; // e.g. "ប្រទង" (ធ្វើនៅ ប្រទង ថ្ងៃទី...)
   committeeLeaderTitle?: string; // "ប្រធានគណៈកម្មការគ្រប់គ្រងសាលារៀន"
   principalTitle?: string; // "នាយកសាលា"
+}export interface UserAccount {
+  id: string;
+  username: string; // email or unique username
+  fullName: string; // Teacher or Admin name in Khmer
+  password?: string;
+  role: 'teacher' | 'principal' | 'administrator';
+  schoolNameKm: string;
+  schoolNameEn?: string;
+  province?: string;
+  district?: string;
+  defaultGradeLevel?: number;
+  initialClassNameKm?: string;
+  createdAt: string;
+  hasCompletedOnboarding: boolean;
 }
-
-
-
