@@ -350,7 +350,7 @@ export const MultiPillarStudentReportModal: React.FC<Props> = ({
             >
               {classStudents.map((s, idx) => (
                 <option key={s.id} value={s.id} className="bg-slate-900 text-white">
-                  {idx + 1}. {s.name} ({s.studentId})
+                  {idx + 1}. {s.name}
                 </option>
               ))}
             </select>

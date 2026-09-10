@@ -44,7 +44,7 @@ export interface RosterColumnConfig {
   showIndex: boolean;
   showStudentId: boolean;
   showName: boolean;
-  showNameLatin: boolean;
+  showNameLatin?: boolean;
   showGender: boolean;
   showDob: boolean;
   showGuardianName: boolean;
@@ -56,9 +56,9 @@ export interface RosterColumnConfig {
 
 export const DEFAULT_ROSTER_COLUMNS: RosterColumnConfig = {
   showIndex: true,
-  showStudentId: true,
+  showStudentId: false,
   showName: true,
-  showNameLatin: true,
+  showNameLatin: false,
   showGender: true,
   showDob: true,
   showGuardianName: true,
@@ -190,7 +190,6 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
     { key: 'showIndex', labelKm: 'ល.រ (#)', labelEn: 'Index (#)', descKm: 'លេខរៀងលំដាប់សិស្ស', descEn: 'Sequential row number' },
     { key: 'showStudentId', labelKm: 'អត្តលេខ', labelEn: 'Student ID', descKm: 'កូដអត្តលេខសម្គាល់សិស្ស', descEn: 'Official ID code' },
     { key: 'showName', labelKm: 'គោត្តនាម និងនាម (ខ្មែរ)', labelEn: 'Full Name (Khmer)', descKm: 'ឈ្មោះពេញជាភាសាខ្មែរ', descEn: 'Full primary Khmer name' },
-    { key: 'showNameLatin', labelKm: 'ឈ្មោះជាអក្សរឡាតាំង', labelEn: 'Latin Name', descKm: 'ឈ្មោះអង់គ្លេស / ឡាតាំង', descEn: 'Latin/English alphabet transcription' },
     { key: 'showGender', labelKm: 'ភេទ', labelEn: 'Gender', descKm: 'ភេទប្រុស ឬស្រី', descEn: 'Male or Female' },
     { key: 'showDob', labelKm: 'ថ្ងៃខែឆ្នាំកំណើត', labelEn: 'Date of Birth', descKm: 'កាលបរិច្ឆេតកំណើត', descEn: 'Birth date string' },
     { key: 'showGuardianName', labelKm: 'ឈ្មោះអាណាព្យាបាល', labelEn: 'Guardian Name', descKm: 'ឪពុក ម្តាយ ឬអាណាព្យាបាល', descEn: 'Parent or Guardian name' },
@@ -1133,9 +1132,6 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
                           {rosterSettings.columns.showName && (
                             <th className="py-2 px-3 border-r border-slate-300 font-bold">គោត្តនាម និងនាម</th>
                           )}
-                          {rosterSettings.columns.showNameLatin && (
-                            <th className="py-2 px-2.5 border-r border-slate-300 font-bold">ឈ្មោះឡាតាំង</th>
-                          )}
                           {rosterSettings.columns.showGender && (
                             <th className="py-2 px-2 text-center w-12 border-r border-slate-300 font-bold">ភេទ</th>
                           )}
@@ -1184,11 +1180,6 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
                               {rosterSettings.columns.showName && (
                                 <td className={`${cellPadding} font-bold text-slate-950 border-r border-slate-200`}>
                                   {student.name}
-                                </td>
-                              )}
-                              {rosterSettings.columns.showNameLatin && (
-                                <td className={`${cellPadding} font-medium text-slate-700 border-r border-slate-200`}>
-                                  {student.nameLatin || '-'}
                                 </td>
                               )}
                               {rosterSettings.columns.showGender && (

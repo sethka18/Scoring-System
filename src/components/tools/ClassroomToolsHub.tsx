@@ -537,14 +537,8 @@ export const ClassroomToolsHub: React.FC<ClassroomToolsHubProps> = ({ initialTab
 
                 {selectedStudent && !isSpinning && (
                   <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center justify-center gap-2 text-xs">
-                    <span className="px-2.5 py-1 rounded-lg bg-white/10 text-white font-mono font-bold">
-                      {selectedStudent.studentId}
-                    </span>
                     <span className="px-2.5 py-1 rounded-lg bg-sky-500/20 text-sky-300 font-bold">
                       {selectedStudent.gender === 'Female' ? 'សិស្សស្រី' : 'សិស្សប្រុស'}
-                    </span>
-                    <span className="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300">
-                      {selectedStudent.nameLatin}
                     </span>
                   </div>
                 )}
@@ -794,7 +788,6 @@ export const ClassroomToolsHub: React.FC<ClassroomToolsHubProps> = ({ initialTab
                             </span>
                             <div>
                               <div className="font-bold text-slate-800 dark:text-slate-200">{stu.name}</div>
-                              <div className="text-2xs text-slate-400">{stu.nameLatin}</div>
                             </div>
                           </div>
 

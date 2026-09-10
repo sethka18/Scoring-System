@@ -4,9 +4,8 @@ export type Language = 'en' | 'km';
 
 export interface Student {
   id: string;
-  studentId: string; // e.g. "STU-2026-001"
+  studentId?: string; // Optional (deprecated)
   name: string; // Primary name (Khmer)
-  nameLatin?: string; // Optional English / Latin transcription
   gender: Gender;
   dob?: string; // Date of birth
   guardianName?: string;
@@ -555,5 +554,52 @@ export interface ExamPaper {
   createdAt: string;
   updatedAt?: string;
 }
+
+// ==========================================
+// Individual Student Plan & Parent Agreement (PLP / PTOM)
+// ==========================================
+export type GradeLetter = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
+
+export interface SubjectLearningPlan {
+  baselineGrade?: GradeLetter | string; // ដើមឆ្នាំ (ពីការធ្វើតេស្តដើមឆ្នាំ / PLP/PTOM Diagnostic Test)
+  baselineScore?: number;      // ពិន្ទុតេស្តដើមឆ្នាំ (០ - ១០ ឬ ០ - ១០០)
+  targetGrade?: GradeLetter | string;    // គ្រោងចុងឆ្នាំ (ផែនការរំពឹងទុក)
+  targetScore?: number;         // ពិន្ទុគ្រោងចុងឆ្នាំ
+  achievedGrade?: GradeLetter | string;  // សម្រេចចុងឆ្នាំ (លទ្ធផលជាក់ស្តែង)
+  achievedScore?: number;       // ពិន្ទុសម្រេចចុងឆ្នាំ
+  notes?: string;
+
+  // PTOM Quarterly & End-of-Year Results (តាមគំរូផ្លូវការ PTOM)
+  q1Grade?: string; // ត្រីមាសទី១ (e.g. 'B', 'B+', 'A')
+  q2Grade?: string; // ត្រីមាសទី២ (e.g. 'B+', 'A')
+  q3Grade?: string; // ត្រីមាសទី៣ (e.g. 'A')
+  q4Grade?: string; // ត្រីមាសទី៤ (e.g. 'A')
+  endYearTestGrade?: string; // លទ្ធផលតេស្ត ចុងឆ្នាំ (e.g. 'A')
+}
+
+export interface StudentAgreementPlan {
+  studentId: string;
+  classId: string;
+  academicYear?: string;
+  khmer: SubjectLearningPlan;
+  math: SubjectLearningPlan;
+  guardianName?: string;
+  guardianPhone?: string;
+  teacherName?: string;
+  teacherPhone?: string;
+  agreementDateSolar?: string;
+  agreementDateLunar?: string;
+  parentSignatureName?: string;
+  teacherSignatureName?: string;
+  notes?: string;
+  updatedAt?: string;
+
+  // PTOM Official Document Specifics (តាមគំរូក្រសួង/ការិយាល័យអប់រំស្រុក)
+  districtOffice?: string; // e.g. "ការិយាល័យអប់រំ យុវជននិងកីឡា និងរដ្ឋបាលស្រុកស្ទឹងត្រង់"
+  locationPlace?: string; // e.g. "ប្រទង" (ធ្វើនៅ ប្រទង ថ្ងៃទី...)
+  committeeLeaderTitle?: string; // "ប្រធានគណៈកម្មការគ្រប់គ្រងសាលារៀន"
+  principalTitle?: string; // "នាយកសាលា"
+}
+
 
 

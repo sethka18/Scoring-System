@@ -113,9 +113,7 @@ export function buildAssessmentCSVData(options: ComprehensiveCSVExportOptions): 
 
     const headers: string[] = [
       'ចំណាត់ថ្នាក់ប្រចាំឆ្នាំ (Yearly Rank)',
-      'អត្តលេខ (Student ID)',
       'គោត្តនាម និងនាម (Student Name)',
-      'ឈ្មោះជាឡាតាំង (Latin Name)',
       'ភេទ (Gender)',
     ];
 
@@ -159,9 +157,7 @@ export function buildAssessmentCSVData(options: ComprehensiveCSVExportOptions): 
       const s = sum.student;
       const row: (string | number)[] = [
         sum.yearlyRank,
-        s.studentId,
         s.name,
-        s.nameLatin || '',
         s.gender === 'Female' ? 'ស្រី' : 'ប្រុស',
       ];
 
@@ -212,7 +208,6 @@ export function buildAssessmentCSVData(options: ComprehensiveCSVExportOptions): 
 
     const headers: string[] = [
       'ចំណាត់ថ្នាក់',
-      'អត្តលេខ',
       'គោត្តនាម និងនាម',
       'ភេទ',
     ];
@@ -236,7 +231,6 @@ export function buildAssessmentCSVData(options: ComprehensiveCSVExportOptions): 
 
       const row: (string | number)[] = [
         0, // rank placeholder
-        s.studentId,
         s.name,
         s.gender === 'Female' ? 'ស្រី' : 'ប្រុស',
       ];
@@ -293,9 +287,7 @@ export function buildAssessmentCSVData(options: ComprehensiveCSVExportOptions): 
 
   const headers: string[] = [
     'ចំណាត់ថ្នាក់ (Rank)',
-    'អត្តលេខ (Student ID)',
     'គោត្តនាម និងនាម (Student Name)',
-    'ឈ្មោះជាឡាតាំង (Latin Name)',
     'ភេទ (Gender)',
   ];
 
@@ -350,9 +342,7 @@ export function buildAssessmentCSVData(options: ComprehensiveCSVExportOptions): 
     const s = r.student;
     const row: (string | number)[] = [
       r.rank,
-      s.studentId,
       s.name,
-      s.nameLatin || '',
       s.gender === 'Female' ? 'ស្រី' : 'ប្រុស',
     ];
 
@@ -484,9 +474,7 @@ export function exportStudentsToCSV(
 ): void {
   const headers = [
     'ល.រ (No.)',
-    'អត្តលេខ (Student ID)',
     'គោត្តនាម-នាម (Khmer Name)',
-    'ឈ្មោះជាឡាតាំង (Latin Name)',
     'ភេទ (Gender)',
     'ថ្ងៃខែឆ្នាំកំណើត (DOB)',
     'ឈ្មោះអាណាព្យាបាល (Guardian)',
@@ -501,9 +489,7 @@ export function exportStudentsToCSV(
   
   const rows = students.map((s, idx) => [
     idx + 1,
-    formatCSVCell(s.studentId),
     formatCSVCell(s.name),
-    formatCSVCell(s.nameLatin || ''),
     formatCSVCell(s.gender === 'Female' ? 'ស្រី (Female)' : 'ប្រុស (Male)'),
     formatCSVCell(s.dob || ''),
     formatCSVCell(s.guardianName || ''),
@@ -549,9 +535,7 @@ export function exportStudentsToJSON(students: Student[], className: string, cus
  */
 export function downloadStudentCSVTemplate(): void {
   const headers = [
-    'Student ID (អត្តលេខ)',
     'Khmer Name (គោត្តនាម-នាម)',
-    'Latin Name (ឈ្មោះជាឡាតាំង)',
     'Gender (ភេទ)',
     'Date of Birth (ថ្ងៃខែឆ្នាំកំណើត YYYY-MM-DD)',
     'Guardian Name (អាណាព្យាបាល)',
@@ -560,9 +544,9 @@ export function downloadStudentCSVTemplate(): void {
   ];
 
   const sampleRows = [
-    ['STU-6001', 'ចាន់ សុខា', 'Chan Sokha', 'ប្រុស', '2014-03-15', 'ចាន់ សុផល', '012 345 678', 'សិស្សពូកែ'],
-    ['STU-6002', 'សុខ គន្ធា', 'Sok Kunthea', 'ស្រី', '2014-05-20', 'សុខ វណ្ណា', '098 765 432', ''],
-    ['STU-6003', 'ម៉ៅ វីរៈ', 'Mao Virak', 'ប្រុស', '2014-01-10', 'ម៉ៅ ចំរើន', '089 112 233', '']
+    ['ចាន់ សុខា', 'ប្រុស', '2014-03-15', 'ចាន់ សុផល', '012 345 678', 'សិស្សពូកែ'],
+    ['សុខ គន្ធា', 'ស្រី', '2014-05-20', 'សុខ វណ្ណា', '098 765 432', ''],
+    ['ម៉ៅ វីរៈ', 'ប្រុស', '2014-01-10', 'ម៉ៅ ចំរើន', '089 112 233', '']
   ];
 
   const csvContent = '\uFEFF' + [
@@ -595,7 +579,6 @@ export function parseStudentsFlexible(rawText: string): Partial<Student>[] {
         return parsed.map((item, idx) => ({
           studentId: item.studentId || item.id || `STU-${String(idx + 1).padStart(4, '0')}`,
           name: item.name || item.nameKm || item.khmerName || 'សិស្សមិនបញ្ជាក់ឈ្មោះ',
-          nameLatin: item.nameLatin || item.latinName || item.englishName || '',
           gender: (item.gender || '').toLowerCase().startsWith('f') || item.gender === 'ស្រី' ? 'Female' : 'Male',
           dob: item.dob || item.birthDate || '2014-01-01',
           guardianName: item.guardianName || item.parentName || '',
@@ -654,7 +637,6 @@ export function parseStudentsFlexible(rawText: string): Partial<Student>[] {
 
   let idIdx = -1;
   let nameIdx = -1;
-  let latinIdx = -1;
   let genderIdx = -1;
   let dobIdx = -1;
   let guardianIdx = -1;
@@ -665,8 +647,6 @@ export function parseStudentsFlexible(rawText: string): Partial<Student>[] {
     headerCells.forEach((h, idx) => {
       if (h.includes('id') || h.includes('អត្តលេខ') || h.includes('code')) {
         if (idIdx === -1) idIdx = idx;
-      } else if (h.includes('latin') || h.includes('ឡាតាំង') || h.includes('english') || h.includes('en')) {
-        latinIdx = idx;
       } else if (h.includes('ឈ្មោះ') || h.includes('name') || h.includes('គោត្តនាម')) {
         if (nameIdx === -1) nameIdx = idx;
       } else if (h.includes('ភេទ') || h.includes('gender') || h.includes('sex')) {
@@ -692,7 +672,6 @@ export function parseStudentsFlexible(rawText: string): Partial<Student>[] {
 
     let studentId = '';
     let name = '';
-    let nameLatin = '';
     let gender: 'Male' | 'Female' = 'Male';
     let dob = '2014-01-01';
     let guardianName = '';
@@ -702,7 +681,6 @@ export function parseStudentsFlexible(rawText: string): Partial<Student>[] {
     if (isHeader) {
       studentId = idIdx >= 0 && row[idIdx] ? row[idIdx] : `STU-${String(result.length + 1).padStart(4, '0')}`;
       name = nameIdx >= 0 && row[nameIdx] ? row[nameIdx] : (row[0] || `សិស្ស ${result.length + 1}`);
-      nameLatin = latinIdx >= 0 && row[latinIdx] ? row[latinIdx] : '';
       const rawGender = genderIdx >= 0 && row[genderIdx] ? row[genderIdx].toLowerCase() : '';
       gender = (rawGender.startsWith('f') || rawGender.includes('ស្រី') || rawGender === 'ស') ? 'Female' : 'Male';
       dob = dobIdx >= 0 && row[dobIdx] ? row[dobIdx] : '2014-01-01';
@@ -710,32 +688,28 @@ export function parseStudentsFlexible(rawText: string): Partial<Student>[] {
       guardianPhone = phoneIdx >= 0 && row[phoneIdx] ? row[phoneIdx] : '';
       notes = notesIdx >= 0 && row[notesIdx] ? row[notesIdx] : '';
     } else {
-      // Default positional fallback: [ID, Name, LatinName, Gender, DOB, Guardian, Phone, Notes] or [Name, Gender]
+      // Default positional fallback: [Name, Gender, DOB, Guardian, Phone, Notes] or [Name, Gender]
       if (row.length === 1) {
         name = row[0];
-        studentId = `STU-${String(result.length + 1).padStart(4, '0')}`;
       } else if (row.length === 2) {
-        studentId = row[0];
-        name = row[1];
-      } else {
-        studentId = row[0] || `STU-${String(result.length + 1).padStart(4, '0')}`;
-        name = row[1] || `សិស្ស ${result.length + 1}`;
-        nameLatin = row[2] || '';
-        const rawGender = (row[3] || '').toLowerCase();
+        name = row[0];
+        const rawGender = (row[1] || '').toLowerCase();
         gender = (rawGender.startsWith('f') || rawGender.includes('ស្រី') || rawGender === 'ស') ? 'Female' : 'Male';
-        dob = row[4] || '2014-01-01';
-        guardianName = row[5] || '';
-        guardianPhone = row[6] || '';
-        notes = row[7] || '';
+      } else {
+        name = row[0] || `សិស្ស ${result.length + 1}`;
+        const rawGender = (row[1] || '').toLowerCase();
+        gender = (rawGender.startsWith('f') || rawGender.includes('ស្រី') || rawGender === 'ស') ? 'Female' : 'Male';
+        dob = row[2] || '2014-01-01';
+        guardianName = row[3] || '';
+        guardianPhone = row[4] || '';
+        notes = row[5] || '';
       }
     }
 
     if (name.trim()) {
       result.push({
         id: `stu_${Date.now()}_${i}_${Math.random().toString(36).slice(2, 6)}`,
-        studentId: studentId.trim(),
         name: name.trim(),
-        nameLatin: nameLatin.trim(),
         gender,
         dob: dob.trim(),
         guardianName: guardianName.trim(),
@@ -825,21 +799,18 @@ export function parseStudentsCSV(csvText: string): Partial<Student>[] {
     }
     values.push(currentVal.trim().replace(/^"|"$/g, ''));
 
-    if (values.length >= 2) {
+    if (values.length >= 1) {
       // Find name index or fallback
-      const name = values[2] || values[1] || values[0] || 'Unknown Student';
-      const studentId = values[1] || `STU-${Date.now().toString().slice(-4)}`;
-      const gender = (values[4] || values[2] || 'Male').toLowerCase().startsWith('f') ? 'Female' : 'Male';
+      const name = values[0] || 'Unknown Student';
+      const gender = (values[1] || 'Male').toLowerCase().startsWith('f') || (values[1] || '').includes('ស្រី') ? 'Female' : 'Male';
 
       students.push({
         id: `stu_${Date.now()}_${i}`,
-        studentId: studentId.replace(/^"|"$/g, ''),
         name: name.replace(/^"|"$/g, ''),
-        nameLatin: values[3] ? values[3].replace(/^"|"$/g, '') : '',
         gender,
-        dob: values[5] || '2014-01-01',
-        guardianName: values[6] || '',
-        guardianPhone: values[7] || '',
+        dob: values[2] || '2014-01-01',
+        guardianName: values[3] || '',
+        guardianPhone: values[4] || '',
         conductRating: 'A',
         behaviorScore: 5,
         attendanceCount: { present: 100, absentExcused: 0, absentUnexcused: 0, late: 0 },

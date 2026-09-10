@@ -9,21 +9,22 @@ import {
   DailyAttendanceRecord,
   SchoolProfile
 } from '../types';
+import { PREK_CHIK_CLASSES, PREK_CHIK_STUDENTS, PREK_CHIK_STUDENT_PROFILES } from './prekChikStudents';
 
 export const DEFAULT_SCHOOL_PROFILE: SchoolProfile = {
-  schoolName: 'Hun Neng Pratong Primary School',
-  schoolNameKm: 'សាលាបឋមសិក្សាហ៊ុនណេងប្រទង',
-  province: 'ខេត្តកំពង់ចាម',
-  district: 'ស្រុកស្ទឹងត្រង់',
-  commune: 'ឃុំអូរម្លូ',
-  village: 'ភូមិប្រទង',
-  schoolCode: '030704',
+  schoolName: 'Prek Chik Primary School',
+  schoolNameKm: 'សាលាបឋមសិក្សា ព្រែកជីក',
+  province: 'ខេត្តត្បូងឃ្មុំ',
+  district: 'ស្រុកត្បូងឃ្មុំ',
+  commune: 'ឃុំព្រែកជីក',
+  village: 'ភូមិព្រែកជីក',
+  schoolCode: '250204',
   principalName: 'School Principal',
-  principalNameKm: 'លោកនាយកសាលា',
+  principalNameKm: 'នាយកសាលា',
   phone: '012 345 678',
-  email: 'hunneng.pratong@moeys.gov.kh',
+  email: 'prekchik.primary@moeys.gov.kh',
   logoUrl: '',
-  academicYear: '២០២៦-២០២៧',
+  academicYear: '២០២៥-២០២៦',
 };
 
 export const DEFAULT_COMPETENCY_WEIGHTS: CompetencyPillarsWeight = {
@@ -64,8 +65,15 @@ export const DEFAULT_SUBJECTS: Subject[] = [
       { id: 'math_statistics', nameEn: 'Statistics', nameKm: 'ស្ថិតិ', maxScore: 10, weight: 20 },
     ],
   },
-  { id: 'sub_science', nameEn: 'Science & Applied Nature', nameKm: 'វិទ្យាសាស្ត្រ', code: 'SCI', maxScore: 10, coefficient: 1, color: '#8b5cf6' },
-  { id: 'sub_social', nameEn: 'Social Studies', nameKm: 'សិក្សាសង្គម', code: 'SOC', maxScore: 10, coefficient: 1, color: '#f59e0b' },
+  { id: 'sub_science', nameEn: 'Science & Nature', nameKm: 'វិទ្យាសាស្ត្រ', code: 'SCI', maxScore: 10, coefficient: 1, color: '#8b5cf6' },
+  { id: 'sub_moral_civics', nameEn: 'Moral & Civics', nameKm: 'សីលធម៌-ពលរដ្ឋ', code: 'MOR', maxScore: 10, coefficient: 1, color: '#f59e0b' },
+  { id: 'sub_geography_history', nameEn: 'Geography & History', nameKm: 'ភូមិ-ប្រវត្តិ', code: 'GEO', maxScore: 10, coefficient: 1, color: '#d97706' },
+  { id: 'sub_home_arts', nameEn: 'Home Economics & Arts', nameKm: 'គេហវិទ្យា-សិល្បៈ', code: 'ART', maxScore: 10, coefficient: 1, color: '#ec4899' },
+  { id: 'sub_pe_sports', nameEn: 'Physical Education & Sports', nameKm: 'អប់រំកាយ-កីឡា', code: 'PES', maxScore: 10, coefficient: 1, color: '#06b6d4' },
+  { id: 'sub_health_hygiene', nameEn: 'Health & Hygiene', nameKm: 'សុខភាព-អនាម័យ', code: 'HLT', maxScore: 10, coefficient: 1, color: '#14b8a6' },
+  { id: 'sub_life_skills', nameEn: 'Life Skills Education', nameKm: 'អប់រំបំណិនជីវិត', code: 'LFS', maxScore: 10, coefficient: 1, color: '#84cc16' },
+  { id: 'sub_foreign_lang', nameEn: 'Foreign Language', nameKm: 'ភាសាបរទេស', code: 'ENG', maxScore: 10, coefficient: 1, color: '#6366f1' },
+  { id: 'sub_social', nameEn: 'Social Studies', nameKm: 'សិក្សាសង្គម', code: 'SOC', maxScore: 10, coefficient: 1, color: '#f97316' },
 ];
 
 export const DEFAULT_PERIODS: AssessmentPeriod[] = [
@@ -171,433 +179,9 @@ export const DEFAULT_GRADE_SCALES: GradeScaleThreshold[] = [
   { grade: 'F', labelEn: 'F', labelKm: 'F', minPercentage: 0, color: '#dc2626' },
 ];
 
-export const INITIAL_CLASSES: ClassSection[] = [
-  {
-    id: 'class_6',
-    name: 'Grade 6',
-    nameKm: 'ថ្នាក់ទី៦',
-    gradeLevel: 6,
-    academicYear: '២០២៦-២០២៧',
-    roomNumber: '',
-    teacherName: 'លោកគ្រូ ផាន សិតការណ៍',
-    teacherNameKm: 'លោកគ្រូ ផាន សិតការណ៍',
-    schoolName: 'Hun Neng Pratong Primary School',
-    schoolNameKm: 'សាលាបឋមសិក្សាហ៊ុន ណេង ប្រទង',
-    province: 'ខេត្តកំពង់ចាម',
-    district: 'ស្រុកស្ទឹងត្រង់',
-    commune: 'ឃុំអូរម្លូ',
-    studentIds: [
-      'stu_1', 'stu_2', 'stu_3', 'stu_4', 'stu_5', 
-      'stu_6', 'stu_7', 'stu_8', 'stu_9', 'stu_10',
-      'stu_11', 'stu_12', 'stu_13', 'stu_14', 'stu_15',
-      'stu_16', 'stu_17', 'stu_18', 'stu_19', 'stu_20',
-      'stu_21', 'stu_22', 'stu_23', 'stu_24', 'stu_25'
-    ],
-  }
-];
+export const INITIAL_CLASSES: ClassSection[] = PREK_CHIK_CLASSES;
 
-export const INITIAL_STUDENTS: Student[] = [
-  {
-    id: 'stu_1',
-    studentId: 'STU-06A-01',
-    name: 'ចាន់ ផៃយ៉ា',
-    nameLatin: 'Chan Phaiya',
-    gender: 'Male',
-    dob: '2014-04-12',
-    guardianName: 'ចាន់ វណ្ណា',
-    guardianPhone: '012 889 922',
-    attendanceCount: { present: 98, absentExcused: 2, absentUnexcused: 0, late: 1 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.8,
-    attitudeScore: 8.51,
-    notes: 'សិស្សមានវិន័យល្អ គោរពបទបញ្ជាផ្ទៃក្នុងសាលា។'
-  },
-  {
-    id: 'stu_2',
-    studentId: 'STU-06A-02',
-    name: 'ចេន តាំងលី',
-    nameLatin: 'Chen Tangly',
-    gender: 'Male',
-    dob: '2014-07-20',
-    guardianName: 'ចេន សុខុម',
-    guardianPhone: '098 776 543',
-    attendanceCount: { present: 100, absentExcused: 0, absentUnexcused: 0, late: 0 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 9.0,
-    attitudeScore: 8.51,
-    notes: 'ឧស្សាហ៍ព្យាយាម រៀនពូកែ និងរួសរាយរាក់ទាក់។'
-  },
-  {
-    id: 'stu_3',
-    studentId: 'STU-06A-03',
-    name: 'ចេន សុខឃាង',
-    nameLatin: 'Chen Sokkheang',
-    gender: 'Female',
-    dob: '2014-02-15',
-    guardianName: 'ចេន ផល្លា',
-    guardianPhone: '077 334 455',
-    attendanceCount: { present: 96, absentExcused: 3, absentUnexcused: 1, late: 2 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.7,
-    attitudeScore: 8.51,
-    notes: 'សុភាពរាបសារ យកចិត្តទុកដាក់ស្តាប់ការពន្យល់របស់គ្រូ។'
-  },
-  {
-    id: 'stu_4',
-    studentId: 'STU-06A-04',
-    name: 'ឆោម រស្មី',
-    nameLatin: 'Chhom Reasmey',
-    gender: 'Female',
-    dob: '2014-11-05',
-    guardianName: 'ឆោម ពិសិដ្ឋ',
-    guardianPhone: '089 112 233',
-    attendanceCount: { present: 97, absentExcused: 2, absentUnexcused: 0, late: 1 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 9.2,
-    attitudeScore: 8.51,
-    notes: 'សកម្មក្នុងការចូលរួមសកម្មភាពក្រុម និងឆ្លាតវៃ។'
-  },
-  {
-    id: 'stu_5',
-    studentId: 'STU-06A-05',
-    name: 'ជី សុខជាតិ',
-    nameLatin: 'Chey Sokcheat',
-    gender: 'Male',
-    dob: '2014-09-18',
-    guardianName: 'ជី ប៊ុនធឿន',
-    guardianPhone: '015 667 788',
-    attendanceCount: { present: 94, absentExcused: 4, absentUnexcused: 1, late: 3 },
-    behaviorScore: 4,
-    conductRating: 'ល្អ',
-    skillScore: 8.2,
-    attitudeScore: 8.51,
-    notes: 'មានភាពស្មោះត្រង់ ចូលចិត្តជួយមិត្តភក្តិ។'
-  },
-  {
-    id: 'stu_6',
-    studentId: 'STU-06A-06',
-    name: 'ឈា សូលីសា',
-    nameLatin: 'Chhea Solisa',
-    gender: 'Female',
-    dob: '2014-05-30',
-    guardianName: 'ឈា គឹមហុង',
-    guardianPhone: '092 445 566',
-    attendanceCount: { present: 95, absentExcused: 3, absentUnexcused: 0, late: 1 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.9,
-    attitudeScore: 8.51,
-    notes: 'ស្អាតបាត មានសណ្តាប់ធ្នាប់ល្អជានិច្ច។'
-  },
-  {
-    id: 'stu_7',
-    studentId: 'STU-06A-07',
-    name: 'ឈុម សារ៉ាយុទ្ធ',
-    nameLatin: 'Chhum Sarayuth',
-    gender: 'Male',
-    dob: '2014-08-14',
-    guardianName: 'ឈុម វិបុល',
-    guardianPhone: '097 554 433',
-    attendanceCount: { present: 99, absentExcused: 1, absentUnexcused: 0, late: 0 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.6,
-    attitudeScore: 8.51,
-    notes: 'ទៀងទាត់ពេលវេលា គោរពទង់ជាតិជាប់លាប់។'
-  },
-  {
-    id: 'stu_8',
-    studentId: 'STU-06A-08',
-    name: 'នីម សំអាង',
-    nameLatin: 'Nim Sam-ang',
-    gender: 'Male',
-    dob: '2014-01-28',
-    guardianName: 'នីម សារិន',
-    guardianPhone: '011 223 344',
-    attendanceCount: { present: 95, absentExcused: 3, absentUnexcused: 1, late: 2 },
-    behaviorScore: 4,
-    conductRating: 'ល្អ',
-    skillScore: 8.4,
-    attitudeScore: 8.51,
-    notes: 'មានស្មារតីទទួលខុសត្រូវខ្ពស់។'
-  },
-  {
-    id: 'stu_9',
-    studentId: 'STU-06A-09',
-    name: 'ពៅ យ៉ានីន',
-    nameLatin: 'Pov Yanin',
-    gender: 'Female',
-    dob: '2014-12-10',
-    guardianName: 'ពៅ សុវណ្ណារ៉ា',
-    guardianPhone: '088 998 877',
-    attendanceCount: { present: 98, absentExcused: 1, absentUnexcused: 0, late: 1 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.8,
-    attitudeScore: 8.51,
-    notes: 'អក្សរស្អាត ផ្ចិតផ្ចង់ និងមានគំនិតច្នៃប្រឌិត។'
-  },
-  {
-    id: 'stu_10',
-    studentId: 'STU-06A-10',
-    name: 'ម៉េង មេត្តា',
-    nameLatin: 'Meng Metta',
-    gender: 'Female',
-    dob: '2014-03-03',
-    guardianName: 'ម៉េង ថន',
-    guardianPhone: '016 778 899',
-    attendanceCount: { present: 92, absentExcused: 4, absentUnexcused: 1, late: 2 },
-    behaviorScore: 4,
-    conductRating: 'ល្អ',
-    skillScore: 8.1,
-    attitudeScore: 8.51,
-    notes: 'មានចិត្តសប្បុរស ជួយមិត្តភក្តិជុំវិញខ្លួន។'
-  },
-  {
-    id: 'stu_11',
-    studentId: 'STU-06A-11',
-    name: 'មាស សុខហ៊ាន',
-    nameLatin: 'Meas Sokhean',
-    gender: 'Male',
-    dob: '2014-06-25',
-    guardianName: 'មាស វឌ្ឍនា',
-    guardianPhone: '078 887 766',
-    attendanceCount: { present: 96, absentExcused: 2, absentUnexcused: 0, late: 1 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.5,
-    attitudeScore: 8.51,
-    notes: 'ក្លាហាន ចូលរួមឆ្លើយសំណួរក្នុងថ្នាក់។'
-  },
-  {
-    id: 'stu_12',
-    studentId: 'STU-06A-12',
-    name: 'មួន សុចិន្ដា',
-    nameLatin: 'Muon Sochinda',
-    gender: 'Female',
-    dob: '2014-10-17',
-    guardianName: 'មួន សារឿន',
-    guardianPhone: '093 332 211',
-    attendanceCount: { present: 97, absentExcused: 2, absentUnexcused: 0, late: 1 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.7,
-    attitudeScore: 8.51,
-    notes: 'ស្លូតបូត សុភាព គោរពគ្រូនិងចាស់ទុំ។'
-  },
-  {
-    id: 'stu_13',
-    studentId: 'STU-06A-13',
-    name: 'យាត ស៊ីយុទ្ធ',
-    nameLatin: 'Yeat Siyuth',
-    gender: 'Male',
-    dob: '2014-04-09',
-    guardianName: 'យាត សុខា',
-    guardianPhone: '017 445 566',
-    attendanceCount: { present: 97, absentExcused: 2, absentUnexcused: 0, late: 0 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.6,
-    attitudeScore: 8.51,
-    notes: 'មានភាពជាអ្នកដឹកនាំក្នុងក្រុម។'
-  },
-  {
-    id: 'stu_14',
-    studentId: 'STU-06A-14',
-    name: 'យូ សុខនិតា',
-    nameLatin: 'You Soknita',
-    gender: 'Female',
-    dob: '2014-08-01',
-    guardianName: 'យូ ចាន់ថា',
-    guardianPhone: '085 554 433',
-    attendanceCount: { present: 98, absentExcused: 1, absentUnexcused: 0, late: 1 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.9,
-    attitudeScore: 8.51,
-    notes: 'ឆ្លាត យល់លឿន និងឧស្សាហ៍ធ្វើកិច្ចការផ្ទះ។'
-  },
-  {
-    id: 'stu_15',
-    studentId: 'STU-06A-15',
-    name: 'រ៉ន ផាណេត',
-    nameLatin: 'Rorn Phanet',
-    gender: 'Male',
-    dob: '2014-02-22',
-    guardianName: 'រ៉ន សុភាព',
-    guardianPhone: '096 665 544',
-    attendanceCount: { present: 95, absentExcused: 3, absentUnexcused: 0, late: 1 },
-    behaviorScore: 4,
-    conductRating: 'ល្អ',
-    skillScore: 8.3,
-    attitudeScore: 8.51,
-    notes: 'ចូលចិត្តលេងកីឡា និងមានស្មារតីសាមគ្គី។'
-  },
-  {
-    id: 'stu_16',
-    studentId: 'STU-06A-16',
-    name: 'រុំ ណារ៉ា',
-    nameLatin: 'Rum Nara',
-    gender: 'Male',
-    dob: '2014-05-14',
-    guardianName: 'រុំ ម៉េង',
-    guardianPhone: '012 334 455',
-    attendanceCount: { present: 96, absentExcused: 2, absentUnexcused: 0, late: 1 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.6,
-    attitudeScore: 8.51,
-    notes: 'រៀនពូកែគណិតវិទ្យា និងគិតលេខបានលឿន។'
-  },
-  {
-    id: 'stu_17',
-    studentId: 'STU-06A-17',
-    name: 'ស៊ន ស្រីលិស',
-    nameLatin: 'Sorn Sreylis',
-    gender: 'Female',
-    dob: '2014-09-21',
-    guardianName: 'ស៊ន ផល្លី',
-    guardianPhone: '089 998 877',
-    attendanceCount: { present: 98, absentExcused: 1, absentUnexcused: 0, late: 0 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 9.1,
-    attitudeScore: 8.51,
-    notes: 'ពូកែតែងសេចក្តី និងអានអត្ថបទច្បាស់ៗ។'
-  },
-  {
-    id: 'stu_18',
-    studentId: 'STU-06A-18',
-    name: 'ស៊្រីន គឹមស្រួ',
-    nameLatin: 'Srin Kimsruo',
-    gender: 'Female',
-    dob: '2014-01-11',
-    guardianName: 'ស៊្រីន វុទ្ធី',
-    guardianPhone: '077 112 233',
-    attendanceCount: { present: 95, absentExcused: 3, absentUnexcused: 0, late: 1 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.7,
-    attitudeScore: 8.51,
-    notes: 'រួសរាយរាក់ទាក់ និងយកចិត្តទុកដាក់ក្នុងការរៀន។'
-  },
-  {
-    id: 'stu_19',
-    studentId: 'STU-06A-19',
-    name: 'សី ផាន់នីត',
-    nameLatin: 'Sey Phannit',
-    gender: 'Male',
-    dob: '2014-11-30',
-    guardianName: 'សី ប៊ុនណា',
-    guardianPhone: '098 445 566',
-    attendanceCount: { present: 97, absentExcused: 2, absentUnexcused: 0, late: 1 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.8,
-    attitudeScore: 8.51,
-    notes: 'ស្ងប់ស្ងាត់ មានសមាធិល្អពេលរៀន។'
-  },
-  {
-    id: 'stu_20',
-    studentId: 'STU-06A-20',
-    name: 'ស្រស់ ផាន់ណា',
-    nameLatin: 'Sros Phanna',
-    gender: 'Male',
-    dob: '2014-07-08',
-    guardianName: 'ស្រស់ គឹមឡេង',
-    guardianPhone: '015 889 900',
-    attendanceCount: { present: 94, absentExcused: 3, absentUnexcused: 1, late: 2 },
-    behaviorScore: 4,
-    conductRating: 'ល្អ',
-    skillScore: 8.2,
-    attitudeScore: 8.51,
-    notes: 'សកម្មក្នុងម៉ោងសិក្សា និងគោរពវិន័យ។'
-  },
-  {
-    id: 'stu_21',
-    studentId: 'STU-06A-21',
-    name: 'សំអូន ថៃរីន',
-    nameLatin: 'Sam-oun Thairin',
-    gender: 'Female',
-    dob: '2014-03-10',
-    guardianName: 'សំអូន វិចិត្រ',
-    guardianPhone: '012 998 811',
-    attendanceCount: { present: 99, absentExcused: 1, absentUnexcused: 0, late: 0 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 9.3,
-    attitudeScore: 8.51,
-    notes: 'ជាសិស្សគំរូប្រចាំថ្នាក់ មានការលះបង់ខ្ពស់។'
-  },
-  {
-    id: 'stu_22',
-    studentId: 'STU-06A-22',
-    name: 'ហុង លីហូវ',
-    nameLatin: 'Hong Lyhov',
-    gender: 'Male',
-    dob: '2014-08-19',
-    guardianName: 'ហុង សារឿន',
-    guardianPhone: '089 443 322',
-    attendanceCount: { present: 96, absentExcused: 2, absentUnexcused: 0, late: 1 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.8,
-    attitudeScore: 8.51,
-    notes: 'មានគំនិតដោះស្រាយបញ្ហាបានលឿន។'
-  },
-  {
-    id: 'stu_23',
-    studentId: 'STU-06A-23',
-    name: 'ហេន សៀងហ៊ីម',
-    nameLatin: 'Hen Sianghim',
-    gender: 'Female',
-    dob: '2014-11-22',
-    guardianName: 'ហេន គង់',
-    guardianPhone: '097 665 544',
-    attendanceCount: { present: 97, absentExcused: 2, absentUnexcused: 0, late: 1 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.9,
-    attitudeScore: 8.51,
-    notes: 'រៀបចំសម្ភារៈសិក្សាបានត្រឹមត្រូវនិងមានរបៀប។'
-  },
-  {
-    id: 'stu_24',
-    studentId: 'STU-06A-24',
-    name: 'អ៊ូង សុខឃាង',
-    nameLatin: 'Oung Sokkheang',
-    gender: 'Male',
-    dob: '2014-05-15',
-    guardianName: 'អ៊ូង បូរី',
-    guardianPhone: '070 887 766',
-    attendanceCount: { present: 96, absentExcused: 2, absentUnexcused: 0, late: 1 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.7,
-    attitudeScore: 8.51,
-    notes: 'មានទំនាក់ទំនងល្អជាមួយមិត្តភក្តិទាំងអស់។'
-  },
-  {
-    id: 'stu_25',
-    studentId: 'STU-06A-25',
-    name: 'អាត ចាន់ត្រា',
-    nameLatin: 'At Chantra',
-    gender: 'Male',
-    dob: '2014-09-08',
-    guardianName: 'អាត សុខុម',
-    guardianPhone: '011 445 566',
-    attendanceCount: { present: 95, absentExcused: 3, absentUnexcused: 0, late: 1 },
-    behaviorScore: 5,
-    conductRating: 'ល្អ',
-    skillScore: 8.6,
-    attitudeScore: 8.51,
-    notes: 'ចូលចិត្តស្វែងយល់ចំណេះដឹងថ្មីៗ និងគួរសម។'
-  }
-];
+export const INITIAL_STUDENTS: Student[] = PREK_CHIK_STUDENTS;
 
 // Generate deterministic realistic initial score matrix
 export function generateInitialScores(): Record<string, Record<string, Record<string, {
@@ -612,33 +196,7 @@ export function generateInitialScores(): Record<string, Record<string, Record<st
   const scores: Record<string, Record<string, Record<string, any>>> = {};
 
   // Base ability profile for students (10-point scale primary school system)
-  const studentProfiles: Record<string, number> = {
-    stu_1: 8.8, // Chan Sokha
-    stu_2: 9.4, // Meas Sovann (Top 1)
-    stu_3: 8.9, // Tep Rathana
-    stu_4: 9.1, // Keo Vicheka (Top 2)
-    stu_5: 7.6, // Ly Chanthy
-    stu_6: 6.8, // Pich Samnang
-    stu_7: 8.5, // Sok Panha
-    stu_8: 8.1, // Ouk Dararith
-    stu_9: 8.7, // Heng Sreylin
-    stu_10: 5.9, // Sorn Virak
-    stu_11: 8.4, // Chea Thida
-    stu_12: 7.2, // Nuon Vichetr
-    stu_13: 8.6, // Prum Kalyan
-    stu_14: 7.8, // Im Vattanak
-    stu_15: 8.2, // Van Sreymom
-    stu_16: 8.6,
-    stu_17: 9.2,
-    stu_18: 7.7,
-    stu_19: 8.9,
-    stu_20: 6.8,
-    stu_21: 9.4,
-    stu_22: 9.1,
-    stu_23: 8.5,
-    stu_24: 8.7,
-    stu_25: 7.9,
-  };
+  const studentProfiles: Record<string, number> = PREK_CHIK_STUDENT_PROFILES;
 
   const periodFactors: Record<string, number> = {
     month_dec: 0.0,
@@ -657,6 +215,13 @@ export function generateInitialScores(): Record<string, Record<string, Record<st
     sub_khmer: 0.1,
     sub_math: 0.0,
     sub_science: 0.2,
+    sub_moral_civics: 0.3,
+    sub_geography_history: 0.2,
+    sub_home_arts: 0.4,
+    sub_pe_sports: 0.5,
+    sub_health_hygiene: 0.4,
+    sub_life_skills: 0.3,
+    sub_foreign_lang: -0.2,
     sub_social: 0.3,
   };
 
@@ -707,25 +272,31 @@ export function generateInitialScores(): Record<string, Record<string, Record<st
 
         const behRating = Math.min(5, Math.max(3, Math.round(base / 2)));
 
-        scores[stuId][period.id][subj.id] = {
+        const scoreEntry: Record<string, any> = {
           homework: hw,
           quizzes: qz,
           midterm: mid,
           finalExam: fin,
           rawScore: raw,
           behaviorRating: behRating,
-          khmerReading,
-          khmerWriting,
-          khmerDictation: khmerWriting,
-          khmerComposition: khmerWriting,
-          khmerListening,
-          khmerSpeaking,
-          mathNumbers,
-          mathAlgebra,
-          mathMeasurement,
-          mathGeometry,
-          mathStatistics,
         };
+
+        if (subj.id === 'sub_khmer') {
+          scoreEntry.khmerReading = khmerReading;
+          scoreEntry.khmerWriting = khmerWriting;
+          scoreEntry.khmerDictation = khmerWriting;
+          scoreEntry.khmerComposition = khmerWriting;
+          scoreEntry.khmerListening = khmerListening;
+          scoreEntry.khmerSpeaking = khmerSpeaking;
+        } else if (subj.id === 'sub_math') {
+          scoreEntry.mathNumbers = mathNumbers;
+          scoreEntry.mathAlgebra = mathAlgebra;
+          scoreEntry.mathMeasurement = mathMeasurement;
+          scoreEntry.mathGeometry = mathGeometry;
+          scoreEntry.mathStatistics = mathStatistics;
+        }
+
+        scores[stuId][period.id][subj.id] = scoreEntry;
       }
     }
   }

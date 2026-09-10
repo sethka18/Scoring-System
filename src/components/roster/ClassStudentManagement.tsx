@@ -89,7 +89,6 @@ export const ClassStudentManagement: React.FC = () => {
   const [formData, setFormData] = useState({
     studentId: '',
     name: '',
-    nameLatin: '',
     gender: 'Male' as Gender,
     dob: '2014-01-01',
     guardianName: '',
@@ -101,11 +100,7 @@ export const ClassStudentManagement: React.FC = () => {
 
   // Filtered Students
   const filteredStudents = classStudents.filter(s => {
-    const matchesSearch = 
-      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (s.nameLatin && s.nameLatin.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      s.studentId.toLowerCase().includes(searchTerm.toLowerCase());
-    
+    const matchesSearch = s.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesGender = genderFilter === 'All' || s.gender === genderFilter;
     return matchesSearch && matchesGender;
   });
@@ -146,7 +141,6 @@ export const ClassStudentManagement: React.FC = () => {
     setFormData({
       studentId: `STU-${classPrefix}-${nextNum}`,
       name: '',
-      nameLatin: '',
       gender: 'Male',
       dob: '2014-01-01',
       guardianName: '',
@@ -337,7 +331,7 @@ export const ClassStudentManagement: React.FC = () => {
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder={language === 'km' ? 'ស្វែងរកតាមឈ្មោះ ឬ អត្តលេខ...' : 'Search student by name or ID...'}
+              placeholder={language === 'km' ? 'ស្វែងរកតាមឈ្មោះសិស្ស...' : 'Search student by name...'}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm font-bold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"
@@ -499,7 +493,6 @@ export const ClassStudentManagement: React.FC = () => {
                   />
                 </th>
                 <th className="py-3.5 px-3 w-10 text-center">#</th>
-                <th className="py-3.5 px-4">{language === 'km' ? 'អត្តលេខ' : 'Student ID'}</th>
                 <th className="py-3.5 px-4">{language === 'km' ? 'គោត្តនាម និងនាម' : 'Full Name'}</th>
                 <th className="py-3.5 px-4 text-center">{language === 'km' ? 'ភេទ' : 'Gender'}</th>
                 <th className="py-3.5 px-4">{language === 'km' ? 'ថ្ងៃខែឆ្នាំកំណើត' : 'Birth Date'}</th>
@@ -512,7 +505,7 @@ export const ClassStudentManagement: React.FC = () => {
             <tbody className="divide-y divide-slate-100">
               {filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="py-12 text-center text-slate-400 font-bold">
+                  <td colSpan={9} className="py-12 text-center text-slate-400 font-bold">
                     {language === 'km' ? 'មិនមានទិន្នន័យសិស្សត្រូវបង្ហាញឡើយ' : 'No students found matching current filters.'}
                   </td>
                 </tr>
@@ -545,14 +538,8 @@ export const ClassStudentManagement: React.FC = () => {
                       <td className="py-3 px-3 text-center font-black text-slate-400">
                         {index + 1}
                       </td>
-                      <td className="py-3 px-4 font-mono text-xs font-black text-slate-700">
-                        {student.studentId}
-                      </td>
                       <td className="py-3 px-4">
                         <div className="font-black text-slate-900">{student.name}</div>
-                        {student.nameLatin && (
-                          <div className="text-[11px] font-semibold text-slate-400">{student.nameLatin}</div>
-                        )}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${
@@ -609,7 +596,6 @@ export const ClassStudentManagement: React.FC = () => {
                               setFormData({
                                 studentId: student.studentId,
                                 name: student.name,
-                                nameLatin: student.nameLatin || '',
                                 gender: student.gender,
                                 dob: student.dob || '2014-01-01',
                                 guardianName: student.guardianName || '',
@@ -673,32 +659,18 @@ export const ClassStudentManagement: React.FC = () => {
             </div>
 
             <form onSubmit={handleSaveStudent} className="space-y-4 mt-4 text-xs sm:text-sm">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    {language === 'km' ? 'អត្តលេខសិស្ស' : 'Student ID'} *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.studentId}
-                    onChange={(e) => setFormData({ ...formData, studentId: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 font-mono"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    {language === 'km' ? 'ភេទ' : 'Gender'} *
-                  </label>
-                  <select
-                    value={formData.gender}
-                    onChange={(e) => setFormData({ ...formData, gender: e.target.value as Gender })}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500"
-                  >
-                    <option value="Male">{language === 'km' ? 'ប្រុស (Male)' : 'Male'}</option>
-                    <option value="Female">{language === 'km' ? 'ស្រី (Female)' : 'Female'}</option>
-                  </select>
-                </div>
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">
+                  {language === 'km' ? 'ភេទ' : 'Gender'} *
+                </label>
+                <select
+                  value={formData.gender}
+                  onChange={(e) => setFormData({ ...formData, gender: e.target.value as Gender })}
+                  className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500"
+                >
+                  <option value="Male">{language === 'km' ? 'ប្រុស (Male)' : 'Male'}</option>
+                  <option value="Female">{language === 'km' ? 'ស្រី (Female)' : 'Female'}</option>
+                </select>
               </div>
 
               <div>
@@ -850,9 +822,8 @@ export const ClassStudentManagement: React.FC = () => {
                       <div className="flex items-center space-x-2">
                         <span className="font-mono text-slate-400 text-[10px]">{idx + 1}.</span>
                         <span className="font-bold text-slate-800">{s.name}</span>
-                        {s.nameLatin && <span className="text-slate-400 text-[10px]">({s.nameLatin})</span>}
                       </div>
-                      <span className="font-mono text-[10px] text-slate-500">{s.studentId}</span>
+                      <span className="text-[11px] font-semibold text-slate-500">{s.gender === 'Female' ? 'ស្រី' : 'ប្រុស'}</span>
                     </div>
                   ))}
               </div>
@@ -1171,9 +1142,7 @@ export const ClassStudentManagement: React.FC = () => {
                       <thead className="bg-slate-100 text-slate-500 font-bold sticky top-0">
                         <tr>
                           <th className="p-2">#</th>
-                          <th className="p-2">ID</th>
                           <th className="p-2">{language === 'km' ? 'ឈ្មោះខ្មែរ' : 'Khmer Name'}</th>
-                          <th className="p-2">{language === 'km' ? 'ឈ្មោះឡាតាំង' : 'Latin Name'}</th>
                           <th className="p-2">{language === 'km' ? 'ភេទ' : 'Gender'}</th>
                           <th className="p-2">{language === 'km' ? 'ថ្ងៃខែឆ្នាំកំណើត' : 'DOB'}</th>
                           <th className="p-2">{language === 'km' ? 'ទូរស័ព្ទ' : 'Phone'}</th>
@@ -1183,9 +1152,7 @@ export const ClassStudentManagement: React.FC = () => {
                         {parsedImportStudents.slice(0, 8).map((s, idx) => (
                           <tr key={idx} className="hover:bg-slate-50">
                             <td className="p-2 font-mono text-slate-400">{idx + 1}</td>
-                            <td className="p-2 font-mono font-bold text-slate-700">{s.studentId}</td>
                             <td className="p-2 font-bold text-slate-900">{s.name}</td>
-                            <td className="p-2 text-slate-500">{s.nameLatin || '-'}</td>
                             <td className="p-2">
                               <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
                                 s.gender === 'Female' ? 'text-pink-700 bg-pink-50' : 'text-blue-700 bg-blue-50'

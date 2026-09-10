@@ -17,7 +17,9 @@ import {
   StudentAttendanceSummary,
   SchoolProfile,
   ReadingPassage,
-  FluencyTestRecord
+  FluencyTestRecord,
+  StudentAgreementPlan,
+  GradeLetter
 } from '../types';
 import { 
   DEFAULT_SUBJECTS, 
@@ -38,7 +40,12 @@ import {
   DEFAULT_CURRICULUM_PROGRAMS,
   generateDefaultTimetable
 } from '../data/calendarScheduleData';
-import { formatConductRating } from '../utils/calculations';
+import { formatConductRating, calculateSubjectScore } from '../utils/calculations';
+import { 
+  createDefaultStudentPlan, 
+  generateInitialAgreementPlans, 
+  scoreToGradeLetter 
+} from '../utils/agreementPlanUtils';
 import { 
   getSavedSyncKey, 
   saveSyncKey, 
@@ -66,12 +73,14 @@ export type NavTab =
   | 'rankings' 
   | 'analytics' 
   | 'report_card' 
+  | 'record_book'
   | 'calendar' 
   | 'schedule' 
   | 'curriculum' 
   | 'backup_restore'
   | 'settings'
-  | 'mini_games';
+  | 'mini_games'
+  | 'student_plan';
 
 interface ToastNotification {
   id: string;
@@ -215,6 +224,13 @@ interface GradebookContextType {
   isSyncModalOpen: boolean;
   setIsSyncModalOpen: (open: boolean) => void;
 
+  // Individual Student Plan & Parent Agreement (PLP)
+  studentAgreements: Record<string, StudentAgreementPlan>;
+  getStudentAgreement: (studentId: string) => StudentAgreementPlan;
+  updateStudentAgreement: (studentId: string, plan: Partial<StudentAgreementPlan>) => void;
+  batchUpdateStudentAgreements: (plans: Record<string, Partial<StudentAgreementPlan>>) => void;
+  autoSyncAchievedGradesFromYearly: () => void;
+
   toasts: ToastNotification[];
   showToast: (message: string, type?: 'success' | 'info' | 'warning' | 'error') => void;
   addToast: (message: string, type?: 'success' | 'info' | 'warning' | 'error') => void;
@@ -264,15 +280,13 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (saved) {
       try { 
         const parsed = JSON.parse(saved);
-        return {
-          ...DEFAULT_SCHOOL_PROFILE,
-          ...parsed,
-          academicYear: (parsed.academicYear === '២០២៥-២០២៦' || !parsed.academicYear) ? '២០២៦-២០២៧' : parsed.academicYear,
-          village: (parsed.village === 'ភូមិព្រៃឈរ' || !parsed.village) ? 'ភូមិប្រទង' : parsed.village,
-          commune: (parsed.commune === 'ឃុំព្រៃឈរ' || !parsed.commune) ? 'ឃុំអូរម្លូ' : parsed.commune,
-          district: (parsed.district === 'ស្រុកព្រៃឈរ' || !parsed.district) ? 'ស្រុកស្ទឹងត្រង់' : parsed.district,
-          province: parsed.province || 'ខេត្តកំពង់ចាម',
-        };
+        if (parsed.schoolNameKm && !parsed.schoolNameKm.includes('ហ៊ុនណេង')) {
+          return {
+            ...DEFAULT_SCHOOL_PROFILE,
+            ...parsed,
+            academicYear: parsed.academicYear || DEFAULT_SCHOOL_PROFILE.academicYear,
+          };
+        }
       } catch (e) { console.error(e); }
     }
     return DEFAULT_SCHOOL_PROFILE;
@@ -283,15 +297,8 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (saved) {
       try { 
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.map((cls: ClassSection) => ({
-            ...cls,
-            academicYear: (cls.academicYear === '២០២៥-២០២៦' || !cls.academicYear) ? '២០២៦-២០២៧' : cls.academicYear,
-            commune: (cls.commune === 'ឃុំព្រៃឈរ' || !cls.commune) ? 'ឃុំអូរម្លូ' : cls.commune,
-            district: (cls.district === 'ស្រុកព្រៃឈរ' || !cls.district) ? 'ស្រុកស្ទឹងត្រង់' : cls.district,
-            province: cls.province || 'ខេត្តកំពង់ចាម',
-            teacherName: cls.teacherNameKm || cls.teacherName || 'លោកគ្រូ ផាន សិតការណ៍',
-          }));
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed.some((c: any) => c.id === 'class_4c')) {
+          return parsed;
         }
       } catch (e) { console.error(e); }
     }
@@ -300,8 +307,8 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const [activeClassId, setActiveClassId] = useState<string>(() => {
     const saved = localStorage.getItem(`${LS_PREFIX}active_class`);
-    if (saved) return saved;
-    return INITIAL_CLASSES[0]?.id || 'class_6a';
+    if (saved && (saved === 'class_4c' || saved === 'class_6')) return saved;
+    return INITIAL_CLASSES[0]?.id || 'class_4c';
   });
 
   const [students, setStudents] = useState<Student[]>(() => {
@@ -309,7 +316,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
+        if (Array.isArray(parsed) && parsed.length >= 34 && parsed[0]?.name === 'ជួ ម៉េងជីង') {
           return parsed.map((s: Student) => ({
             ...s,
             attendanceCount: s.attendanceCount || { present: 100, absentExcused: 0, absentUnexcused: 0, late: 0 },
@@ -380,11 +387,44 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   });
 
   const [scoresMatrix, setScoresMatrix] = useState<Record<string, Record<string, Record<string, any>>>>(() => {
+    const initialGenerated = generateInitialScores();
     const saved = localStorage.getItem(`${LS_PREFIX}scores`);
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { console.error(e); }
+      try { 
+        const parsed = JSON.parse(saved); 
+        if (parsed && (parsed['stu_34'] || parsed['stu_1'])) {
+          let hasMissing = false;
+          // Ensure all default subjects are populated for all students and periods
+          for (const [stuId, stuPeriods] of Object.entries(initialGenerated)) {
+            if (!parsed[stuId]) {
+              parsed[stuId] = stuPeriods;
+              hasMissing = true;
+              continue;
+            }
+            for (const [pId, pSubjs] of Object.entries(stuPeriods)) {
+              if (!parsed[stuId][pId]) {
+                parsed[stuId][pId] = pSubjs;
+                hasMissing = true;
+                continue;
+              }
+              for (const [subjId, subjScore] of Object.entries(pSubjs)) {
+                if (!parsed[stuId][pId][subjId]) {
+                  parsed[stuId][pId][subjId] = subjScore;
+                  hasMissing = true;
+                }
+              }
+            }
+          }
+          if (hasMissing) {
+            try {
+              localStorage.setItem(`${LS_PREFIX}scores`, JSON.stringify(parsed));
+            } catch (e) {}
+          }
+          return parsed;
+        }
+      } catch (e) { console.error(e); }
     }
-    return generateInitialScores();
+    return initialGenerated;
   });
 
   const [weights, setWeights] = useState<AssessmentWeightConfig>(() => {
@@ -507,6 +547,141 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
     return generateInitialAttendanceRecords();
   });
+
+  // Individual Student Plan & Parent Agreement (PLP) State
+  const [studentAgreements, setStudentAgreements] = useState<Record<string, StudentAgreementPlan>>(() => {
+    const saved = localStorage.getItem(`${LS_PREFIX}student_agreements`);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object') {
+          return parsed;
+        }
+      } catch (e) { console.error(e); }
+    }
+    return generateInitialAgreementPlans(INITIAL_STUDENTS, 'class_6a');
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(`${LS_PREFIX}student_agreements`, JSON.stringify(studentAgreements));
+    } catch (e) { console.error(e); }
+  }, [studentAgreements]);
+
+  const getStudentAgreement = (studentId: string): StudentAgreementPlan => {
+    if (studentAgreements[studentId]) {
+      return studentAgreements[studentId];
+    }
+    const student = students.find(s => s.id === studentId);
+    if (student) {
+      return createDefaultStudentPlan(
+        student,
+        activeClassId,
+        schoolProfile?.academicYear,
+        activeClass?.teacherNameKm || activeClass?.teacherName,
+        schoolProfile?.phone || '012 345 678'
+      );
+    }
+    return {
+      studentId,
+      classId: activeClassId,
+      khmer: {},
+      math: {},
+    };
+  };
+
+  const updateStudentAgreement = (studentId: string, updatedPlan: Partial<StudentAgreementPlan>) => {
+    setStudentAgreements(prev => {
+      const student = students.find(s => s.id === studentId);
+      const existing = prev[studentId] || (student ? createDefaultStudentPlan(student, activeClassId, schoolProfile?.academicYear, activeClass?.teacherNameKm || activeClass?.teacherName, schoolProfile?.phone || '012 345 678') : null);
+      if (!existing) return prev;
+      const merged: StudentAgreementPlan = {
+        ...existing,
+        ...updatedPlan,
+        khmer: { ...existing.khmer, ...(updatedPlan.khmer || {}) },
+        math: { ...existing.math, ...(updatedPlan.math || {}) },
+        updatedAt: new Date().toISOString(),
+      };
+      const next = { ...prev, [studentId]: merged };
+      try {
+        localStorage.setItem(`${LS_PREFIX}student_agreements`, JSON.stringify(next));
+      } catch (e) { console.error(e); }
+      return next;
+    });
+  };
+
+  const batchUpdateStudentAgreements = (plans: Record<string, Partial<StudentAgreementPlan>>) => {
+    setStudentAgreements(prev => {
+      const next = { ...prev };
+      Object.entries(plans).forEach(([stuId, plan]) => {
+        const student = students.find(s => s.id === stuId);
+        const existing = next[stuId] || (student ? createDefaultStudentPlan(student, activeClassId, schoolProfile?.academicYear, activeClass?.teacherNameKm || activeClass?.teacherName, schoolProfile?.phone || '012 345 678') : null);
+        if (existing) {
+          next[stuId] = {
+            ...existing,
+            ...plan,
+            khmer: { ...existing.khmer, ...(plan.khmer || {}) },
+            math: { ...existing.math, ...(plan.math || {}) },
+            updatedAt: new Date().toISOString(),
+          };
+        }
+      });
+      try {
+        localStorage.setItem(`${LS_PREFIX}student_agreements`, JSON.stringify(next));
+      } catch (e) { console.error(e); }
+      return next;
+    });
+  };
+
+  const autoSyncAchievedGradesFromYearly = () => {
+    setStudentAgreements(prev => {
+      const next = { ...prev };
+      let updatedCount = 0;
+      classStudents.forEach(stu => {
+        let khmerTotal = 0, khmerCount = 0;
+        let mathTotal = 0, mathCount = 0;
+
+        periods.forEach(p => {
+          const khmerEntry = scoresMatrix[stu.id]?.[p.id]?.['sub_khmer'];
+          if (khmerEntry) {
+            const sc = calculateSubjectScore(khmerEntry, weights, 'KHM');
+            if (sc > 0) { khmerTotal += sc; khmerCount++; }
+          }
+          const mathEntry = scoresMatrix[stu.id]?.[p.id]?.['sub_math'];
+          if (mathEntry) {
+            const sc = calculateSubjectScore(mathEntry, weights, 'MTH');
+            if (sc > 0) { mathTotal += sc; mathCount++; }
+          }
+        });
+
+        const khmerAvg = khmerCount > 0 ? Number((khmerTotal / khmerCount).toFixed(2)) : undefined;
+        const mathAvg = mathCount > 0 ? Number((mathTotal / mathCount).toFixed(2)) : undefined;
+
+        const khmerAchieved = scoreToGradeLetter(khmerAvg);
+        const mathAchieved = scoreToGradeLetter(mathAvg);
+
+        const existing = next[stu.id] || createDefaultStudentPlan(stu, activeClassId, schoolProfile?.academicYear, activeClass?.teacherNameKm || activeClass?.teacherName, schoolProfile?.phone || '012 345 678');
+        next[stu.id] = {
+          ...existing,
+          khmer: {
+            ...existing.khmer,
+            ...(khmerAchieved ? { achievedGrade: khmerAchieved, achievedScore: khmerAvg } : {})
+          },
+          math: {
+            ...existing.math,
+            ...(mathAchieved ? { achievedGrade: mathAchieved, achievedScore: mathAvg } : {})
+          },
+          updatedAt: new Date().toISOString(),
+        };
+        updatedCount++;
+      });
+      try {
+        localStorage.setItem(`${LS_PREFIX}student_agreements`, JSON.stringify(next));
+      } catch (e) { console.error(e); }
+      showToast(language === 'km' ? `បានទាញយកនិទ្ទេសសម្រេចចុងឆ្នាំសម្រាប់សិស្ស ${updatedCount} នាក់` : `Auto-synced achieved grades for ${updatedCount} students`, 'success');
+      return next;
+    });
+  };
 
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>('stu_1');
   const [toasts, setToasts] = useState<ToastNotification[]>([]);
@@ -758,7 +933,6 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           clonedStudents.push({
             ...originalStudent,
             id: freshStudentId,
-            studentId: `STU-${target.gradeLevel}${newNameEn.slice(-1) || 'B'}-${(index + 1).toString().padStart(2, '0')}`,
             attendanceCount: { present: 0, absentExcused: 0, absentUnexcused: 0, late: 0 },
           });
           newStudentIds.push(freshStudentId);
@@ -1354,6 +1528,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setTimetableSlotsState(INITIAL_TIMETABLE_SLOTS);
     setCurriculumPrograms(DEFAULT_CURRICULUM_PROGRAMS);
     setSchoolProfileState(DEFAULT_SCHOOL_PROFILE);
+    setStudentAgreements(generateInitialAgreementPlans(INITIAL_STUDENTS, 'class_6a'));
     showToast(language === 'km' ? 'បានកំណត់ទិន្នន័យឡើងវិញ' : 'Reset to default sample data', 'info');
   };
 
@@ -1371,6 +1546,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       if (data.timetableSlots) setTimetableSlotsState(data.timetableSlots);
       if (data.curriculumPrograms) setCurriculumPrograms(data.curriculumPrograms);
       if (data.activeClassId) setActiveClassId(data.activeClassId);
+      if (data.studentAgreements && typeof data.studentAgreements === 'object') setStudentAgreements(data.studentAgreements);
       showToast(language === 'km' ? 'បាននាំចូលទិន្នន័យជោគជ័យ' : 'Backup imported successfully');
       return true;
     } catch (e) {
@@ -1640,6 +1816,11 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setAutoSyncEnabled,
         isSyncModalOpen,
         setIsSyncModalOpen,
+        studentAgreements,
+        getStudentAgreement,
+        updateStudentAgreement,
+        batchUpdateStudentAgreements,
+        autoSyncAchievedGradesFromYearly,
       }}
     >
       {children}

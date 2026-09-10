@@ -16,39 +16,62 @@ export function calculateSubjectScore(
 ): number {
   if (!entry) return 0;
 
-  // 1. If Khmer 4 sub-skills are populated (អាន, សរសេរ, ស្ដាប់, និយាយ)
+  // 1. If Khmer Language (4 sub-skills: អាន, សរសេរ, ស្ដាប់, និយាយ)
   if (
-    entry.khmerReading !== undefined ||
-    entry.khmerWriting !== undefined ||
-    entry.khmerDictation !== undefined ||
-    entry.khmerComposition !== undefined ||
-    entry.khmerListening !== undefined ||
-    entry.khmerSpeaking !== undefined
+    subjectCode === 'KHM' ||
+    (!subjectCode && (
+      entry.khmerReading !== undefined ||
+      entry.khmerWriting !== undefined ||
+      entry.khmerDictation !== undefined ||
+      entry.khmerComposition !== undefined ||
+      entry.khmerListening !== undefined ||
+      entry.khmerSpeaking !== undefined
+    ))
   ) {
-    const r = entry.khmerReading ?? 0;
-    const w = entry.khmerWriting ?? ((entry.khmerDictation !== undefined || entry.khmerComposition !== undefined) ? ((entry.khmerDictation ?? 0) + (entry.khmerComposition ?? 0)) / 2 : 0);
-    const l = entry.khmerListening ?? 0;
-    const s = entry.khmerSpeaking ?? 0;
-    return Number(((r + w + l + s) / 4).toFixed(2));
+    if (
+      entry.khmerReading !== undefined ||
+      entry.khmerWriting !== undefined ||
+      entry.khmerDictation !== undefined ||
+      entry.khmerComposition !== undefined ||
+      entry.khmerListening !== undefined ||
+      entry.khmerSpeaking !== undefined
+    ) {
+      const r = entry.khmerReading ?? 0;
+      const w = entry.khmerWriting ?? ((entry.khmerDictation !== undefined || entry.khmerComposition !== undefined) ? ((entry.khmerDictation ?? 0) + (entry.khmerComposition ?? 0)) / 2 : 0);
+      const l = entry.khmerListening ?? 0;
+      const s = entry.khmerSpeaking ?? 0;
+      return Number(((r + w + l + s) / 4).toFixed(2));
+    }
   }
 
-  // 2. If Math 5 sections are populated (ចំនួន, ពិជគណិត, រង្វាស់រង្វាល់, ធរណីមាត្រ, ស្ថិតិ)
+  // 2. If Mathematics (5 sections: ចំនួន, ពិជគណិត, រង្វាស់រង្វាល់, ធរណីមាត្រ, ស្ថិតិ)
   if (
-    entry.mathNumbers !== undefined ||
-    entry.mathAlgebra !== undefined ||
-    entry.mathMeasurement !== undefined ||
-    entry.mathGeometry !== undefined ||
-    entry.mathStatistics !== undefined
+    subjectCode === 'MTH' ||
+    (!subjectCode && (
+      entry.mathNumbers !== undefined ||
+      entry.mathAlgebra !== undefined ||
+      entry.mathMeasurement !== undefined ||
+      entry.mathGeometry !== undefined ||
+      entry.mathStatistics !== undefined
+    ))
   ) {
-    const n = entry.mathNumbers ?? entry.mathAlgebra ?? 0;
-    const a = entry.mathAlgebra ?? 0;
-    const m = entry.mathMeasurement ?? 0;
-    const g = entry.mathGeometry ?? 0;
-    const st = entry.mathStatistics ?? 0;
-    return Number(((n + a + m + g + st) / 5).toFixed(2));
+    if (
+      entry.mathNumbers !== undefined ||
+      entry.mathAlgebra !== undefined ||
+      entry.mathMeasurement !== undefined ||
+      entry.mathGeometry !== undefined ||
+      entry.mathStatistics !== undefined
+    ) {
+      const n = entry.mathNumbers ?? entry.mathAlgebra ?? 0;
+      const a = entry.mathAlgebra ?? 0;
+      const m = entry.mathMeasurement ?? 0;
+      const g = entry.mathGeometry ?? 0;
+      const st = entry.mathStatistics ?? 0;
+      return Number(((n + a + m + g + st) / 5).toFixed(2));
+    }
   }
 
-  // 3. Direct subject score (Science, Social Studies, Morals, PE, Arts, English, etc.)
+  // 3. Direct subject score (Science, Moral-Civics, Geography-History, Arts, PE, Health, Life Skills, English, Social Studies, etc.)
   if (entry.rawScore !== undefined) {
     return Number(Number(entry.rawScore).toFixed(2));
   }
@@ -116,7 +139,7 @@ export function calculatePeriodRankings(
   scoresMatrix: Record<string, Record<string, Record<string, any>>>,
   weights: AssessmentWeightConfig,
   competencyWeights: CompetencyPillarsWeight = DEFAULT_COMPETENCY_WEIGHTS,
-  sortBy: 'total_score' | 'average' | 'student_id' | 'name' = 'total_score'
+  sortBy: 'total_score' | 'average' | 'name' = 'total_score'
 ): Array<{
   student: Student;
   knowledgeScore: number;
@@ -151,8 +174,6 @@ export function calculatePeriodRankings(
     } else if (sortBy === 'average') {
       if (b.average !== a.average) return b.average - a.average;
       return b.totalPoints - a.totalPoints;
-    } else if (sortBy === 'student_id') {
-      return a.student.studentId.localeCompare(b.student.studentId, undefined, { numeric: true });
     } else if (sortBy === 'name') {
       return a.student.name.localeCompare(b.student.name, 'km');
     }

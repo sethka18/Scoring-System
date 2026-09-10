@@ -112,6 +112,7 @@ export const ReportCardView: React.FC = () => {
     schoolProfile,
     selectedStudentId,
     setSelectedStudentId,
+    setActiveTab,
   } = useGradebook();
 
   const [reportMode, setReportMode] = useState<'monthly' | 'yearly'>('monthly');
@@ -485,9 +486,8 @@ export const ReportCardView: React.FC = () => {
             </div>
 
             <div>
-              <span className="text-slate-500 text-[10px] uppercase font-bold block">អត្តលេខ / ភេទ</span>
-              <span className="font-mono font-black text-slate-800">{stu.studentId}</span>
-              <span className="ml-2 font-bold text-slate-600">({stu.gender === 'Female' ? 'ស្រី' : 'ប្រុស'})</span>
+              <span className="text-slate-500 text-[10px] uppercase font-bold block">ភេទ</span>
+              <span className="font-bold text-slate-900">{stu.gender === 'Female' ? 'ស្រី' : 'ប្រុស'}</span>
             </div>
 
             <div>
@@ -999,9 +999,8 @@ export const ReportCardView: React.FC = () => {
             </div>
 
             <div>
-              <span className="text-slate-500 text-[11px] block">អត្តលេខ / ភេទ</span>
-              <span className="font-mono font-bold text-slate-800">{stu.studentId}</span>
-              <span className="ml-2 font-medium text-slate-600">({stu.gender === 'Female' ? 'ស្រី' : 'ប្រុស'})</span>
+              <span className="text-slate-500 text-[11px] block">ភេទ</span>
+              <span className="font-bold text-slate-800">{stu.gender === 'Female' ? 'ស្រី' : 'ប្រុស'}</span>
             </div>
 
             <div>
@@ -1323,6 +1322,15 @@ export const ReportCardView: React.FC = () => {
               <FileCheck2 className="w-4 h-4 text-indigo-700" />
               <span>លទ្ធផលសិក្សាប្រចាំឆ្នាំ</span>
             </button>
+
+            <button
+              onClick={() => setActiveTab('record_book')}
+              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-black transition cursor-pointer text-amber-900 hover:bg-amber-100/70 bg-amber-50/70 border border-amber-200/60"
+            >
+              <BookOpen className="w-4 h-4 text-amber-700" />
+              <span>សៀវភៅសិក្ខាគរិក (MoEYS)</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-amber-200 text-amber-900 font-bold">ថ្មី</span>
+            </button>
           </div>
 
           {/* Month Selector (Shown in Monthly mode) */}
@@ -1494,12 +1502,12 @@ export const ReportCardView: React.FC = () => {
               {reportMode === 'monthly'
                 ? periodRankings.map(r => (
                     <option key={r.student.id} value={r.student.id}>
-                      #{r.rank} - {r.student.name} ({r.student.studentId}) - {r.average.toFixed(2)}
+                      #{r.rank} - {r.student.name} - {r.average.toFixed(2)}
                     </option>
                   ))
                 : yearlySummaries.map(s => (
                     <option key={s.student.id} value={s.student.id}>
-                      #{s.yearlyRank} - {s.student.name} ({s.student.studentId}) - {s.yearlyAverage.toFixed(2)}
+                      #{s.yearlyRank} - {s.student.name} - {s.yearlyAverage.toFixed(2)}
                     </option>
                   ))
               }

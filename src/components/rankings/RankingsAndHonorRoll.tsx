@@ -36,10 +36,12 @@ import { TelegramShareModal } from '../common/TelegramShareModal';
 import { SchoolLogo } from '../common/SchoolLogo';
 import { PrintToPdfButton } from '../common/PrintToPdfButton';
 import { OfficialHonorRollPoster } from './OfficialHonorRollPoster';
+import { OfficialClassRankingSheet } from './OfficialClassRankingSheet';
 import { Student, Subject } from '../../types';
 
 export type HonorHallTheme = 'royal_gold' | 'sapphire_blue' | 'imperial_emerald' | 'crimson_laurel' | 'modern_minimal';
 export type SortOption = 'total_score' | 'average' | 'student_id' | 'name';
+export type RankingViewMode = 'official_ranking_sheet' | 'honor_poster' | 'honor_cards' | 'full_ranking';
 
 interface ThemeConfig {
   id: HonorHallTheme;
@@ -395,7 +397,8 @@ export const RankingsAndHonorRoll: React.FC = () => {
   } = useGradebook();
 
   const [selectedPeriodId, setSelectedPeriodId] = useState<string>('p_feb');
-  const [viewMode, setViewMode] = useState<'honor_poster' | 'honor_cards' | 'full_ranking'>('honor_poster');
+  const [viewMode, setViewMode] = useState<RankingViewMode>('official_ranking_sheet');
+  const [gradeFilter, setGradeFilter] = useState<'all' | 'abc' | 'ab'>('abc');
   const [sortBy, setSortBy] = useState<SortOption>('total_score');
   const [selectedTheme, setSelectedTheme] = useState<HonorHallTheme>(() => {
     const saved = localStorage.getItem('ls_honor_hall_theme');
@@ -437,6 +440,16 @@ export const RankingsAndHonorRoll: React.FC = () => {
     );
   }, [classStudents, selectedPeriodId, subjects, scoresMatrix, weights, competencyWeights, sortBy]);
 
+  // Students with Grade A, B, and C (Average >= 6.5) - Requested: "ត្រង់នេះសូមកំណត់យកសិស្ស ABC មិនមែណតែABទេ"
+  const studentsABC = useMemo(() => {
+    return rankings.filter(item => item.average >= 6.5);
+  }, [rankings]);
+
+  // Students with Grade A and B (Average >= 7.5)
+  const studentsAB = useMemo(() => {
+    return rankings.filter(item => item.average >= 7.5);
+  }, [rankings]);
+
   // Identify students needing intervention (overall average or any subject below threshold)
   const studentsNeedingIntervention = useMemo(() => {
     return rankings.filter(item => {
@@ -450,12 +463,17 @@ export const RankingsAndHonorRoll: React.FC = () => {
     if (filterInterventionOnly) {
       return studentsNeedingIntervention;
     }
+    if (gradeFilter === 'abc') {
+      return studentsABC;
+    }
+    if (gradeFilter === 'ab') {
+      return studentsAB;
+    }
     return rankings;
-  }, [rankings, filterInterventionOnly, studentsNeedingIntervention]);
+  }, [rankings, filterInterventionOnly, gradeFilter, studentsABC, studentsAB, studentsNeedingIntervention]);
 
-  // Top 5 achievers always extracted from the highest total score ranking
+  // Top 5 achievers: honors students with Grade A, B, or C as specified by user
   const topAchievers = useMemo(() => {
-    // Top 5 strictly by academic rank 1 to 5
     const rankedByScore = calculatePeriodRankings(
       classStudents,
       selectedPeriodId,
@@ -465,8 +483,16 @@ export const RankingsAndHonorRoll: React.FC = () => {
       competencyWeights,
       'total_score'
     );
+    if (gradeFilter === 'abc') {
+      const abcList = rankedByScore.filter(item => item.average >= 6.5);
+      return abcList.length >= 5 ? abcList.slice(0, 5) : abcList.length > 0 ? abcList : rankedByScore.slice(0, 5);
+    }
+    if (gradeFilter === 'ab') {
+      const abList = rankedByScore.filter(item => item.average >= 7.5);
+      return abList.length >= 5 ? abList.slice(0, 5) : abList.length > 0 ? abList : rankedByScore.slice(0, 5);
+    }
     return rankedByScore.slice(0, 5);
-  }, [classStudents, selectedPeriodId, subjects, scoresMatrix, weights, competencyWeights]);
+  }, [classStudents, selectedPeriodId, subjects, scoresMatrix, weights, competencyWeights, gradeFilter]);
 
   const triggerCelebration = () => {
     confetti({
@@ -556,8 +582,18 @@ export const RankingsAndHonorRoll: React.FC = () => {
 
             {/* A4 Clean Print to PDF Button */}
             <PrintToPdfButton
-              targetElementId={viewMode === 'honor_poster' ? 'official-honor-poster-a4' : 'official-rankings-print-container'}
-              documentTitle={`MoEYS_${activeClass?.nameKm || 'Class'}_${viewMode === 'honor_poster' ? 'Honor_Roll_Poster' : viewMode === 'honor_cards' ? 'Top5_Honor_Roll' : 'Full_Rank_Table'}_${currentPeriod.code}`}
+              targetElementId={
+                viewMode === 'official_ranking_sheet'
+                  ? 'official-class-ranking-sheet-a4'
+                  : viewMode === 'honor_poster'
+                  ? 'official-honor-poster-a4'
+                  : 'official-rankings-print-container'
+              }
+              documentTitle={`MoEYS_${activeClass?.nameKm || 'Class'}_${
+                viewMode === 'official_ranking_sheet' ? 'Official_Ranking_Sheet' :
+                viewMode === 'honor_poster' ? 'Honor_Roll_Poster' : 
+                viewMode === 'honor_cards' ? 'Top5_Honor_Roll' : 'Full_Rank_Table'
+              }_${currentPeriod.code}`}
               pageSize="a4"
               orientation="portrait"
               variant="primary"
@@ -591,33 +627,94 @@ export const RankingsAndHonorRoll: React.FC = () => {
           {/* Left: View Mode & Auto-Sort Options */}
           <div className="flex flex-wrap items-center gap-2">
             {/* View Mode Toggle */}
-            <div className="inline-flex items-center space-x-1 bg-slate-100 p-1 rounded-xl">
+            <div className="inline-flex items-center space-x-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
               <button
+                type="button"
+                onClick={() => setViewMode('official_ranking_sheet')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition cursor-pointer flex items-center gap-1 ${
+                  viewMode === 'official_ranking_sheet' ? 'bg-white dark:bg-slate-900 text-indigo-700 dark:text-indigo-400 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <span>📑</span>
+                <span>{language === 'km' ? 'តារាងចំណាត់ថ្នាក់ A4 (ប្រចាំខែ/ឆមាស/ឆ្នាំ)' : 'Official Ranking Sheet (A4)'}</span>
+              </button>
+              <button
+                type="button"
                 onClick={() => setViewMode('honor_poster')}
                 className={`px-2.5 py-1 text-xs font-bold rounded-lg transition cursor-pointer flex items-center gap-1 ${
-                  viewMode === 'honor_poster' ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  viewMode === 'honor_poster' ? 'bg-white dark:bg-slate-900 text-indigo-700 dark:text-indigo-400 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <span>🏆</span>
                 <span>{language === 'km' ? 'គំរូតារាងកិត្តិយស (ក្រសួង A4)' : 'Official Honor Poster'}</span>
               </button>
               <button
+                type="button"
                 onClick={() => setViewMode('honor_cards')}
                 className={`px-2.5 py-1 text-xs font-bold rounded-lg transition cursor-pointer flex items-center gap-1 ${
-                  viewMode === 'honor_cards' ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  viewMode === 'honor_cards' ? 'bg-white dark:bg-slate-900 text-indigo-700 dark:text-indigo-400 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <span>🥇</span>
                 <span>{language === 'km' ? 'កាតកិត្តិយស Top 5' : 'Honor Cards'}</span>
               </button>
               <button
+                type="button"
                 onClick={() => setViewMode('full_ranking')}
                 className={`px-2.5 py-1 text-xs font-bold rounded-lg transition cursor-pointer flex items-center gap-1 ${
-                  viewMode === 'full_ranking' ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  viewMode === 'full_ranking' ? 'bg-white dark:bg-slate-900 text-indigo-700 dark:text-indigo-400 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <span>📋</span>
-                <span>{language === 'km' ? 'តារាងចំណាត់ថ្នាក់ពេញលេញ' : 'Full Rank Table'}</span>
+                <span>{language === 'km' ? 'តារាងពិន្ទុ & ចំណាត់ថ្នាក់' : 'Full Rank Table'}</span>
+              </button>
+            </div>
+
+            {/* Grade Filter for ABC vs AB vs All (User requested: ត្រង់នេះសូមកំណត់យកសិស្ស ABC មិនមែណតែABទេ) */}
+            <div className="inline-flex items-center space-x-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 px-1">
+                {language === 'km' ? 'កំណត់យក៖' : 'Filter:'}
+              </span>
+              <button
+                type="button"
+                onClick={() => setGradeFilter('abc')}
+                className={`px-2 py-1 text-xs font-bold rounded-lg transition cursor-pointer flex items-center gap-1 ${
+                  gradeFilter === 'abc' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700'
+                }`}
+                title="កំណត់យកសិស្សនិទ្ទេស A, B, C (មធ្យមភាគ >= ៦.៥)"
+              >
+                <span>🌟</span>
+                <span>{language === 'km' ? 'និទ្ទេស ABC' : 'Grades A, B, C'}</span>
+                <span className={`text-[10px] px-1 py-0.2 rounded-full ${gradeFilter === 'abc' ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}`}>
+                  {studentsABC.length}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setGradeFilter('ab')}
+                className={`px-2 py-1 text-xs font-bold rounded-lg transition cursor-pointer flex items-center gap-1 ${
+                  gradeFilter === 'ab' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700'
+                }`}
+                title="កំណត់យកសិស្សនិទ្ទេស A និង B (មធ្យមភាគ >= ៧.៥)"
+              >
+                <span>⭐</span>
+                <span>{language === 'km' ? 'និទ្ទេស AB' : 'Grades A & B'}</span>
+                <span className={`text-[10px] px-1 py-0.2 rounded-full ${gradeFilter === 'ab' ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}`}>
+                  {studentsAB.length}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setGradeFilter('all')}
+                className={`px-2 py-1 text-xs font-bold rounded-lg transition cursor-pointer flex items-center gap-1 ${
+                  gradeFilter === 'all' ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <span>👥</span>
+                <span>{language === 'km' ? 'ទាំងអស់' : 'All'}</span>
+                <span className={`text-[10px] px-1 py-0.2 rounded-full ${gradeFilter === 'all' ? 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}`}>
+                  {rankings.length}
+                </span>
               </button>
             </div>
 
@@ -634,7 +731,6 @@ export const RankingsAndHonorRoll: React.FC = () => {
               >
                 <option value="total_score">{language === 'km' ? '🥇 ផលបូកពិន្ទុសរុប (ខ្ពស់-ទាប)' : 'Total Score (High-Low)'}</option>
                 <option value="average">{language === 'km' ? '📊 មធ្យមភាគពិន្ទុ (ខ្ពស់-ទាប)' : 'Average Score (High-Low)'}</option>
-                <option value="student_id">{language === 'km' ? '🔢 អត្តលេខសិស្ស' : 'Student ID'}</option>
                 <option value="name">{language === 'km' ? '🔤 ឈ្មោះសិស្ស (ក-អ)' : 'Student Name (A-Z)'}</option>
               </select>
             </div>
@@ -679,7 +775,12 @@ export const RankingsAndHonorRoll: React.FC = () => {
 
       </div>
 
-      {/* 1. OFFICIAL MOEYS HONOR ROLL POSTER (A4 PRINTABLE WITH STUDENT PHOTO SLOTS) */}
+      {/* 1. OFFICIAL MOEYS A4 RANKING SHEET (MONTHLY, SEMESTER 1, SEMESTER 2, YEARLY) */}
+      {viewMode === 'official_ranking_sheet' && (
+        <OfficialClassRankingSheet />
+      )}
+
+      {/* 2. OFFICIAL MOEYS HONOR ROLL POSTER (A4 PRINTABLE WITH STUDENT PHOTO SLOTS) */}
       {viewMode === 'honor_poster' && (
         <OfficialHonorRollPoster
           topStudents={topAchievers}
@@ -688,8 +789,8 @@ export const RankingsAndHonorRoll: React.FC = () => {
         />
       )}
 
-      {/* 2. OFFICIAL PRINTABLE CERTIFICATE & HONOR CARDS / RANK SHEET */}
-      {viewMode !== 'honor_poster' && (
+      {/* 3. OFFICIAL PRINTABLE CERTIFICATE & HONOR CARDS / RANK SHEET */}
+      {(viewMode === 'honor_cards' || viewMode === 'full_ranking') && (
         <div 
           id="official-rankings-print-container"
           className={`rounded-2xl border ${activeThemeConfig.boardBorder} ${activeThemeConfig.boardBg} p-6 sm:p-8 shadow-xs print:p-0 print:border-none print:shadow-none printable-area text-slate-900 transition-all duration-300`}
@@ -808,7 +909,6 @@ export const RankingsAndHonorRoll: React.FC = () => {
                       <h3 className="font-heading font-extrabold text-base text-slate-900 mt-1 truncate" title={item.student.name}>
                         {item.student.name}
                       </h3>
-                      <p className="text-[11px] font-bold text-slate-500 font-mono">{item.student.studentId}</p>
                     </div>
 
                     <div className="mt-3 pt-2.5 border-t border-slate-200/70">
@@ -860,7 +960,6 @@ export const RankingsAndHonorRoll: React.FC = () => {
                   <tr>
                     <th className="py-3 px-4 text-center w-14">{language === 'km' ? 'ល.រ' : 'Rank'}</th>
                     <th className="py-3 px-3 text-center w-16">{language === 'km' ? 'រូបថត' : 'Photo'}</th>
-                    <th className="py-3 px-4">{language === 'km' ? 'អត្តលេខ' : 'Student ID'}</th>
                     <th className="py-3 px-4">{language === 'km' ? 'គោត្តនាម និងនាម' : 'Student Name'}</th>
                     <th className="py-3 px-4 text-center">{language === 'km' ? 'ភេទ' : 'Gender'}</th>
                     <th className="py-3 px-4 text-center bg-black/10">{language === 'km' ? 'ពិន្ទុសរុប' : 'Total Score'}</th>
@@ -901,7 +1000,6 @@ export const RankingsAndHonorRoll: React.FC = () => {
                           )}
                         </button>
                       </td>
-                      <td className="py-3 px-4 font-mono font-semibold text-slate-700">{item.student.studentId}</td>
                       <td className="py-3 px-4">
                         <div className="font-bold text-slate-900">{item.student.name}</div>
                       </td>
@@ -1034,7 +1132,6 @@ export const RankingsAndHonorRoll: React.FC = () => {
                 <span className="font-semibold text-indigo-700">
                   {sortBy === 'total_score' ? (language === 'km' ? 'ផលបូកពិន្ទុសរុប (ខ្ពស់-ទាប)' : 'Total Score (Descending)') :
                    sortBy === 'average' ? (language === 'km' ? 'មធ្យមភាគពិន្ទុ (ខ្ពស់-ទាប)' : 'Average Score (Descending)') :
-                   sortBy === 'student_id' ? (language === 'km' ? 'អត្តលេខសិស្ស' : 'Student ID') :
                    (language === 'km' ? 'ឈ្មោះសិស្ស' : 'Student Name')}
                 </span>
                 {filterInterventionOnly && (
@@ -1053,7 +1150,6 @@ export const RankingsAndHonorRoll: React.FC = () => {
                 <thead className="bg-slate-900 border-b border-slate-200 text-white font-bold uppercase text-[10px]">
                   <tr>
                     <th className="py-3 px-3 w-12 text-center">{language === 'km' ? 'ចំណាត់ថ្នាក់' : 'Rank'}</th>
-                    <th className="py-3 px-3 w-24">{language === 'km' ? 'អត្តលេខ' : 'Student ID'}</th>
                     <th className="py-3 px-4">{language === 'km' ? 'ឈ្មោះសិស្ស' : 'Full Name'}</th>
                     <th className="py-3 px-2 text-center">{language === 'km' ? 'ភេទ' : 'Gender'}</th>
                     
@@ -1089,7 +1185,6 @@ export const RankingsAndHonorRoll: React.FC = () => {
                             #{item.rank}
                           </span>
                         </td>
-                        <td className="py-2.5 px-3 font-mono font-semibold text-slate-700">{item.student.studentId}</td>
                         <td className="py-2.5 px-4">
                           <div className="flex items-center">
                             <span className="font-semibold text-slate-900">{item.student.name}</span>
@@ -1245,7 +1340,7 @@ export const RankingsAndHonorRoll: React.FC = () => {
             <div className="py-4 space-y-3">
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
                 <p className="text-xs text-slate-500">{language === 'km' ? 'សិស្ស៖' : 'Student:'}</p>
-                <p className="font-bold text-slate-900 text-sm">{quickScoreModal.student.name} ({quickScoreModal.student.studentId})</p>
+                <p className="font-bold text-slate-900 text-sm">{quickScoreModal.student.name}</p>
                 <p className="text-xs text-indigo-700 font-bold mt-1">
                   {language === 'km' ? 'មុខវិជ្ជា៖ ' : 'Subject: '}
                   {language === 'km' ? quickScoreModal.subject.nameKm : quickScoreModal.subject.nameEn}

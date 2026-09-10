@@ -22,6 +22,8 @@ import { YearlyBackupRestoreCenter } from './components/backup/YearlyBackupResto
 import { RankingsAndHonorRoll } from './components/rankings/RankingsAndHonorRoll';
 import { WholeYearAnalytics } from './components/analytics/WholeYearAnalytics';
 import { ReportCardView } from './components/reports/ReportCardView';
+import { StudentCumulativeRecordBook } from './components/reports/StudentCumulativeRecordBook';
+import { StudentLearningAgreementHub } from './components/agreements/StudentLearningAgreementHub';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { ToastContainer } from './components/common/ToastContainer';
 import { CloudSyncModal } from './components/sync/CloudSyncModal';
@@ -53,6 +55,8 @@ const MainContent: React.FC = () => {
       {activeTab === 'rankings' && <RankingsAndHonorRoll />}
       {activeTab === 'analytics' && <WholeYearAnalytics />}
       {activeTab === 'report_card' && <ReportCardView />}
+      {activeTab === 'record_book' && <StudentCumulativeRecordBook />}
+      {activeTab === 'student_plan' && <StudentLearningAgreementHub />}
       {activeTab === 'backup_restore' && <YearlyBackupRestoreCenter />}
       {activeTab === 'settings' && <SettingsModal />}
     </main>

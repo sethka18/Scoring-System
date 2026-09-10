@@ -254,7 +254,6 @@ export const SchoolAllClassesHub: React.FC = () => {
             id: stuId,
             studentId: `STU-0${formGradeLevel}-${idx + 1 < 10 ? '0' : ''}${idx + 1}`,
             name: sn.km,
-            nameLatin: sn.en,
             gender: sn.g,
             dob: `201${10 - formGradeLevel}-05-15`,
             guardianName: `${sn.km.split(' ')[0]} វណ្ណា`,
@@ -847,7 +846,7 @@ export const SchoolAllClassesHub: React.FC = () => {
                           {student.name}
                         </div>
                         <div className="text-[11px] text-slate-500 truncate w-full">
-                          {student.nameLatin || student.studentId}
+                          {student.gender === 'Female' ? 'សិស្សស្រី' : 'សិស្សប្រុស'}
                         </div>
 
                         {/* Scores & Distinction */}

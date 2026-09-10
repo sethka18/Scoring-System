@@ -77,12 +77,11 @@ export const WholeYearAnalytics: React.FC = () => {
   };
 
   const handleExportYearlyCSV = () => {
-    const headers = ['Yearly Rank', 'Student ID', 'Student Name', 'Gender', 'Semester 1 Avg', 'Sem 1 Rank', 'Semester 2 Avg', 'Sem 2 Rank', 'Yearly Avg', 'Grade', 'Classification', 'Result', 'Attendance %'];
+    const headers = ['Yearly Rank', 'Student Name', 'Gender', 'Semester 1 Avg', 'Sem 1 Rank', 'Semester 2 Avg', 'Sem 2 Rank', 'Yearly Avg', 'Grade', 'Classification', 'Result', 'Attendance %'];
     const rows = yearlySummaries.map(s => [
       s.yearlyRank,
-      s.student.studentId,
-      `"${s.student.name} (${s.student.nameLatin || ''})"`,
-      s.student.gender,
+      `"${s.student.name}"`,
+      s.student.gender === 'Female' ? 'ស្រី' : 'ប្រុស',
       s.term1Average.toFixed(2),
       s.term1Rank,
       s.term2Average.toFixed(2),
@@ -237,7 +236,6 @@ export const WholeYearAnalytics: React.FC = () => {
             <thead className="bg-slate-900 text-white font-bold uppercase text-[11px]">
               <tr>
                 <th className="py-3 px-3 text-center w-12">{language === 'km' ? 'ល.រ' : 'Rank'}</th>
-                <th className="py-3 px-3 w-28">{language === 'km' ? 'អត្តលេខ' : 'Student ID'}</th>
                 <th className="py-3 px-4">{language === 'km' ? 'គោត្តនាម និងនាម' : 'Student Name'}</th>
                 <th className="py-3 px-2 text-center w-12">{language === 'km' ? 'ភេទ' : 'Gender'}</th>
                 <th className="py-3 px-3 text-center bg-slate-800">{language === 'km' ? 'ឆមាសទី ១' : 'Sem 1 Avg'}</th>
@@ -268,7 +266,6 @@ export const WholeYearAnalytics: React.FC = () => {
                         {item.yearlyRank}
                       </span>
                     </td>
-                    <td className="py-3 px-3 font-mono font-semibold text-slate-700 text-xs">{item.student.studentId}</td>
                     <td className="py-3 px-4">
                       <div className="font-bold text-slate-900">{item.student.name}</div>
                     </td>

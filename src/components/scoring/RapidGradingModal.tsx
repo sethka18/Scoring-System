@@ -92,9 +92,7 @@ export const RapidGradingModal: React.FC<RapidGradingModalProps> = ({
     if (!searchTerm.trim()) return students;
     const q = searchTerm.toLowerCase();
     return students.filter(s => 
-      s.name.toLowerCase().includes(q) ||
-      (s.nameLatin && s.nameLatin.toLowerCase().includes(q)) ||
-      s.studentId.toLowerCase().includes(q)
+      s.name.toLowerCase().includes(q)
     );
   }, [students, searchTerm]);
 

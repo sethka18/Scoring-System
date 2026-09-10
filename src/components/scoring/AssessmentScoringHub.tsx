@@ -165,9 +165,7 @@ export const AssessmentScoringHub: React.FC = () => {
   const rankings = calculatePeriodRankings(classStudents, selectedPeriodId, subjects, scoresMatrix, weights, competencyWeights);
 
   const filteredRankings = rankings.filter(r => 
-    r.student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (r.student.nameLatin && r.student.nameLatin.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    r.student.studentId.toLowerCase().includes(searchTerm.toLowerCase())
+    r.student.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleScoreChange = (
@@ -591,7 +589,6 @@ export const AssessmentScoringHub: React.FC = () => {
                 <thead className="bg-slate-100/90 text-slate-600 font-black uppercase tracking-wider text-[10px] border-b border-slate-200">
                   <tr>
                     <th rowSpan={2} className="py-3 px-2 w-9 text-center border-r border-slate-200 bg-slate-100">#</th>
-                    <th rowSpan={2} className="py-3 px-2.5 w-24 border-r border-slate-200 bg-slate-100">{language === 'km' ? 'អត្តលេខ' : 'ID'}</th>
                     <th rowSpan={2} className="py-3 px-3 min-w-[125px] border-r border-slate-200 bg-slate-100">{language === 'km' ? 'ឈ្មោះសិស្ស' : 'Name'}</th>
                     <th rowSpan={2} className="py-3 px-1.5 text-center w-8 border-r border-slate-200 bg-slate-100">{language === 'km' ? 'ភេទ' : 'Sex'}</th>
 
@@ -654,7 +651,6 @@ export const AssessmentScoringHub: React.FC = () => {
                 <thead className="bg-slate-100/70 border-b border-slate-200 text-slate-500 font-black uppercase tracking-widest text-[10px]">
                   <tr>
                     <th className="py-3.5 px-3 w-10 text-center">#</th>
-                    <th className="py-3.5 px-3 w-28">{language === 'km' ? 'អត្តលេខ' : 'Student ID'}</th>
                     <th className="py-3.5 px-3 min-w-[130px]">{language === 'km' ? 'ឈ្មោះសិស្ស' : 'Student Name'}</th>
                     <th className="py-3.5 px-2 text-center w-10">{language === 'km' ? 'ភេទ' : 'Sex'}</th>
                     
@@ -706,7 +702,6 @@ export const AssessmentScoringHub: React.FC = () => {
                   return (
                     <tr key={s.id} className={`hover:bg-slate-50 transition ${isTop3 ? 'bg-amber-50/20' : ''}`}>
                       <td className="py-2.5 px-2 text-center text-slate-400 font-black border-r border-slate-100">{idx + 1}</td>
-                      <td className="py-2.5 px-2.5 font-mono text-slate-600 font-black border-r border-slate-100">{s.studentId}</td>
                       <td className="py-2.5 px-3 border-r border-slate-100">
                         <div className="font-black text-slate-900">{s.name}</div>
                       </td>
@@ -948,7 +943,6 @@ export const AssessmentScoringHub: React.FC = () => {
               <thead className="bg-slate-100/80 border-b border-slate-200 text-slate-500 font-black uppercase tracking-widest text-[10px]">
                 <tr>
                   <th className="py-3.5 px-3 w-10 text-center">#</th>
-                  <th className="py-3.5 px-3 w-28">{language === 'km' ? 'អត្តលេខ' : 'Student ID'}</th>
                   <th className="py-3.5 px-3 min-w-[130px]">{language === 'km' ? 'ឈ្មោះសិស្ស' : 'Student Name'}</th>
                   <th className="py-3.5 px-2 text-center min-w-[100px]">{language === 'km' ? 'អាន' : 'Reading'}</th>
                   <th className="py-3.5 px-2 text-center min-w-[100px]">{language === 'km' ? 'សរសេរ' : 'Writing'}</th>
@@ -969,7 +963,6 @@ export const AssessmentScoringHub: React.FC = () => {
                   return (
                     <tr key={student.id} className="hover:bg-slate-50 transition">
                       <td className="py-3 px-3 text-center text-slate-400 font-black">{idx + 1}</td>
-                      <td className="py-3 px-3 font-mono font-black text-slate-600">{student.studentId}</td>
                       <td className="py-3 px-3">
                         <div className="font-black text-slate-900">{student.name}</div>
                       </td>
@@ -1068,7 +1061,6 @@ export const AssessmentScoringHub: React.FC = () => {
               <thead className="bg-slate-100/80 border-b border-slate-200 text-slate-500 font-black uppercase tracking-widest text-[10px]">
                 <tr>
                   <th className="py-3.5 px-3 w-10 text-center">#</th>
-                  <th className="py-3.5 px-3 w-28">{language === 'km' ? 'អត្តលេខ' : 'Student ID'}</th>
                   <th className="py-3.5 px-3 min-w-[130px]">{language === 'km' ? 'ឈ្មោះសិស្ស' : 'Student Name'}</th>
                   <th className="py-3.5 px-2 text-center min-w-[90px]">{language === 'km' ? 'ចំនួន' : 'Numbers'}</th>
                   <th className="py-3.5 px-2 text-center min-w-[90px]">{language === 'km' ? 'ពិជគណិត' : 'Algebra'}</th>
@@ -1091,7 +1083,6 @@ export const AssessmentScoringHub: React.FC = () => {
                   return (
                     <tr key={student.id} className="hover:bg-slate-50 transition">
                       <td className="py-3 px-3 text-center text-slate-400 font-black">{idx + 1}</td>
-                      <td className="py-3 px-3 font-mono font-black text-slate-600">{student.studentId}</td>
                       <td className="py-3 px-3">
                         <div className="font-black text-slate-900">{student.name}</div>
                       </td>
@@ -1204,7 +1195,6 @@ export const AssessmentScoringHub: React.FC = () => {
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-black uppercase tracking-wider text-[11px]">
                 <tr>
                   <th className="py-3.5 px-3 w-10 text-center">#</th>
-                  <th className="py-3.5 px-3 w-28">{language === 'km' ? 'អត្តលេខ' : 'Student ID'}</th>
                   <th className="py-3.5 px-3 min-w-[150px]">{language === 'km' ? 'ឈ្មោះសិស្ស' : 'Student Name'}</th>
                   <th className="py-3.5 px-2 text-center w-12">{language === 'km' ? 'ភេទ' : 'Sex'}</th>
                   <th className="py-3.5 px-3 text-center min-w-[140px] bg-indigo-50/80 text-indigo-950 font-black">
@@ -1223,7 +1213,6 @@ export const AssessmentScoringHub: React.FC = () => {
                   return (
                     <tr key={student.id} className="hover:bg-slate-50 transition">
                       <td className="py-3 px-3 text-center text-slate-400 font-black">{idx + 1}</td>
-                      <td className="py-3 px-3 font-mono font-black text-slate-600">{student.studentId}</td>
                       <td className="py-3 px-3">
                         <div className="font-black text-slate-900">{student.name}</div>
                       </td>

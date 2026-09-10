@@ -27,7 +27,8 @@ import {
   Sparkles,
   GraduationCap,
   Award,
-  HeartHandshake
+  HeartHandshake,
+  UserCheck
 } from 'lucide-react';
 
 interface NavItemDef {
@@ -159,6 +160,15 @@ export const Navigation: React.FC = () => {
           icon: TableProperties 
         },
         { 
+          id: 'student_plan', 
+          labelEn: 'Parent Agreement (PLP)', 
+          labelKm: 'កិច្ចព្រមព្រៀង (តេស្ត PLP)', 
+          descKm: 'កិច្ចព្រមព្រៀងមាតាបិតា & តេស្តដើមឆ្នាំ',
+          descEn: 'Parent agreement & PLP diagnostic test',
+          icon: UserCheck,
+          badge: 'តេស្តដើមឆ្នាំ'
+        },
+        { 
           id: 'skills_assessment', 
           labelEn: 'Skills Assessment (App. 3)', 
           labelKm: 'វាយតម្លៃបំណិន (ឧបសម្ព័ន្ធ៣)', 
@@ -210,11 +220,20 @@ export const Navigation: React.FC = () => {
       items: [
         { 
           id: 'report_card', 
-          labelEn: 'Reports & Print', 
-          labelKm: 'សៀវភៅតាមដាន', 
-          descKm: 'សៀវភៅតាមដានការសិក្សា & បោះពុម្ពប័ណ្ណសរសើរ',
-          descEn: 'Printable report cards & certificates',
+          labelEn: 'Report Cards & Certificates', 
+          labelKm: 'សៀវភៅតាមដាន & ប័ណ្ណសរសើរ', 
+          descKm: 'ព្រឹត្តិបត្រពិន្ទុប្រចាំខែ ឆមាស & បោះពុម្ពប័ណ្ណសរសើរ',
+          descEn: 'Monthly & semester report cards, certificates',
           icon: FileSpreadsheet 
+        },
+        { 
+          id: 'record_book', 
+          labelEn: 'Student Record Book', 
+          labelKm: 'សៀវភៅសិក្ខាគរិក', 
+          descKm: 'សៀវភៅសិក្ខាគរិកបឋមសិក្សាស្តង់ដារក្រសួង (ក, ខ, គ, ឃ)',
+          descEn: 'MoEYS primary pupil cumulative record booklet',
+          icon: BookOpen,
+          badge: 'គំរូក្រសួង'
         },
         { 
           id: 'analytics', 

@@ -60,7 +60,7 @@ export function exportSingleStudentMultiSheetExcel(options: ExportStudentReportC
     [`ទីតាំង៖ ${location}`],
     [''],
     ['របាយការណ៍លទ្ធផលពិន្ទុវិជ្ជាសម្បទា (ចំណេះដឹងទូទៅ ៨០%)'],
-    [`ឈ្មោះសិស្ស៖ ${student.name}`, `អត្តលេខ៖ ${student.studentId}`, `ភេទ៖ ${student.gender === 'Female' ? 'ស្រី' : 'ប្រុស'}`, `ថ្នាក់៖ ${className}`, `ឆ្នាំសិក្សា៖ ${academicYear}`],
+    [`ឈ្មោះសិស្ស៖ ${student.name}`, `ភេទ៖ ${student.gender === 'Female' ? 'ស្រី' : 'ប្រុស'}`, `ថ្នាក់៖ ${className}`, `ឆ្នាំសិក្សា៖ ${academicYear}`],
     [`គ្រូបន្ទុកថ្នាក់៖ ${teacherName}`],
     [''],
   ];
@@ -284,7 +284,7 @@ export function exportSingleStudentMultiSheetExcel(options: ExportStudentReportC
   const sheet4Data: (string | number)[][] = [
     [schoolName],
     ['តារាងសរុបលទ្ធផលសិក្សាប្រចាំឆ្នាំ តាមស្តង់ដារក្រសួងអប់រំ យុវជន និងកីឡា (MoEYS)'],
-    [`ឈ្មោះសិស្ស៖ ${student.name}`, `អត្តលេខ៖ ${student.studentId}`, `ថ្នាក់ទី៖ ${className}`, `ឆ្នាំសិក្សា៖ ${academicYear}`],
+    [`ឈ្មោះសិស្ស៖ ${student.name}`, `ភេទ៖ ${student.gender === 'Female' ? 'ស្រី' : 'ប្រុស'}`, `ថ្នាក់ទី៖ ${className}`, `ឆ្នាំសិក្សា៖ ${academicYear}`],
     [''],
     ['វិស័យវាយតម្លៃ', 'កម្រិតទម្ងន់', 'ពិន្ទុដើម (លើ ១០.០០)', 'ពិន្ទុបានទទួល (Weighted Score)', 'ការពិពណ៌នា'],
     ['១. វិជ្ជាសម្បទា (Knowledge)', '៨០%', overallAnnualKnowledge, knowledgeContribution, 'មធ្យមភាគពិន្ទុមុខវិជ្ជាចំណេះដឹងទូទៅពេញមួយឆ្នាំ'],
@@ -334,7 +334,7 @@ export function exportAllStudentsClassWorkbook(
     [`តារាងលទ្ធផលរួមសិស្សទាំងអស់ ${className} ឆ្នាំសិក្សា ${academicYear}`],
     [`គ្រូបន្ទុកថ្នាក់៖ ${teacherName}`],
     [''],
-    ['ល.រ', 'អត្តលេខ', 'គោត្តនាម និងនាម', 'ភេទ', 'វិជ្ជា (៨០%)', 'បំណិន (១០%)', 'ចរិយា (១០%)', 'មធ្យមភាគប្រចាំឆ្នាំ', 'និទ្ទេស', 'លទ្ធផល'],
+    ['ល.រ', 'គោត្តនាម និងនាម', 'ភេទ', 'វិជ្ជា (៨០%)', 'បំណិន (១០%)', 'ចរិយា (១០%)', 'មធ្យមភាគប្រចាំឆ្នាំ', 'និទ្ទេស', 'លទ្ធផល'],
   ];
 
   students.forEach((s, idx) => {
@@ -346,7 +346,6 @@ export function exportAllStudentsClassWorkbook(
 
     summaryData.push([
       idx + 1,
-      s.studentId,
       s.name,
       s.gender === 'Female' ? 'ស្រី' : 'ប្រុស',
       kScore,
@@ -359,7 +358,7 @@ export function exportAllStudentsClassWorkbook(
   });
 
   const masterSheet = XLSX.utils.aoa_to_sheet(summaryData);
-  masterSheet['!cols'] = [{ wch: 6 }, { wch: 14 }, { wch: 22 }, { wch: 8 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 20 }, { wch: 14 }, { wch: 16 }];
+  masterSheet['!cols'] = [{ wch: 6 }, { wch: 22 }, { wch: 8 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 20 }, { wch: 14 }, { wch: 16 }];
   XLSX.utils.book_append_sheet(workbook, masterSheet, 'តារាងរួមថ្នាក់');
 
   // Appendix 4 Attitude for Class Sheet
@@ -367,13 +366,12 @@ export function exportAllStudentsClassWorkbook(
     ['ឧបសម្ព័ន្ធ៤៖ ឧបករណ៍វាយតម្លៃពិន្ទុចរិយាសម្បទារបស់សិស្ស - បញ្ជីសរុបទាំងថ្នាក់'],
     [schoolName, '', `ថ្នាក់ទី៖ ${className}`, `ឆ្នាំសិក្សា៖ ${academicYear}`],
     [''],
-    ['ល.រ', 'អត្តលេខ', 'ឈ្មោះសិស្ស', 'ភេទ', 'ស្អាត (/១៦)', 'សុភាព (/២២)', 'របៀប (/១៨)', 'ទៀងពេល (/៨)', 'សមាធិ (/១៤)', 'ពិន្ទុសរុប (/៧៤)', 'ធៀបនឹង ១០.០០', 'និទ្ទេស'],
+    ['ល.រ', 'ឈ្មោះសិស្ស', 'ភេទ', 'ស្អាត (/១៦)', 'សុភាព (/២២)', 'របៀប (/១៨)', 'ទៀងពេល (/៨)', 'សមាធិ (/១៤)', 'ពិន្ទុសរុប (/៧៤)', 'ធៀបនឹង ១០.០០', 'និទ្ទេស'],
   ];
 
   students.forEach((s, idx) => {
     attitudeSheetData.push([
       idx + 1,
-      s.studentId,
       s.name,
       s.gender === 'Female' ? 'ស្រី' : 'ប្រុស',
       14,
@@ -388,7 +386,7 @@ export function exportAllStudentsClassWorkbook(
   });
 
   const attitudeSheet = XLSX.utils.aoa_to_sheet(attitudeSheetData);
-  attitudeSheet['!cols'] = [{ wch: 6 }, { wch: 14 }, { wch: 22 }, { wch: 8 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 16 }, { wch: 16 }, { wch: 12 }];
+  attitudeSheet['!cols'] = [{ wch: 6 }, { wch: 22 }, { wch: 8 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 16 }, { wch: 16 }, { wch: 12 }];
   XLSX.utils.book_append_sheet(workbook, attitudeSheet, 'ចរិយាសម្បទា-ឧបសម្ព័ន្ធ៤');
 
   XLSX.writeFile(workbook, `របាយការណ៍រួមថ្នាក់_${className}_${academicYear}.xlsx`);

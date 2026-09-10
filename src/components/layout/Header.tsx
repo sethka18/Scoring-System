@@ -67,8 +67,8 @@ export const Header: React.FC = () => {
               </div>
               <p className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 hidden sm:block mt-0.5">
                 {language === 'km' 
-                  ? `${schoolProfile.district || 'ស្រុកស្ទឹងត្រង់'} • ${schoolProfile.province || 'ខេត្តកំពង់ចាម'} • ឆ្នាំសិក្សា ${schoolProfile.academicYear || activeClass?.academicYear || '២០២៦-២០២៧'}`
-                  : `${schoolProfile.district || 'District'} • ${schoolProfile.province || 'Province'} • Year ${schoolProfile.academicYear || activeClass?.academicYear || '2026-2027'}`}
+                  ? `${schoolProfile.district || 'ស្រុកត្បូងឃ្មុំ'} • ${schoolProfile.province || 'ខេត្តត្បូងឃ្មុំ'} • ឆ្នាំសិក្សា ${schoolProfile.academicYear || activeClass?.academicYear || '២០២៥-២០២៦'}`
+                  : `${schoolProfile.district || 'Tboung Khmum'} • ${schoolProfile.province || 'Tboung Khmum'} • Year ${schoolProfile.academicYear || activeClass?.academicYear || '2025-2026'}`}
               </p>
             </div>
           </div>

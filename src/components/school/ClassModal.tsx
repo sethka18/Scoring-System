@@ -165,7 +165,6 @@ export const ClassModal: React.FC<ClassModalProps> = ({
             id: sId,
             studentId: `STU-0${gradeLevel}-${idx + 1 < 10 ? '0' : ''}${idx + 1}`,
             name: item.km,
-            nameLatin: item.en,
             gender: item.g,
             dob: `201${10 - gradeLevel}-06-15`,
             guardianName: `${item.km.split(' ')[0]} វណ្ណា`,

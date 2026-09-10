@@ -169,7 +169,7 @@ export const StudentPhotoModal: React.FC<StudentPhotoModalProps> = ({
                 {language === 'km' ? 'បញ្ចូលរូបថតសិស្សឆ្នើម' : 'Insert / Update Student Photo'}
               </h3>
               <p className="text-xs text-slate-300">
-                {student.name} {student.nameLatin ? `(${student.nameLatin})` : ''} • {student.studentId}
+                {student.name}
               </p>
             </div>
           </div>

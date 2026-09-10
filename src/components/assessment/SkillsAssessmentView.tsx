@@ -247,9 +247,7 @@ export const SkillsAssessmentView: React.FC = () => {
     if (!searchTerm.trim()) return students;
     const term = searchTerm.toLowerCase();
     return students.filter(s => 
-      s.name.toLowerCase().includes(term) ||
-      s.studentId.toLowerCase().includes(term) ||
-      (s.nameLatin && s.nameLatin.toLowerCase().includes(term))
+      s.name.toLowerCase().includes(term)
     );
   }, [students, searchTerm]);
 

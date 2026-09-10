@@ -52,11 +52,7 @@ export const DailyAttendanceTracker: React.FC = () => {
   // Filtered students
   const filteredStudents = useMemo(() => {
     return classStudents.filter(stu => {
-      const matchSearch = 
-        stu.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        stu.nameLatin.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        stu.studentId.toLowerCase().includes(searchQuery.toLowerCase());
-      
+      const matchSearch = stu.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchGender = filterGender === 'All' || stu.gender === filterGender;
       return matchSearch && matchGender;
     });
@@ -176,10 +172,8 @@ export const DailyAttendanceTracker: React.FC = () => {
   const exportMonthlyAttendanceCsv = () => {
     const headers = [
       'No',
-      'Student ID',
-      'Name Khmer',
-      'Name Latin',
-      'Gender',
+      'Name Khmer (គោត្តនាម និងនាម)',
+      'Gender (ភេទ)',
       'Present Days (វត្តមាន)',
       'Excused Absences (ច)',
       'Unexcused Absences (អច)',
@@ -191,10 +185,8 @@ export const DailyAttendanceTracker: React.FC = () => {
       const summary = getStudentMonthlyAttendance(stu.id, selectedMonth);
       return [
         index + 1,
-        stu.studentId,
         `"${stu.name}"`,
-        `"${stu.nameLatin}"`,
-        stu.gender,
+        stu.gender === 'Female' ? 'ស្រី' : 'ប្រុស',
         summary.presentDays,
         summary.excusedDays,
         summary.unexcusedDays,
@@ -440,7 +432,7 @@ export const DailyAttendanceTracker: React.FC = () => {
                 <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder={language === 'km' ? 'ស្វែងរកឈ្មោះ ឬ អត្តលេខសិស្ស...' : 'Search student name or ID...'}
+                  placeholder={language === 'km' ? 'ស្វែងរកឈ្មោះសិស្ស...' : 'Search student name...'}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full text-xs pl-9 pr-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 outline-none"
@@ -472,7 +464,6 @@ export const DailyAttendanceTracker: React.FC = () => {
                 <thead className="bg-slate-100/70 dark:bg-slate-800/70 text-2xs uppercase tracking-wider font-bold text-slate-600 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
                   <tr>
                     <th className="py-3 px-4 w-12 text-center">#</th>
-                    <th className="py-3 px-4 w-28">{language === 'km' ? 'អត្តលេខ' : 'Student ID'}</th>
                     <th className="py-3 px-4 min-w-[180px]">{language === 'km' ? 'គោត្តនាម-នាម' : 'Full Name'}</th>
                     <th className="py-3 px-3 w-16 text-center">{language === 'km' ? 'ភេទ' : 'Sex'}</th>
                     <th className="py-3 px-4 min-w-[280px]">{language === 'km' ? 'ស្ថានភាពវត្តមាន' : 'Attendance Status'}</th>
@@ -492,9 +483,6 @@ export const DailyAttendanceTracker: React.FC = () => {
                       >
                         <td className="py-3 px-4 text-center font-mono text-2xs text-slate-400">
                           {index + 1}
-                        </td>
-                        <td className="py-3 px-4 font-mono font-bold text-indigo-600 dark:text-indigo-400 text-xs">
-                          {stu.studentId}
                         </td>
                         <td className="py-3 px-4">
                           <div className="font-bold text-slate-900 dark:text-white text-xs">
@@ -648,7 +636,6 @@ export const DailyAttendanceTracker: React.FC = () => {
                 <thead>
                   <tr className="bg-slate-100 text-slate-900 font-bold text-center">
                     <th className="border border-slate-400 py-2 px-1 w-10">ល.រ</th>
-                    <th className="border border-slate-400 py-2 px-2 w-24">អត្តលេខ</th>
                     <th className="border border-slate-400 py-2 px-3 text-left">គោត្តនាម និងនាម</th>
                     <th className="border border-slate-400 py-2 px-2 w-14">ភេទ</th>
                     <th className="border border-slate-400 py-2 px-2 bg-emerald-50 text-emerald-900">វត្តមាន (ថ្ងៃ)</th>
@@ -665,7 +652,6 @@ export const DailyAttendanceTracker: React.FC = () => {
                     return (
                       <tr key={stu.id} className="text-center hover:bg-slate-50">
                         <td className="border border-slate-300 py-1.5 px-1 font-mono text-2xs">{index + 1}</td>
-                        <td className="border border-slate-300 py-1.5 px-2 font-mono font-bold text-xs">{stu.studentId}</td>
                         <td className="border border-slate-300 py-1.5 px-3 text-left font-bold text-xs">
                           {stu.name}
                         </td>

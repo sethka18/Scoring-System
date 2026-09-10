@@ -525,11 +525,6 @@ export const KhmerReadingEvaluator: React.FC<KhmerReadingEvaluatorProps> = ({
                 <h3 className="font-heading font-black text-base sm:text-lg text-slate-900 dark:text-white">
                   {currentStudent?.name || (language === 'km' ? 'សូមជ្រើសរើសសិស្ស' : 'Select Student')}
                 </h3>
-                {currentStudent?.latinName && (
-                  <span className="text-xs text-slate-400 font-mono hidden sm:inline">
-                    ({currentStudent.latinName})
-                  </span>
-                )}
                 <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                   {currentStudent?.gender === 'F' ? 'ស្រី' : 'ប្រុស'}
                 </span>
