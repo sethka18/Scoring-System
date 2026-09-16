@@ -131,9 +131,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const saved = localStorage.getItem(LS_CURRENT_USER_KEY);
       if (saved) return saved;
-      return 'user_teacher_sethka18';
+      return null;
     } catch (e) {
-      return 'user_teacher_sethka18';
+      return null;
     }
   });
 
