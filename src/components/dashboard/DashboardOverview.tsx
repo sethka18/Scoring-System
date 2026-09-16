@@ -38,7 +38,9 @@ import {
   Zap,
   Filter,
   Gamepad2,
-  Settings
+  Settings,
+  School,
+  Plus
 } from 'lucide-react';
 import { calculateYearlySummaries, calculatePeriodRankings } from '../../utils/calculations';
 import { StudentPhotoModal } from '../common/StudentPhotoModal';
@@ -486,6 +488,60 @@ export const DashboardOverview: React.FC = () => {
   return (
     <div className="space-y-5 sm:space-y-6">
 
+      {/* Empty Classes Notification Banner */}
+      {classes.length === 0 && (
+        <div className="bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+          <div className="flex items-center space-x-3.5">
+            <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <School className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-black text-indigo-950 dark:text-indigo-200 uppercase tracking-wide">
+                {language === 'km' ? 'មិនទាន់មានថ្នាក់រៀននៅឡើយទេ' : 'No Classes Configured'}
+              </h3>
+              <p className="text-xs text-indigo-800/80 dark:text-indigo-300/80 font-semibold mt-0.5">
+                {language === 'km' ? 'សូមបង្កើតថ្នាក់ថ្មីដើម្បីចាប់ផ្តើមកត់ត្រាបញ្ជីវត្តមាន និងបញ្ចូលពិន្ទុសិស្ស' : 'Create a new class section to start managing attendance and student grades.'}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setActiveTab('roster')}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black transition cursor-pointer shadow-xs whitespace-nowrap"
+          >
+            <Plus className="w-4 h-4" />
+            <span>{language === 'km' ? 'បង្កើតថ្នាក់ថ្មី' : 'Create Class'}</span>
+          </button>
+        </div>
+      )}
+
+      {/* Empty Student Notice for New Accounts */}
+      {classes.length > 0 && totalStudents === 0 && (
+        <div className="bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-transparent border border-emerald-300/60 dark:border-emerald-700/60 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+              <FileSpreadsheet className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                {language === 'km' ? 'ថ្នាក់រៀនរបស់អ្នកមិនទាន់មានសិស្សនៅឡើយទេ' : 'Your class has no students yet'}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+                {language === 'km' 
+                  ? 'សូមប្រើមុខងារបញ្ចូលបែប Excel ដើម្បីបញ្ចូលបញ្ជីសិស្សជាក្រុម ឬចម្លងពី Excel/Sheets បានយ៉ាងរហ័ស' 
+                  : 'Use the Excel entry matrix to bulk add students or copy-paste from Excel/Sheets easily'}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setActiveTab('roster')}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition cursor-pointer shadow-xs whitespace-nowrap"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            <span>{language === 'km' ? 'បញ្ចូលសិស្សបែប Excel' : 'Excel Import'}</span>
+          </button>
+        </div>
+      )}
+
       {/* 4 Summary Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
         
@@ -506,7 +562,7 @@ export const DashboardOverview: React.FC = () => {
             </div>
           </div>
           <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-3.5">
-            <div className="h-full bg-blue-600 dark:bg-blue-500 rounded-full" style={{ width: '100%' }}></div>
+            <div className="h-full bg-blue-600 dark:bg-blue-500 rounded-full" style={{ width: totalStudents > 0 ? '100%' : '0%' }}></div>
           </div>
           <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-400">
             <span>{language === 'km' ? `ប្រុស: ${maleStudents}` : `BOYS: ${maleStudents}`}</span>
@@ -524,7 +580,7 @@ export const DashboardOverview: React.FC = () => {
               </p>
               <div className="flex items-baseline space-x-2 mt-1.5">
                 <span className="text-2xl sm:text-3xl font-black text-indigo-950 dark:text-indigo-200 font-heading tracking-tight">
-                  {language === 'km' ? activeClass?.nameKm : activeClass?.name}
+                  {activeClass ? (language === 'km' ? activeClass.nameKm : activeClass.name) : (language === 'km' ? 'គ្មានថ្នាក់រៀន' : 'None')}
                 </span>
               </div>
             </div>
@@ -533,10 +589,12 @@ export const DashboardOverview: React.FC = () => {
             </div>
           </div>
           <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-3.5">
-            <div className="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full" style={{ width: '85%' }}></div>
+            <div className="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full" style={{ width: activeClass ? '100%' : '0%' }}></div>
           </div>
           <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-400">
-            <span className="truncate max-w-[150px]">{language === 'km' ? `គ្រូបន្ទុក៖ ${activeClass?.teacherNameKm}` : `Teacher: ${activeClass?.teacherName}`}</span>
+            <span className="truncate max-w-[150px]">
+              {activeClass ? (language === 'km' ? `គ្រូបន្ទុក៖ ${activeClass.teacherNameKm || activeClass.teacherName}` : `Teacher: ${activeClass.teacherName || activeClass.teacherNameKm}`) : (language === 'km' ? 'សូមបង្កើតថ្នាក់' : 'Create class')}
+            </span>
             <span className="text-slate-300 dark:text-slate-700">•</span>
             <span>{classes.length} {language === 'km' ? 'ថ្នាក់' : 'CLASSES'}</span>
           </div>

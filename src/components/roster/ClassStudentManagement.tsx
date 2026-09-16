@@ -39,6 +39,7 @@ import { formatConductRating, CONDUCT_OPTIONS } from '../../utils/calculations';
 import { Student, Gender, ClassSection } from '../../types';
 import { PrintPreviewModal } from '../common/PrintPreviewModal';
 import { ClassModal } from '../school/ClassModal';
+import { ExcelStudentGridModal } from './ExcelStudentGridModal';
 
 export const ClassStudentManagement: React.FC = () => {
   const { 
@@ -76,6 +77,7 @@ export const ClassStudentManagement: React.FC = () => {
   const [showAddClassModal, setShowAddClassModal] = useState(false);
   const [editingClass, setEditingClass] = useState<ClassSection | null>(null);
   const [showImportModal, setShowImportModal] = useState(false);
+  const [showExcelGridModal, setShowExcelGridModal] = useState(false);
   const [showPrintPreview, setShowPrintPreview] = useState(false);
   
   // Enhanced Import State
@@ -322,6 +324,35 @@ export const ClassStudentManagement: React.FC = () => {
         </div>
       </div>
 
+      {/* Empty Class Guidance Banner for New Accounts */}
+      {classStudents.length === 0 && (
+        <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700 text-white rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start space-x-3.5">
+            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-xs flex items-center justify-center flex-shrink-0">
+              <FileSpreadsheet className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-base font-black text-white">
+                {language === 'km' ? 'ថ្នាក់រៀនថ្មីទទេ — ត្រៀមបញ្ចូលសិស្ស' : 'New Class — Ready for Students'}
+              </h3>
+              <p className="text-xs text-emerald-100 mt-0.5 max-w-xl leading-relaxed">
+                {language === 'km' 
+                  ? 'គណនីថ្មីរបស់អ្នកមិនទាន់មានសិស្សនៅក្នុងថ្នាក់ទេ។ អ្នកអាចបញ្ចូលសិស្សជាក្រុមតាមបែប Excel (វាយផ្ទាល់ ឬចម្លងពី Excel/Sheets មកបិទភ្ជាប់) ដោយមិនបាច់ចុចច្រើនដងឡើយ។' 
+                  : 'Your newly created account starts with an empty class. You can bulk import students using the Excel matrix without repetitive clicking.'}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowExcelGridModal(true)}
+            className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white text-emerald-900 hover:bg-emerald-50 text-xs font-black shadow-md transition cursor-pointer flex-shrink-0"
+          >
+            <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+            <span>{language === 'km' ? '📊 បញ្ចូលសិស្សបែប Excel ឥឡូវនេះ' : '📊 Excel Import Now'}</span>
+          </button>
+        </div>
+      )}
+
       {/* Roster Controls: Search, Filter, Add, Import, Export */}
       <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -369,6 +400,15 @@ export const ClassStudentManagement: React.FC = () => {
               <Eye className="w-4 h-4 text-indigo-600" />
               <Printer className="w-3.5 h-3.5 text-indigo-600" />
               <span>{language === 'km' ? 'មើលទិដ្ឋភាពបោះពុម្ព' : 'Print Preview'}</span>
+            </button>
+
+            <button
+              onClick={() => setShowExcelGridModal(true)}
+              className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl border border-emerald-600 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition cursor-pointer shadow-xs"
+              title={language === 'km' ? 'បញ្ចូលសិស្សបែប Excel (តារាង Spreadsheet Matrix & Paste ពី Excel)' : 'Excel Student Matrix Entry'}
+            >
+              <FileSpreadsheet className="w-4 h-4" />
+              <span>{language === 'km' ? '📊 បញ្ចូលបែប Excel' : '📊 Excel Entry'}</span>
             </button>
 
             <button
@@ -505,8 +545,44 @@ export const ClassStudentManagement: React.FC = () => {
             <tbody className="divide-y divide-slate-100">
               {filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="py-12 text-center text-slate-400 font-bold">
-                    {language === 'km' ? 'មិនមានទិន្នន័យសិស្សត្រូវបង្ហាញឡើយ' : 'No students found matching current filters.'}
+                  <td colSpan={9} className="py-14 px-4 text-center">
+                    <div className="max-w-md mx-auto space-y-3">
+                      <div className="w-12 h-12 mx-auto rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200">
+                        <FileSpreadsheet className="w-6 h-6" />
+                      </div>
+                      <h4 className="text-sm sm:text-base font-black text-slate-800">
+                        {classStudents.length === 0 
+                          ? (language === 'km' ? 'ថ្នាក់រៀននេះមិនទាន់មានសិស្សនៅឡើយទេ' : 'This class has no students yet')
+                          : (language === 'km' ? 'មិនមានសិស្សត្រូវនឹងលក្ខខណ្ឌស្វែងរក' : 'No students matching search filter')}
+                      </h4>
+                      <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                        {classStudents.length === 0
+                          ? (language === 'km' 
+                              ? 'លោកគ្រូ/អ្នកគ្រូ អាចបញ្ចូលសិស្សបានយ៉ាងឆាប់រហ័សតាមបែប Excel (វាយផ្ទាល់ ឬចម្លងពី Excel/Sheets) ឬបន្ថែមសិស្សម្តងម្នាក់។' 
+                              : 'You can quickly add students using the Excel spreadsheet matrix or add them one by one.')
+                          : (language === 'km' ? 'សូមសាកល្បងផ្លាស់ប្តូរពាក្យគន្លឹះស្វែងរក' : 'Please try adjusting your search filters')}
+                      </p>
+                      {classStudents.length === 0 && (
+                        <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+                          <button
+                            type="button"
+                            onClick={() => setShowExcelGridModal(true)}
+                            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shadow-md shadow-emerald-600/20 transition cursor-pointer"
+                          >
+                            <FileSpreadsheet className="w-4 h-4" />
+                            <span>{language === 'km' ? '📊 បញ្ចូលសិស្សបែប Excel' : '📊 Add via Excel Grid'}</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleOpenAddStudent}
+                            className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black transition cursor-pointer"
+                          >
+                            <UserPlus className="w-4 h-4" />
+                            <span>{language === 'km' ? '+ បញ្ចូលសិស្សម្តងម្នាក់' : '+ Add Single Student'}</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ) : (
@@ -1056,9 +1132,10 @@ export const ClassStudentManagement: React.FC = () => {
                 </button>
               </div>
 
-              {/* Tabs: File vs Paste */}
-              <div className="flex border-b border-slate-200">
+              {/* Tabs: File vs Paste vs Excel Grid */}
+              <div className="flex flex-wrap border-b border-slate-200 gap-1">
                 <button
+                  type="button"
                   onClick={() => setImportTab('file')}
                   className={`py-2 px-4 font-bold text-xs border-b-2 transition ${
                     importTab === 'file'
@@ -1069,6 +1146,7 @@ export const ClassStudentManagement: React.FC = () => {
                   {language === 'km' ? '📁 ផ្ទុកឡើងឯកសារ (Upload File)' : '📁 Upload File'}
                 </button>
                 <button
+                  type="button"
                   onClick={() => setImportTab('paste')}
                   className={`py-2 px-4 font-bold text-xs border-b-2 transition ${
                     importTab === 'paste'
@@ -1077,6 +1155,17 @@ export const ClassStudentManagement: React.FC = () => {
                   }`}
                 >
                   {language === 'km' ? '📋 ចម្លងបិទភ្ជាប់ (Paste Text/Excel)' : '📋 Paste Text/Excel'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowImportModal(false);
+                    setShowExcelGridModal(true);
+                  }}
+                  className="py-2 px-3 font-bold text-xs border-b-2 border-transparent text-emerald-700 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 rounded-t-lg transition flex items-center space-x-1 ml-auto"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>{language === 'km' ? '📊 តារាងបញ្ចូលបែប Excel' : '📊 Excel Matrix Grid'}</span>
                 </button>
               </div>
 
@@ -1208,6 +1297,13 @@ export const ClassStudentManagement: React.FC = () => {
         type="roster"
         rosterStudents={filteredStudents}
         activeClass={activeClass}
+      />
+
+      {/* Excel Spreadsheet Batch Entry Modal */}
+      <ExcelStudentGridModal
+        isOpen={showExcelGridModal}
+        onClose={() => setShowExcelGridModal(false)}
+        targetClassId={activeClassId}
       />
 
     </div>

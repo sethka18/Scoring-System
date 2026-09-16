@@ -10,6 +10,14 @@ export interface Student {
   dob?: string; // Date of birth
   guardianName?: string;
   guardianPhone?: string;
+  fatherName?: string;
+  fatherJob?: string;
+  motherName?: string;
+  motherJob?: string;
+  birthPlace?: string;
+  currentAddress?: string;
+  plpAccount?: string;
+  plpPassword?: string;
   photoUrl?: string;
   attendanceCount: {
     present: number;
@@ -294,7 +302,9 @@ export interface DeskPosition {
   deskId: string;
   row: number; // 0-based
   col: number; // 0-based
-  studentId: string | null; // null if empty desk
+  studentId: string | null; // Seat 1 student (or the single student if capacity is 1)
+  capacity?: 1 | 2; // 2 = double desk (តុអង្គុយ២នាក់), 1 = single desk (តុអង្គុយ១នាក់). Default is 2
+  studentId2?: string | null; // Seat 2 student (when capacity is 2)
 }
 
 export interface ClassroomSeatingLayout {
@@ -599,18 +609,36 @@ export interface StudentAgreementPlan {
   locationPlace?: string; // e.g. "ប្រទង" (ធ្វើនៅ ប្រទង ថ្ងៃទី...)
   committeeLeaderTitle?: string; // "ប្រធានគណៈកម្មការគ្រប់គ្រងសាលារៀន"
   principalTitle?: string; // "នាយកសាលា"
-}export interface UserAccount {
-  id: string;
-  username: string; // email or unique username
-  fullName: string; // Teacher or Admin name in Khmer
-  password?: string;
-  role: 'teacher' | 'principal' | 'administrator';
-  schoolNameKm: string;
-  schoolNameEn?: string;
-  province?: string;
-  district?: string;
-  defaultGradeLevel?: number;
-  initialClassNameKm?: string;
-  createdAt: string;
-  hasCompletedOnboarding: boolean;
 }
+
+export type UserRole = 'admin' | 'teacher';
+
+export interface UserAccount {
+  id: string;
+  phoneNumber: string;
+  username?: string;
+  password: string;
+  fullName: string;
+  schoolName: string;
+  className: string;
+  gradeLevel?: string;
+  role: UserRole;
+  isActive: boolean;
+  createdAt: string;
+  lastLoginAt?: string;
+  avatarUrl?: string;
+}
+
+export interface RegisterCredentials {
+  phoneNumber: string;
+  username?: string;
+  password: string;
+  fullName: string;
+  schoolName: string;
+  className: string;
+  gradeLevel?: string;
+}
+
+
+
+

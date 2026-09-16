@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useGradebook } from '../../context/GradebookContext';
+import { useAuth } from '../../context/AuthContext';
 import { 
   SlidersHorizontal, 
   BookOpen, 
@@ -19,13 +20,17 @@ import {
   Monitor,
   MapPin,
   Image as ImageIcon,
-  Sparkles
+  Sparkles,
+  User,
+  KeyRound,
+  Edit3
 } from 'lucide-react';
 import { exportFullBackupJSON } from '../../utils/exportImport';
 import { PWAInstallButton } from '../pwa/PWAInstallButton';
 import { useOnlineStatus } from '../../hooks/useOnlineStatus';
 import { Wifi, WifiOff, Smartphone, HardDrive, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { SchoolLogo } from '../common/SchoolLogo';
+import { UserProfileSettingsModal } from '../auth/UserProfileSettingsModal';
 
 export const SettingsModal: React.FC = () => {
   const {
@@ -56,6 +61,7 @@ export const SettingsModal: React.FC = () => {
   } = useGradebook();
 
   const { isOnline } = useOnlineStatus();
+  const { currentUser } = useAuth();
 
   const [currentCompetency, setCurrentCompetency] = useState({ ...competencyWeights });
   const [currentScales, setCurrentScales] = useState([...gradeScales]);
@@ -82,6 +88,7 @@ export const SettingsModal: React.FC = () => {
     roomNumber: activeClass?.roomNumber || '',
   });
 
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -188,6 +195,43 @@ export const SettingsModal: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Account Profile Settings Card */}
+      {currentUser && (
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-2xs transition-colors">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-start sm:items-center space-x-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0 shadow-2xs">
+                <User className="w-6 h-6" />
+              </div>
+              <div>
+                <div className="flex items-center space-x-2">
+                  <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">
+                    {currentUser.fullName}
+                  </h3>
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-indigo-100 dark:bg-indigo-900/60 text-indigo-800 dark:text-indigo-300">
+                    {currentUser.role === 'admin' ? 'Admin' : currentUser.className || 'គ្រូបង្រៀន'}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
+                  {language === 'km' 
+                    ? `ទូរស័ព្ទ៖ ${currentUser.phoneNumber} ${currentUser.username ? `• គណនី៖ @${currentUser.username}` : ''}`
+                    : `Phone: ${currentUser.phoneNumber} ${currentUser.username ? `• Username: @${currentUser.username}` : ''}`}
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsProfileModalOpen(true)}
+              className="inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-xl bg-indigo-900 hover:bg-indigo-950 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-xs font-bold transition shadow-xs cursor-pointer self-start sm:self-auto"
+            >
+              <Edit3 className="w-4 h-4" />
+              <span>{language === 'km' ? 'កែប្រែព័ត៌មានគណនី & ពាក្យសម្ងាត់' : 'Edit Profile & Password'}</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Theme Selection Card */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-2xs space-y-4 transition-colors">
@@ -818,6 +862,11 @@ export const SettingsModal: React.FC = () => {
         </div>
 
       </form>
+
+      <UserProfileSettingsModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+      />
 
     </div>
   );

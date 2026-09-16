@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGradebook } from '../../context/GradebookContext';
+import { useOptionalGradebook } from '../../context/GradebookContext';
 
 export const OFFICIAL_SCHOOL_EMBLEM_URL = '/school-emblem.svg';
 export const WIKIMEDIA_EMBLEM_FALLBACK_URL = 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Emblem_of_the_Ministry_of_Education%2C_Youth_and_Sport_%28Cambodia%29.svg';
@@ -26,7 +26,8 @@ export const SchoolLogo: React.FC<SchoolLogoProps> = ({
   alt = 'School Logo',
   showBorder = false,
 }) => {
-  const { schoolProfile } = useGradebook();
+  const gradebook = useOptionalGradebook();
+  const schoolProfile = gradebook?.schoolProfile;
   const [imageError, setImageError] = useState(false);
   const [useRemoteFallback, setUseRemoteFallback] = useState(false);
 

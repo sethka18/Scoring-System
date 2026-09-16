@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { useAuth } from './AuthContext';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
   ClassSection, 
   Student, 
@@ -57,9 +56,9 @@ import {
   SyncStatusInfo, 
   SyncPayload 
 } from '../utils/cloudSync';
+import { useAuth } from './AuthContext';
 
 export type NavTab = 
-  | 'school_hub' 
   | 'dashboard' 
   | 'attendance'
   | 'classroom_tools'
@@ -82,7 +81,7 @@ export type NavTab =
   | 'settings'
   | 'mini_games'
   | 'student_plan'
-  | 'account_management';
+  | 'all_classes';
 
 interface ToastNotification {
   id: string;
@@ -241,17 +240,150 @@ interface GradebookContextType {
 
 const GradebookContext = createContext<GradebookContextType | undefined>(undefined);
 
-export const LS_PREFIX = 'primary_gradebook_v2_';
+export const LS_PREFIX = 'primary_gradebook_v3_';
+
+// Safe LocalStorage setter with QuotaExceeded recovery
+export function safeLocalStorageSet(key: string, value: string): boolean {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch (err) {
+    console.warn(`[LocalStorage] Quota error saving key "${key}":`, err);
+    try {
+      // Free up space by removing bulky cached curriculum keys or old versions
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && (k.includes('curriculum_programs') || k.startsWith('primary_gradebook_v1_') || k.startsWith('primary_gradebook_v2_'))) {
+          keysToRemove.push(k);
+        }
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+      localStorage.setItem(key, value);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+}
+
+// Automatically clean up bloated keys from previous versions on script load
+try {
+  const bulkyKeys: string[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && (k.includes('curriculum_programs') || k.startsWith('primary_gradebook_v1_') || k.startsWith('primary_gradebook_v2_'))) {
+      bulkyKeys.push(k);
+    }
+  }
+  bulkyKeys.forEach(k => localStorage.removeItem(k));
+} catch (e) {
+  console.warn('Storage cleanup notice:', e);
+}
+
+// Default Primary School Classes (Grade 1 through 6) for primary school overview & admin management
+export const DEFAULT_PRIMARY_SCHOOL_CLASSES: ClassSection[] = [
+  {
+    id: 'class_grade1',
+    name: 'Grade 1',
+    nameKm: 'ថ្នាក់ទី១',
+    gradeLevel: 1,
+    academicYear: '២០២៦-២០២៧',
+    roomNumber: 'បន្ទប់ ០១',
+    teacherName: 'អ្នកគ្រូ សុខ គន្ធា',
+    teacherNameKm: 'អ្នកគ្រូ សុខ គន្ធា',
+    schoolName: 'Prek Chik Primary School',
+    schoolNameKm: 'សាលាបឋមសិក្សា ព្រែកជីក',
+    province: 'ខេត្តស្ទឹងត្រែង',
+    district: 'ស្រុកសៀមបូក',
+    commune: 'ឃុំអូរម្រះ',
+    studentIds: []
+  },
+  {
+    id: 'class_grade2',
+    name: 'Grade 2',
+    nameKm: 'ថ្នាក់ទី២',
+    gradeLevel: 2,
+    academicYear: '២០២៦-២០២៧',
+    roomNumber: 'បន្ទប់ ០២',
+    teacherName: 'លោកគ្រូ ចាន់ វុទ្ធី',
+    teacherNameKm: 'លោកគ្រូ ចាន់ វុទ្ធី',
+    schoolName: 'Prek Chik Primary School',
+    schoolNameKm: 'សាលាបឋមសិក្សា ព្រែកជីក',
+    province: 'ខេត្តស្ទឹងត្រែង',
+    district: 'ស្រុកសៀមបូក',
+    commune: 'ឃុំអូរម្រះ',
+    studentIds: []
+  },
+  {
+    id: 'class_grade3',
+    name: 'Grade 3',
+    nameKm: 'ថ្នាក់ទី៣',
+    gradeLevel: 3,
+    academicYear: '២០២៦-២០២៧',
+    roomNumber: 'បន្ទប់ ០៣',
+    teacherName: 'អ្នកគ្រូ កែវ ធីតា',
+    teacherNameKm: 'អ្នកគ្រូ កែវ ធីតា',
+    schoolName: 'Prek Chik Primary School',
+    schoolNameKm: 'សាលាបឋមសិក្សា ព្រែកជីក',
+    province: 'ខេត្តស្ទឹងត្រែង',
+    district: 'ស្រុកសៀមបូក',
+    commune: 'ឃុំអូរម្រះ',
+    studentIds: []
+  },
+  {
+    id: 'class_grade4',
+    name: 'Grade 4',
+    nameKm: 'ថ្នាក់ទី៤',
+    gradeLevel: 4,
+    academicYear: '២០២៦-២០២៧',
+    roomNumber: 'បន្ទប់ ០៤',
+    teacherName: 'លោកគ្រូ ហេង សម្បត្តិ',
+    teacherNameKm: 'លោកគ្រូ ហេង សម្បត្តិ',
+    schoolName: 'Prek Chik Primary School',
+    schoolNameKm: 'សាលាបឋមសិក្សា ព្រែកជីក',
+    province: 'ខេត្តស្ទឹងត្រែង',
+    district: 'ស្រុកសៀមបូក',
+    commune: 'ឃុំអូរម្រះ',
+    studentIds: []
+  },
+  {
+    id: 'class_grade5',
+    name: 'Grade 5',
+    nameKm: 'ថ្នាក់ទី៥',
+    gradeLevel: 5,
+    academicYear: '២០២៦-២០២៧',
+    roomNumber: 'បន្ទប់ ០៥',
+    teacherName: 'អ្នកគ្រូ ម៉ៅ ចរិយា',
+    teacherNameKm: 'អ្នកគ្រូ ម៉ៅ ចរិយា',
+    schoolName: 'Prek Chik Primary School',
+    schoolNameKm: 'សាលាបឋមសិក្សា ព្រែកជីក',
+    province: 'ខេត្តស្ទឹងត្រែង',
+    district: 'ស្រុកសៀមបូក',
+    commune: 'ឃុំអូរម្រះ',
+    studentIds: []
+  },
+  {
+    id: 'class_6a',
+    name: 'Grade 6 (A)',
+    nameKm: 'ថ្នាក់ទី៦ក',
+    gradeLevel: 6,
+    academicYear: '២០២៦-២០២៧',
+    roomNumber: 'បន្ទប់ ០៦',
+    teacherName: 'លោកគ្រូ ផាន សិតការណ៍',
+    teacherNameKm: 'លោកគ្រូ ផាន សិតការណ៍',
+    schoolName: 'Prek Chik Primary School',
+    schoolNameKm: 'សាលាបឋមសិក្សា ព្រែកជីក',
+    province: 'ខេត្តស្ទឹងត្រែង',
+    district: 'ស្រុកសៀមបូក',
+    commune: 'ឃុំអូរម្រះ',
+    studentIds: Array.from({ length: 30 }, (_, i) => `stu_${i + 1}`)
+  }
+];
 
 export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  let authContext: any = null;
-  try {
-    authContext = useAuth();
-  } catch (e) {
-    // optional fallback
-  }
-  const currentUser = authContext?.currentUser || null;
-  const currentUserIdRef = useRef<string | null>(null);
+  const { currentUser } = useAuth();
+  const userPrefix = currentUser ? `${LS_PREFIX}${currentUser.id}_` : LS_PREFIX;
 
   const [theme, setThemeState] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem(`${LS_PREFIX}theme`) as 'light' | 'dark';
@@ -287,11 +419,11 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
 
   const [schoolProfile, setSchoolProfileState] = useState<SchoolProfile>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}school_profile`);
+    const saved = localStorage.getItem(`${userPrefix}school_profile`);
     if (saved) {
       try { 
         const parsed = JSON.parse(saved);
-        if (parsed.schoolNameKm && !parsed.schoolNameKm.includes('ហ៊ុនណេង')) {
+        if (parsed && parsed.schoolNameKm) {
           return {
             ...DEFAULT_SCHOOL_PROFILE,
             ...parsed,
@@ -300,51 +432,209 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
       } catch (e) { console.error(e); }
     }
+    if (currentUser?.schoolName) {
+      return {
+        ...DEFAULT_SCHOOL_PROFILE,
+        schoolName: currentUser.schoolName,
+        schoolNameKm: currentUser.schoolName,
+        principalName: currentUser.fullName,
+        principalNameKm: currentUser.fullName,
+      };
+    }
     return DEFAULT_SCHOOL_PROFILE;
   });
 
+  const isDemoTeacher = Boolean(
+    currentUser && (
+      currentUser.id === 'user_teacher_sethka18' || 
+      (currentUser.username || '').toLowerCase() === 'sethka18'
+    )
+  );
+
   const [classes, setClasses] = useState<ClassSection[]>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}classes`);
+    const saved = localStorage.getItem(`${userPrefix}classes`);
     if (saved) {
       try { 
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0 && parsed.some((c: any) => c.id === 'class_4c')) {
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Admin can only view classes that are tied to a real registered teacher account.
+          if (currentUser?.role === 'admin') {
+            const validClasses: ClassSection[] = [];
+            try {
+              const usersRaw = localStorage.getItem('primary_gradebook_users_v3');
+              if (usersRaw) {
+                const allUsers = JSON.parse(usersRaw);
+                if (Array.isArray(allUsers)) {
+                  allUsers.forEach((u: any) => {
+                    if (u.role === 'teacher' && u.className) {
+                      const uClassId = `class_${u.id}`;
+                      // Use saved class if available to preserve student list and customized details
+                      const savedClass = parsed.find((c: ClassSection) => c.id === uClassId);
+                      if (savedClass) {
+                        validClasses.push(savedClass);
+                      } else {
+                        const gradeNum = parseInt(u.gradeLevel?.replace(/\D/g, '') || '6') || 6;
+                        validClasses.push({
+                          id: uClassId,
+                          name: u.className,
+                          nameKm: u.className,
+                          gradeLevel: gradeNum,
+                          academicYear: '២០២៦-២០២៧',
+                          teacherName: u.fullName,
+                          teacherNameKm: u.fullName,
+                          roomNumber: 'បន្ទប់ ០១',
+                          studentIds: [],
+                          schoolName: u.schoolName || 'សាលាបឋមសិក្សា',
+                          schoolNameKm: u.schoolName || 'សាលាបឋមសិក្សា',
+                          province: 'ខេត្តស្ទឹងត្រែង',
+                          district: 'ស្រុកសៀមបូក',
+                          commune: 'ឃុំអូរម្រះ',
+                        });
+                      }
+                    }
+                  });
+                }
+              }
+            } catch (e) { console.error(e); }
+            return validClasses.length > 0 ? validClasses : [];
+          }
+
+          // For non-demo teachers, purge old demo students leakage if any
+          if (!isDemoTeacher && currentUser?.role !== 'admin') {
+            const demoIds = new Set(INITIAL_STUDENTS.map(s => s.id));
+            const hasOnlyDemo = parsed.every((c: ClassSection) => 
+              (c.studentIds || []).length > 0 && (c.studentIds || []).every(id => demoIds.has(id))
+            );
+            if (hasOnlyDemo) {
+              return parsed.map((c: ClassSection) => ({ ...c, studentIds: [] }));
+            }
+          }
           return parsed;
         }
       } catch (e) { console.error(e); }
+    }
+
+    // Admin initial classes if none saved - map from actual teachers
+    if (currentUser?.role === 'admin') {
+      const validClasses: ClassSection[] = [];
+      try {
+        const usersRaw = localStorage.getItem('primary_gradebook_users_v3');
+        if (usersRaw) {
+          const allUsers = JSON.parse(usersRaw);
+          if (Array.isArray(allUsers)) {
+            allUsers.forEach((u: any) => {
+              if (u.role === 'teacher' && u.className) {
+                const uClassId = `class_${u.id}`;
+                const gradeNum = parseInt(u.gradeLevel?.replace(/\D/g, '') || '6') || 6;
+                validClasses.push({
+                  id: uClassId,
+                  name: u.className,
+                  nameKm: u.className,
+                  gradeLevel: gradeNum,
+                  academicYear: '២០២៦-២០២៧',
+                  teacherName: u.fullName,
+                  teacherNameKm: u.fullName,
+                  roomNumber: 'បន្ទប់ ០១',
+                  studentIds: [],
+                  schoolName: u.schoolName || 'សាលាបឋមសិក្សា',
+                  schoolNameKm: u.schoolName || 'សាលាបឋមសិក្សា',
+                  province: 'ខេត្តស្ទឹងត្រែង',
+                  district: 'ស្រុកសៀមបូក',
+                  commune: 'ឃុំអូរម្រះ',
+                });
+              }
+            });
+          }
+        }
+      } catch (e) { console.error(e); }
+      return validClasses;
+    }
+
+    if (currentUser && currentUser.role !== 'admin' && currentUser.className) {
+      const gradeNum = parseInt(currentUser.gradeLevel?.replace(/\D/g, '') || '6') || 6;
+      const userClass: ClassSection = {
+        id: `class_${currentUser.id}`,
+        name: currentUser.className,
+        nameKm: currentUser.className,
+        gradeLevel: gradeNum,
+        academicYear: '២០២៦-២០២៧',
+        teacherName: currentUser.fullName,
+        teacherNameKm: currentUser.fullName,
+        roomNumber: 'បន្ទប់ ០១',
+        studentIds: isDemoTeacher ? INITIAL_STUDENTS.map(s => s.id) : [], // New accounts have NO students!
+        schoolName: currentUser.schoolName || 'សាលាបឋមសិក្សា',
+        schoolNameKm: currentUser.schoolName || 'សាលាបឋមសិក្សា',
+        province: 'ខេត្តស្ទឹងត្រែង',
+        district: 'ស្រុកសៀមបូក',
+        commune: 'ឃុំអូរម្រះ',
+      };
+      return [userClass];
+    }
+    if (isDemoTeacher) {
+      return INITIAL_CLASSES;
+    }
+    if (currentUser && currentUser.role === 'teacher') {
+      const defaultName = currentUser.gradeLevel ? `ថ្នាក់ទី ${currentUser.gradeLevel}` : 'ថ្នាក់ទី ១';
+      const gradeNum = parseInt(currentUser.gradeLevel?.replace(/\D/g, '') || '1') || 1;
+      const userClass: ClassSection = {
+        id: `class_${currentUser.id}`,
+        name: defaultName,
+        nameKm: defaultName,
+        gradeLevel: gradeNum,
+        academicYear: '២០២៦-២០២៧',
+        teacherName: currentUser.fullName,
+        teacherNameKm: currentUser.fullName,
+        roomNumber: 'បន្ទប់ ០១',
+        studentIds: [], // New accounts have NO students!
+        schoolName: currentUser.schoolName || 'សាលាបឋមសិក្សា',
+        schoolNameKm: currentUser.schoolName || 'សាលាបឋមសិក្សា',
+        province: 'ខេត្តស្ទឹងត្រែង',
+        district: 'ស្រុកសៀមបូក',
+        commune: 'ឃុំអូរម្រះ',
+      };
+      return [userClass];
     }
     return INITIAL_CLASSES;
   });
 
   const [activeClassId, setActiveClassId] = useState<string>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}active_class`);
-    if (saved && (saved === 'class_4c' || saved === 'class_6')) return saved;
-    return INITIAL_CLASSES[0]?.id || 'class_4c';
+    const saved = localStorage.getItem(`${userPrefix}active_class`);
+    if (saved && classes.some(c => c.id === saved)) return saved;
+    return classes[0]?.id || INITIAL_CLASSES[0]?.id || '';
   });
 
   const [students, setStudents] = useState<Student[]>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}students`);
-    if (saved) {
+    const saved = localStorage.getItem(`${userPrefix}students`);
+    if (saved !== null) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length >= 34 && parsed[0]?.name === 'ជួ ម៉េងជីង') {
+        if (Array.isArray(parsed)) {
+          // If non-demo user and previously got the 35 demo students from old demo template:
+          if (!isDemoTeacher && currentUser?.role !== 'admin') {
+            const demoIds = new Set(INITIAL_STUDENTS.map(s => s.id));
+            const hasOnlyDemo = parsed.length > 0 && parsed.every((s: Student) => demoIds.has(s.id));
+            if (hasOnlyDemo) {
+              return [];
+            }
+          }
           return parsed.map((s: Student) => ({
             ...s,
-            attendanceCount: s.attendanceCount || { present: 100, absentExcused: 0, absentUnexcused: 0, late: 0 },
+            attendanceCount: s.attendanceCount || { present: 0, absentExcused: 0, absentUnexcused: 0, late: 0 },
             conductRating: formatConductRating(s.conductRating, 'km'),
           }));
         }
       } catch (e) { console.error(e); }
     }
-    return INITIAL_STUDENTS.map(s => ({
-      ...s,
-      attendanceCount: s.attendanceCount || { present: 100, absentExcused: 0, absentUnexcused: 0, late: 0 },
-      conductRating: formatConductRating(s.conductRating, 'km'),
-    }));
+    // Only user_teacher_sethka18 has demo students!
+    // Any newly created account or other teacher begins with 0 students in their class!
+    if (isDemoTeacher) {
+      return INITIAL_STUDENTS;
+    }
+    return [];
   });
 
   const [subjects, setSubjects] = useState<Subject[]>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}subjects`);
+    const saved = localStorage.getItem(`${userPrefix}subjects`);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -356,18 +646,18 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             const existingIds = new Set(filtered.map(s => s.id));
             const missing = DEFAULT_SUBJECTS.filter(s => !existingIds.has(s.id));
             const result = [...filtered, ...missing];
-            localStorage.setItem(`${LS_PREFIX}subjects`, JSON.stringify(result));
+            localStorage.setItem(`${userPrefix}subjects`, JSON.stringify(result));
             return result;
           }
         }
       } catch (e) { console.error(e); }
     }
-    localStorage.setItem(`${LS_PREFIX}subjects`, JSON.stringify(DEFAULT_SUBJECTS));
+    localStorage.setItem(`${userPrefix}subjects`, JSON.stringify(DEFAULT_SUBJECTS));
     return DEFAULT_SUBJECTS;
   });
 
   const [periods, setPeriods] = useState<AssessmentPeriod[]>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}periods`);
+    const saved = localStorage.getItem(`${userPrefix}periods`);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -383,13 +673,13 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       } catch (e) { console.error(e); }
     }
     try {
-      localStorage.setItem(`${LS_PREFIX}periods`, JSON.stringify(DEFAULT_PERIODS));
+      localStorage.setItem(`${userPrefix}periods`, JSON.stringify(DEFAULT_PERIODS));
     } catch (e) {}
     return DEFAULT_PERIODS;
   });
 
   const [activePeriodId, setActivePeriodId] = useState<string>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}active_period`);
+    const saved = localStorage.getItem(`${userPrefix}active_period`);
     if (saved && saved !== 'p_feb' && saved !== 'month_mar' && saved !== 'p_mar') {
       const validPeriodIds = DEFAULT_PERIODS.map(p => p.id);
       if (validPeriodIds.includes(saved)) return saved;
@@ -399,47 +689,20 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const [scoresMatrix, setScoresMatrix] = useState<Record<string, Record<string, Record<string, any>>>>(() => {
     const initialGenerated = generateInitialScores();
-    const saved = localStorage.getItem(`${LS_PREFIX}scores`);
+    const saved = localStorage.getItem(`${userPrefix}scores`);
     if (saved) {
       try { 
         const parsed = JSON.parse(saved); 
-        if (parsed && (parsed['stu_34'] || parsed['stu_1'])) {
-          let hasMissing = false;
-          // Ensure all default subjects are populated for all students and periods
-          for (const [stuId, stuPeriods] of Object.entries(initialGenerated)) {
-            if (!parsed[stuId]) {
-              parsed[stuId] = stuPeriods;
-              hasMissing = true;
-              continue;
-            }
-            for (const [pId, pSubjs] of Object.entries(stuPeriods)) {
-              if (!parsed[stuId][pId]) {
-                parsed[stuId][pId] = pSubjs;
-                hasMissing = true;
-                continue;
-              }
-              for (const [subjId, subjScore] of Object.entries(pSubjs)) {
-                if (!parsed[stuId][pId][subjId]) {
-                  parsed[stuId][pId][subjId] = subjScore;
-                  hasMissing = true;
-                }
-              }
-            }
-          }
-          if (hasMissing) {
-            try {
-              localStorage.setItem(`${LS_PREFIX}scores`, JSON.stringify(parsed));
-            } catch (e) {}
-          }
+        if (parsed && typeof parsed === 'object') {
           return parsed;
         }
       } catch (e) { console.error(e); }
     }
-    return initialGenerated;
+    return {};
   });
 
   const [weights, setWeights] = useState<AssessmentWeightConfig>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}weights`);
+    const saved = localStorage.getItem(`${userPrefix}weights`);
     if (saved) {
       try { return JSON.parse(saved); } catch (e) { console.error(e); }
     }
@@ -447,7 +710,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   });
 
   const [gradeScales, setGradeScales] = useState<GradeScaleThreshold[]>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}grade_scales`);
+    const saved = localStorage.getItem(`${userPrefix}grade_scales`);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -456,7 +719,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           const eScale = parsed.find((s: GradeScaleThreshold) => s.grade === 'E');
           const dScale = parsed.find((s: GradeScaleThreshold) => s.grade === 'D');
           if ((eScale && eScale.minPercentage < 50) || (dScale && dScale.minPercentage <= 50)) {
-            localStorage.setItem(`${LS_PREFIX}grade_scales`, JSON.stringify(DEFAULT_GRADE_SCALES));
+            localStorage.setItem(`${userPrefix}grade_scales`, JSON.stringify(DEFAULT_GRADE_SCALES));
             return DEFAULT_GRADE_SCALES;
           }
           return parsed.map((s: GradeScaleThreshold) => ({
@@ -471,7 +734,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   });
 
   const [competencyWeights, setCompetencyWeights] = useState<CompetencyPillarsWeight>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}competency_weights`);
+    const saved = localStorage.getItem(`${userPrefix}competency_weights`);
     if (saved) {
       try { return JSON.parse(saved); } catch (e) { console.error(e); }
     }
@@ -480,7 +743,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Calendar State
   const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}calendar_events`);
+    const saved = localStorage.getItem(`${userPrefix}calendar_events`);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -500,7 +763,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Timetable Slots State
   const [timetableSlots, setTimetableSlotsState] = useState<TimetableSlot[]>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}timetable_slots`);
+    const saved = localStorage.getItem(`${userPrefix}timetable_slots`);
     if (saved) {
       try {
         const parsed: TimetableSlot[] = JSON.parse(saved);
@@ -511,57 +774,90 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
       } catch (e) { console.error(e); }
     }
-    localStorage.setItem(`${LS_PREFIX}timetable_slots`, JSON.stringify(INITIAL_TIMETABLE_SLOTS));
     return INITIAL_TIMETABLE_SLOTS;
   });
 
   // Curriculum Programs State
   const [curriculumPrograms, setCurriculumPrograms] = useState<CurriculumProgram[]>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}curriculum_programs`);
-    if (saved) {
-      try {
-        const parsed: CurriculumProgram[] = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          const programMap = new Map<string, CurriculumProgram>();
-          // Seed with latest authoritative MoEYS programs
-          DEFAULT_CURRICULUM_PROGRAMS.forEach(p => {
-            const existing = parsed.find(item => item.id === p.id || (item.gradeLevel === p.gradeLevel && item.subjectId === p.subjectId));
-            if (existing && existing.lessons) {
-              const statusMap = new Map(existing.lessons.map(l => [l.id, l.status]));
-              const updatedLessons = p.lessons.map(l => ({
-                ...l,
-                status: statusMap.get(l.id) || l.status
-              }));
-              programMap.set(p.id, { ...p, lessons: updatedLessons });
-            } else {
-              programMap.set(p.id, p);
-            }
-          });
-          // Also keep any user-custom imported programs
-          parsed.forEach(p => {
-            if (!programMap.has(p.id)) {
-              programMap.set(p.id, p);
-            }
-          });
-          return Array.from(programMap.values());
+    let statusOverrides: Record<string, Record<string, Partial<CurriculumLesson>>> = {};
+    let customPrograms: CurriculumProgram[] = [];
+
+    try {
+      const savedOverrides = localStorage.getItem(`${userPrefix}curriculum_overrides`);
+      if (savedOverrides) {
+        statusOverrides = JSON.parse(savedOverrides) || {};
+      }
+      const savedCustom = localStorage.getItem(`${userPrefix}curriculum_custom_programs`);
+      if (savedCustom) {
+        customPrograms = JSON.parse(savedCustom) || [];
+      }
+
+      // Check for legacy bulky saved data if no overrides yet
+      const legacySaved = localStorage.getItem(`${userPrefix}curriculum_programs`);
+      if (legacySaved) {
+        if (Object.keys(statusOverrides).length === 0) {
+          const parsedLegacy: CurriculumProgram[] = JSON.parse(legacySaved);
+          if (Array.isArray(parsedLegacy)) {
+            parsedLegacy.forEach(p => {
+              const isDefault = DEFAULT_CURRICULUM_PROGRAMS.some(dp => dp.id === p.id);
+              if (!isDefault) {
+                if (!customPrograms.some(cp => cp.id === p.id)) {
+                  customPrograms.push(p);
+                }
+              } else if (p.lessons) {
+                p.lessons.forEach(l => {
+                  if (l.status && l.status !== 'upcoming') {
+                    if (!statusOverrides[p.id]) statusOverrides[p.id] = {};
+                    statusOverrides[p.id][l.id] = { 
+                      status: l.status, 
+                      startDate: l.startDate, 
+                      endDate: l.endDate, 
+                      notes: l.notes 
+                    };
+                  }
+                });
+              }
+            });
+          }
         }
-      } catch (e) { console.error(e); }
+        // Remove legacy bulky key immediately to reclaim quota
+        localStorage.removeItem(`${userPrefix}curriculum_programs`);
+      }
+    } catch (e) {
+      console.warn('Error reading curriculum program state:', e);
     }
-    return DEFAULT_CURRICULUM_PROGRAMS;
+
+    // Hydrate default programs with status overrides
+    const hydratedDefaults = DEFAULT_CURRICULUM_PROGRAMS.map(prog => {
+      const progOverrides = statusOverrides[prog.id];
+      if (!progOverrides) return prog;
+      return {
+        ...prog,
+        lessons: prog.lessons.map(lesson => {
+          const override = progOverrides[lesson.id];
+          return override ? { ...lesson, ...override } : lesson;
+        })
+      };
+    });
+
+    return [...hydratedDefaults, ...customPrograms];
   });
 
   // Daily Attendance Records State
   const [attendanceRecords, setAttendanceRecords] = useState<DailyAttendanceRecord[]>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}attendance_records`);
+    const saved = localStorage.getItem(`${userPrefix}attendance_records`);
     if (saved) {
       try { return JSON.parse(saved); } catch (e) { console.error(e); }
     }
-    return generateInitialAttendanceRecords();
+    if (isDemoTeacher) {
+      return generateInitialAttendanceRecords();
+    }
+    return [];
   });
 
   // Individual Student Plan & Parent Agreement (PLP) State
   const [studentAgreements, setStudentAgreements] = useState<Record<string, StudentAgreementPlan>>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}student_agreements`);
+    const saved = localStorage.getItem(`${userPrefix}student_agreements`);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -570,14 +866,15 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
       } catch (e) { console.error(e); }
     }
-    return generateInitialAgreementPlans(INITIAL_STUDENTS, 'class_6a');
+    if (isDemoTeacher) {
+      return generateInitialAgreementPlans(INITIAL_STUDENTS, 'class_6a');
+    }
+    return {};
   });
 
   useEffect(() => {
-    try {
-      localStorage.setItem(`${LS_PREFIX}student_agreements`, JSON.stringify(studentAgreements));
-    } catch (e) { console.error(e); }
-  }, [studentAgreements]);
+    safeLocalStorageSet(`${userPrefix}student_agreements`, JSON.stringify(studentAgreements));
+  }, [studentAgreements, userPrefix]);
 
   const getStudentAgreement = (studentId: string): StudentAgreementPlan => {
     if (studentAgreements[studentId]) {
@@ -614,9 +911,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         updatedAt: new Date().toISOString(),
       };
       const next = { ...prev, [studentId]: merged };
-      try {
-        localStorage.setItem(`${LS_PREFIX}student_agreements`, JSON.stringify(next));
-      } catch (e) { console.error(e); }
+      safeLocalStorageSet(`${userPrefix}student_agreements`, JSON.stringify(next));
       return next;
     });
   };
@@ -637,9 +932,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           };
         }
       });
-      try {
-        localStorage.setItem(`${LS_PREFIX}student_agreements`, JSON.stringify(next));
-      } catch (e) { console.error(e); }
+      safeLocalStorageSet(`${userPrefix}student_agreements`, JSON.stringify(next));
       return next;
     });
   };
@@ -686,9 +979,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         };
         updatedCount++;
       });
-      try {
-        localStorage.setItem(`${LS_PREFIX}student_agreements`, JSON.stringify(next));
-      } catch (e) { console.error(e); }
+      safeLocalStorageSet(`${userPrefix}student_agreements`, JSON.stringify(next));
       showToast(language === 'km' ? `បានទាញយកនិទ្ទេសសម្រេចចុងឆ្នាំសម្រាប់សិស្ស ${updatedCount} នាក់` : `Auto-synced achieved grades for ${updatedCount} students`, 'success');
       return next;
     });
@@ -699,166 +990,103 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Persistent storage synchronizers
   useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}lang`, language);
+    safeLocalStorageSet(`${LS_PREFIX}lang`, language);
   }, [language]);
 
   useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}classes`, JSON.stringify(classes));
-  }, [classes]);
+    safeLocalStorageSet(`${userPrefix}classes`, JSON.stringify(classes));
+  }, [classes, userPrefix]);
 
   useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}active_class`, activeClassId);
-  }, [activeClassId]);
+    safeLocalStorageSet(`${userPrefix}active_class`, activeClassId);
+  }, [activeClassId, userPrefix]);
 
   useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}active_period`, activePeriodId);
-  }, [activePeriodId]);
+    safeLocalStorageSet(`${userPrefix}active_period`, activePeriodId);
+  }, [activePeriodId, userPrefix]);
 
   useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}students`, JSON.stringify(students));
-  }, [students]);
+    safeLocalStorageSet(`${userPrefix}students`, JSON.stringify(students));
+  }, [students, userPrefix]);
 
   useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}subjects`, JSON.stringify(subjects));
-  }, [subjects]);
+    safeLocalStorageSet(`${userPrefix}subjects`, JSON.stringify(subjects));
+  }, [subjects, userPrefix]);
 
   useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}periods`, JSON.stringify(periods));
-  }, [periods]);
+    safeLocalStorageSet(`${userPrefix}periods`, JSON.stringify(periods));
+  }, [periods, userPrefix]);
 
   useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}scores`, JSON.stringify(scoresMatrix));
-  }, [scoresMatrix]);
+    safeLocalStorageSet(`${userPrefix}scores`, JSON.stringify(scoresMatrix));
+  }, [scoresMatrix, userPrefix]);
 
   useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}weights`, JSON.stringify(weights));
-  }, [weights]);
+    safeLocalStorageSet(`${userPrefix}weights`, JSON.stringify(weights));
+  }, [weights, userPrefix]);
 
   useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}grade_scales`, JSON.stringify(gradeScales));
-  }, [gradeScales]);
+    safeLocalStorageSet(`${userPrefix}grade_scales`, JSON.stringify(gradeScales));
+  }, [gradeScales, userPrefix]);
 
   useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}competency_weights`, JSON.stringify(competencyWeights));
-  }, [competencyWeights]);
+    safeLocalStorageSet(`${userPrefix}competency_weights`, JSON.stringify(competencyWeights));
+  }, [competencyWeights, userPrefix]);
 
   useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}calendar_events`, JSON.stringify(calendarEvents));
-  }, [calendarEvents]);
+    safeLocalStorageSet(`${userPrefix}calendar_events`, JSON.stringify(calendarEvents));
+  }, [calendarEvents, userPrefix]);
 
   useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}timetable_slots`, JSON.stringify(timetableSlots));
-  }, [timetableSlots]);
+    safeLocalStorageSet(`${userPrefix}timetable_slots`, JSON.stringify(timetableSlots));
+  }, [timetableSlots, userPrefix]);
 
   useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}curriculum_programs`, JSON.stringify(curriculumPrograms));
-  }, [curriculumPrograms]);
+    // Only persist status/date overrides and custom-imported programs to preserve browser quota
+    try {
+      const overrides: Record<string, Record<string, Partial<CurriculumLesson>>> = {};
+      const customPrograms: CurriculumProgram[] = [];
 
-  useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}attendance_records`, JSON.stringify(attendanceRecords));
-  }, [attendanceRecords]);
-
-  useEffect(() => {
-    localStorage.setItem(`${LS_PREFIX}school_profile`, JSON.stringify(schoolProfile));
-  }, [schoolProfile]);
-
-  // Per-user data loading on account switch
-  useEffect(() => {
-    if (!currentUser) return;
-    const uid = currentUser.id;
-    if (currentUserIdRef.current === uid) return;
-    currentUserIdRef.current = uid;
-
-    if (uid === 'user_prekchik') {
-      return;
-    }
-
-    const userProfileKey = `${LS_PREFIX}${uid}_school_profile`;
-    const savedProfile = localStorage.getItem(userProfileKey);
-    if (savedProfile) {
-      try {
-        setSchoolProfileState(JSON.parse(savedProfile));
-      } catch (e) {
-        console.error(e);
-      }
-    } else if (currentUser.schoolNameKm) {
-      setSchoolProfileState(prev => ({
-        ...prev,
-        schoolNameKm: currentUser.schoolNameKm,
-        schoolName: currentUser.schoolNameEn || currentUser.schoolNameKm,
-        province: currentUser.province || prev.province,
-        district: currentUser.district || prev.district,
-      }));
-    }
-
-    const userClassesKey = `${LS_PREFIX}${uid}_classes`;
-    const savedClasses = localStorage.getItem(userClassesKey);
-    if (savedClasses) {
-      try {
-        const parsed = JSON.parse(savedClasses);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setClasses(parsed);
-          const savedActive = localStorage.getItem(`${LS_PREFIX}${uid}_active_class`);
-          if (savedActive && parsed.some((c: any) => c.id === savedActive)) {
-            setActiveClassId(savedActive);
-          } else {
-            setActiveClassId(parsed[0].id);
-          }
+      curriculumPrograms.forEach(prog => {
+        const defaultProg = DEFAULT_CURRICULUM_PROGRAMS.find(dp => dp.id === prog.id);
+        if (!defaultProg) {
+          customPrograms.push(prog);
+        } else {
+          prog.lessons.forEach(l => {
+            const dl = defaultProg.lessons.find(item => item.id === l.id);
+            if (!dl || l.status !== dl.status || l.startDate !== dl.startDate || l.endDate !== dl.endDate || l.notes !== dl.notes) {
+              if (!overrides[prog.id]) overrides[prog.id] = {};
+              overrides[prog.id][l.id] = {
+                status: l.status,
+                startDate: l.startDate,
+                endDate: l.endDate,
+                notes: l.notes
+              };
+            }
+          });
         }
-      } catch (e) {
-        console.error(e);
+      });
+
+      safeLocalStorageSet(`${userPrefix}curriculum_overrides`, JSON.stringify(overrides));
+      if (customPrograms.length > 0) {
+        safeLocalStorageSet(`${userPrefix}curriculum_custom_programs`, JSON.stringify(customPrograms));
+      } else {
+        try { localStorage.removeItem(`${userPrefix}curriculum_custom_programs`); } catch {}
       }
+      // Ensure bulky legacy key is removed
+      try { localStorage.removeItem(`${userPrefix}curriculum_programs`); } catch {}
+    } catch (e) {
+      console.warn('Error saving curriculum overrides:', e);
     }
-
-    const userStudentsKey = `${LS_PREFIX}${uid}_students`;
-    const savedStudents = localStorage.getItem(userStudentsKey);
-    if (savedStudents) {
-      try {
-        const parsed = JSON.parse(savedStudents);
-        if (Array.isArray(parsed)) {
-          setStudents(parsed);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    const userScoresKey = `${LS_PREFIX}${uid}_scores`;
-    const savedScores = localStorage.getItem(userScoresKey);
-    if (savedScores) {
-      try {
-        setScoresMatrix(JSON.parse(savedScores));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, [currentUser]);
-
-  // Per-user data saving for custom users
-  useEffect(() => {
-    if (currentUser && currentUser.id !== 'user_prekchik') {
-      localStorage.setItem(`${LS_PREFIX}${currentUser.id}_classes`, JSON.stringify(classes));
-      localStorage.setItem(`${LS_PREFIX}${currentUser.id}_active_class`, activeClassId);
-    }
-  }, [classes, activeClassId, currentUser]);
+  }, [curriculumPrograms, userPrefix]);
 
   useEffect(() => {
-    if (currentUser && currentUser.id !== 'user_prekchik') {
-      localStorage.setItem(`${LS_PREFIX}${currentUser.id}_students`, JSON.stringify(students));
-    }
-  }, [students, currentUser]);
+    safeLocalStorageSet(`${userPrefix}attendance_records`, JSON.stringify(attendanceRecords));
+  }, [attendanceRecords, userPrefix]);
 
   useEffect(() => {
-    if (currentUser && currentUser.id !== 'user_prekchik') {
-      localStorage.setItem(`${LS_PREFIX}${currentUser.id}_scores`, JSON.stringify(scoresMatrix));
-    }
-  }, [scoresMatrix, currentUser]);
-
-  useEffect(() => {
-    if (currentUser && currentUser.id !== 'user_prekchik') {
-      localStorage.setItem(`${LS_PREFIX}${currentUser.id}_school_profile`, JSON.stringify(schoolProfile));
-    }
-  }, [schoolProfile, currentUser]);
+    safeLocalStorageSet(`${userPrefix}school_profile`, JSON.stringify(schoolProfile));
+  }, [schoolProfile, userPrefix]);
 
   const setLanguage = (_lang: Language) => {
     setLanguageState('km');
@@ -879,9 +1107,16 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const activeClass = classes.find(c => c.id === activeClassId) || classes[0];
 
-  const classStudents = students.filter(s => 
-    Boolean(activeClass?.studentIds && activeClass.studentIds.includes(s.id))
-  );
+  const classStudents = students.filter(s => {
+    if (!activeClass) return false;
+    if (activeClass.studentIds && activeClass.studentIds.length > 0) {
+      return activeClass.studentIds.includes(s.id);
+    }
+    if (classes.length === 1) {
+      return true;
+    }
+    return false;
+  });
 
   // Class CRUD
   const addClass = (newClassData: Omit<ClassSection, 'id' | 'studentIds'> | ClassSection) => {
@@ -927,7 +1162,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const updateSchoolProfile = (updated: Partial<SchoolProfile>) => {
     setSchoolProfileState(prev => {
       const next = { ...prev, ...updated };
-      localStorage.setItem(`${LS_PREFIX}school_profile`, JSON.stringify(next));
+      safeLocalStorageSet(`${userPrefix}school_profile`, JSON.stringify(next));
 
       // Propagate updated school information to all classes
       setClasses(prevClasses => prevClasses.map(cls => ({
@@ -959,7 +1194,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Reading Speed & Mental Math Fluency Exam
   // ==========================================
   const [readingPassages, setReadingPassages] = useState<ReadingPassage[]>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}reading_passages`);
+    const saved = localStorage.getItem(`${userPrefix}reading_passages`);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -970,7 +1205,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   });
 
   const [fluencyRecords, setFluencyRecords] = useState<FluencyTestRecord[]>(() => {
-    const saved = localStorage.getItem(`${LS_PREFIX}fluency_records`);
+    const saved = localStorage.getItem(`${userPrefix}fluency_records`);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -985,7 +1220,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const fullPass: ReadingPassage = { ...newPass, id, isCustom: true };
     setReadingPassages(prev => {
       const next = [fullPass, ...prev];
-      localStorage.setItem(`${LS_PREFIX}reading_passages`, JSON.stringify(next));
+      safeLocalStorageSet(`${userPrefix}reading_passages`, JSON.stringify(next));
       return next;
     });
     showToast(language === 'km' ? 'បានបន្ថែមអត្ថបទអំណានថ្មីជោគជ័យ' : 'Added reading passage successfully', 'success');
@@ -994,7 +1229,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const updateReadingPassage = (id: string, updated: Partial<ReadingPassage>) => {
     setReadingPassages(prev => {
       const next = prev.map(p => p.id === id ? { ...p, ...updated } : p);
-      localStorage.setItem(`${LS_PREFIX}reading_passages`, JSON.stringify(next));
+      safeLocalStorageSet(`${userPrefix}reading_passages`, JSON.stringify(next));
       return next;
     });
     showToast(language === 'km' ? 'បានកែសម្រួលអត្ថបទអំណានជោគជ័យ' : 'Updated reading passage successfully', 'success');
@@ -1003,7 +1238,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const deleteReadingPassage = (id: string) => {
     setReadingPassages(prev => {
       const next = prev.filter(p => p.id !== id);
-      localStorage.setItem(`${LS_PREFIX}reading_passages`, JSON.stringify(next));
+      safeLocalStorageSet(`${userPrefix}reading_passages`, JSON.stringify(next));
       return next;
     });
     showToast(language === 'km' ? 'បានលុបអត្ថបទអំណាន' : 'Deleted reading passage', 'info');
@@ -1013,7 +1248,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setFluencyRecords(prev => {
       const filtered = prev.filter(r => r.id !== record.id);
       const next = [record, ...filtered];
-      localStorage.setItem(`${LS_PREFIX}fluency_records`, JSON.stringify(next));
+      safeLocalStorageSet(`${userPrefix}fluency_records`, JSON.stringify(next));
       return next;
     });
   };
@@ -1021,7 +1256,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const deleteFluencyRecord = (id: string) => {
     setFluencyRecords(prev => {
       const next = prev.filter(r => r.id !== id);
-      localStorage.setItem(`${LS_PREFIX}fluency_records`, JSON.stringify(next));
+      safeLocalStorageSet(`${userPrefix}fluency_records`, JSON.stringify(next));
       return next;
     });
     showToast(language === 'km' ? 'បានលុបកំណត់ត្រាតេស្ត' : 'Deleted test record', 'info');
@@ -1404,7 +1639,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setTimetableSlotsState(prev => {
       const otherClassSlots = prev.filter(s => s.classId !== classId);
       const combined = [...otherClassSlots, ...newSlots];
-      localStorage.setItem(`${LS_PREFIX}timetable_slots`, JSON.stringify(combined));
+      safeLocalStorageSet(`${userPrefix}timetable_slots`, JSON.stringify(combined));
       return combined;
     });
     showToast(language === 'km' ? 'បានកំណត់កាលវិភាគថ្នាក់នេះតាមស្តង់ដារក្រសួង' : 'Class timetable reset to MoEYS standard');
@@ -1479,7 +1714,12 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const resetCurriculumToMoEYS = () => {
     setCurriculumPrograms(DEFAULT_CURRICULUM_PROGRAMS);
-    localStorage.setItem(`${LS_PREFIX}curriculum_programs`, JSON.stringify(DEFAULT_CURRICULUM_PROGRAMS));
+    try {
+      localStorage.removeItem(`${userPrefix}curriculum_overrides`);
+      localStorage.removeItem(`${userPrefix}curriculum_custom_programs`);
+      localStorage.removeItem(`${userPrefix}curriculum_programs`);
+      localStorage.removeItem(`${LS_PREFIX}curriculum_programs`);
+    } catch {}
     showToast(
       language === 'km' 
         ? 'បានផ្ទុកកម្មវិធីសិក្សាផ្លូវការក្រសួងអប់រំ (MoEYS) ឡើងវិញដោយជោគជ័យ!' 
@@ -1668,7 +1908,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const restoreScoresMatrix = (matrix: Record<string, Record<string, Record<string, any>>>) => {
     if (matrix && typeof matrix === 'object') {
       setScoresMatrix(matrix);
-      localStorage.setItem(`${LS_PREFIX}scores`, JSON.stringify(matrix));
+      safeLocalStorageSet(`${userPrefix}scores`, JSON.stringify(matrix));
       showToast(language === 'km' ? 'បានស្តារពិន្ទុពីទិន្នន័យរក្សាទុកស្វ័យប្រវត្តិដោយជោគជ័យ' : 'Scores restored from auto-save backup successfully', 'success');
     }
   };
@@ -1943,4 +2183,8 @@ export const useGradebook = () => {
     throw new Error('useGradebook must be used within a GradebookProvider');
   }
   return context;
+};
+
+export const useOptionalGradebook = () => {
+  return useContext(GradebookContext);
 };

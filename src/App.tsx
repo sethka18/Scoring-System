@@ -1,12 +1,10 @@
 import React from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthScreen } from './components/auth/AuthScreen';
 import { GradebookProvider, useGradebook } from './context/GradebookContext';
-import { AuthGateway } from './components/auth/AuthGateway';
-import { SchoolClassOnboardingModal } from './components/auth/SchoolClassOnboardingModal';
 import { Header } from './components/layout/Header';
 import { Navigation } from './components/layout/Navigation';
 import { DashboardOverview } from './components/dashboard/DashboardOverview';
-import { SchoolAllClassesHub } from './components/school/SchoolAllClassesHub';
 import { SchoolCalendarView } from './components/calendar/SchoolCalendarView';
 import { SchoolScheduleView } from './components/schedule/SchoolScheduleView';
 import { CurriculumProgramHub } from './components/curriculum/CurriculumProgramHub';
@@ -27,7 +25,7 @@ import { WholeYearAnalytics } from './components/analytics/WholeYearAnalytics';
 import { ReportCardView } from './components/reports/ReportCardView';
 import { StudentCumulativeRecordBook } from './components/reports/StudentCumulativeRecordBook';
 import { StudentLearningAgreementHub } from './components/agreements/StudentLearningAgreementHub';
-import { AccountManagementCenter } from './components/admin/AccountManagementCenter';
+import { SchoolAllClassesHub } from './components/school/SchoolAllClassesHub';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { ToastContainer } from './components/common/ToastContainer';
 import { CloudSyncModal } from './components/sync/CloudSyncModal';
@@ -40,7 +38,6 @@ const MainContent: React.FC = () => {
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      {activeTab === 'school_hub' && <SchoolAllClassesHub />}
       {activeTab === 'dashboard' && <DashboardOverview />}
       {activeTab === 'attendance' && <DailyAttendanceTracker />}
       {activeTab === 'seating' && <ClassroomSeatingChart />}
@@ -52,6 +49,7 @@ const MainContent: React.FC = () => {
       {activeTab === 'calendar' && <SchoolCalendarView />}
       {activeTab === 'schedule' && <SchoolScheduleView />}
       {activeTab === 'curriculum' && <CurriculumProgramHub />}
+      {activeTab === 'all_classes' && <SchoolAllClassesHub />}
       {activeTab === 'roster' && <ClassStudentManagement />}
       {activeTab === 'scoring' && <AssessmentScoringHub />}
       {activeTab === 'skills_assessment' && <SkillsAssessmentView />}
@@ -61,7 +59,6 @@ const MainContent: React.FC = () => {
       {activeTab === 'report_card' && <ReportCardView />}
       {activeTab === 'record_book' && <StudentCumulativeRecordBook />}
       {activeTab === 'student_plan' && <StudentLearningAgreementHub />}
-      {activeTab === 'account_management' && <AccountManagementCenter />}
       {activeTab === 'backup_restore' && <YearlyBackupRestoreCenter />}
       {activeTab === 'settings' && <SettingsModal />}
     </main>
@@ -70,40 +67,14 @@ const MainContent: React.FC = () => {
 
 const AppShell: React.FC = () => {
   const { language } = useGradebook();
-  const { currentUser, isAuthenticated, impersonatingFromAdminId, revertToAdmin } = useAuth();
-
-  if (!isAuthenticated || !currentUser) {
-    return <AuthGateway />;
-  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col selection:bg-indigo-500 selection:text-white transition-colors duration-200">
-      {/* Impersonation Banner */}
-      {impersonatingFromAdminId && (
-        <div className="no-print bg-gradient-to-r from-amber-500 to-amber-600 text-white px-4 py-2 text-xs font-bold flex items-center justify-between shadow-xs sticky top-0 z-40">
-          <div className="flex items-center space-x-2">
-            <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider">
-              Admin View Mode
-            </span>
-            <span>
-              លោកអ្នកកំពុងចូលមើលក្នុងនាមជា: <b>{currentUser?.fullName}</b> ({currentUser?.schoolNameKm || 'សាលារៀន'})
-            </span>
-          </div>
-          <button
-            onClick={revertToAdmin}
-            className="px-3 py-1 bg-slate-900 text-white hover:bg-black rounded-lg text-xs font-black transition cursor-pointer shadow-xs"
-          >
-            ត្រឡប់ទៅគណនី Admin វិញ (Return to Admin)
-          </button>
-        </div>
-      )}
-
       <Header />
       <Navigation />
       <div className="flex-1">
         <MainContent />
       </div>
-      <SchoolClassOnboardingModal />
       <ToastContainer />
       <CloudSyncModal />
       
@@ -128,13 +99,25 @@ const AppShell: React.FC = () => {
   );
 };
 
+const AuthenticatedApp: React.FC = () => {
+  const { currentUser } = useAuth();
+
+  if (!currentUser) {
+    return <AuthScreen />;
+  }
+
+  return (
+    <GradebookProvider key={currentUser.id}>
+      <AppShell />
+    </GradebookProvider>
+  );
+};
+
 export default function App() {
   return (
     <ErrorBoundary>
       <AuthProvider>
-        <GradebookProvider>
-          <AppShell />
-        </GradebookProvider>
+        <AuthenticatedApp />
       </AuthProvider>
     </ErrorBoundary>
   );

@@ -14,17 +14,17 @@ import { PREK_CHIK_CLASSES, PREK_CHIK_STUDENTS, PREK_CHIK_STUDENT_PROFILES } fro
 export const DEFAULT_SCHOOL_PROFILE: SchoolProfile = {
   schoolName: 'Prek Chik Primary School',
   schoolNameKm: 'សាលាបឋមសិក្សា ព្រែកជីក',
-  province: 'ខេត្តត្បូងឃ្មុំ',
-  district: 'ស្រុកត្បូងឃ្មុំ',
-  commune: 'ឃុំព្រែកជីក',
-  village: 'ភូមិព្រែកជីក',
-  schoolCode: '250204',
-  principalName: 'School Principal',
-  principalNameKm: 'នាយកសាលា',
-  phone: '012 345 678',
+  province: 'ខេត្តស្ទឹងត្រែង',
+  district: 'ស្រុកសៀមបូក',
+  commune: 'ឃុំអូរម្រះ',
+  village: 'ភូមិប្រទង',
+  schoolCode: '190402',
+  principalName: 'លោកគ្រូ ផាន សិតការណ៍',
+  principalNameKm: 'លោកគ្រូ ផាន សិតការណ៍',
+  phone: '012 999 818',
   email: 'prekchik.primary@moeys.gov.kh',
   logoUrl: '',
-  academicYear: '២០២៥-២០២៦',
+  academicYear: '២០២៦-២០២៧',
 };
 
 export const DEFAULT_COMPETENCY_WEIGHTS: CompetencyPillarsWeight = {
@@ -183,7 +183,7 @@ export const INITIAL_CLASSES: ClassSection[] = PREK_CHIK_CLASSES;
 
 export const INITIAL_STUDENTS: Student[] = PREK_CHIK_STUDENTS;
 
-// Generate deterministic realistic initial score matrix
+// Generate initial score matrix (empty by default so teacher enters real monthly scores)
 export function generateInitialScores(): Record<string, Record<string, Record<string, {
   homework: number;
   quizzes: number;
@@ -192,116 +192,8 @@ export function generateInitialScores(): Record<string, Record<string, Record<st
   rawScore: number;
   behaviorRating: number;
 }>>> {
-  // Structure: scores[studentId][periodId][subjectId] = scoreObj
-  const scores: Record<string, Record<string, Record<string, any>>> = {};
-
-  // Base ability profile for students (10-point scale primary school system)
-  const studentProfiles: Record<string, number> = PREK_CHIK_STUDENT_PROFILES;
-
-  const periodFactors: Record<string, number> = {
-    month_dec: 0.0,
-    month_jan: 0.1,
-    month_feb: -0.1,
-    month_mar: 0.2,
-    sem_1_exam: 0.1,
-    month_may: 0.0,
-    month_jun: 0.2,
-    month_jul: 0.1,
-    month_aug: 0.3,
-    sem_2_exam: 0.2,
-  };
-
-  const subjectVariations: Record<string, number> = {
-    sub_khmer: 0.1,
-    sub_math: 0.0,
-    sub_science: 0.2,
-    sub_moral_civics: 0.3,
-    sub_geography_history: 0.2,
-    sub_home_arts: 0.4,
-    sub_pe_sports: 0.5,
-    sub_health_hygiene: 0.4,
-    sub_life_skills: 0.3,
-    sub_foreign_lang: -0.2,
-    sub_social: 0.3,
-  };
-
-  for (const student of INITIAL_STUDENTS) {
-    const stuId = student.id;
-    scores[stuId] = {};
-    const base = studentProfiles[stuId] || 7.5;
-
-    for (const period of DEFAULT_PERIODS) {
-      scores[stuId][period.id] = {};
-      const pFactor = periodFactors[period.id] || 0;
-
-      for (const subj of DEFAULT_SUBJECTS) {
-        const sVariation = subjectVariations[subj.id] || 0;
-        
-        // Add slight pseudo-random variation based on hash
-        const seed = (stuId.charCodeAt(stuId.length - 1) * 17 + period.id.charCodeAt(period.id.length - 1) * 13 + subj.id.charCodeAt(subj.id.length - 1) * 7) % 10;
-        const variation = (seed - 5) * 0.12;
-
-        let hw = Math.min(10, Math.max(4.0, Number((base + pFactor + sVariation + variation + 0.3).toFixed(1))));
-        let qz = Math.min(10, Math.max(3.5, Number((base + pFactor + sVariation + variation - 0.2).toFixed(1))));
-        let mid = Math.min(10, Math.max(3.5, Number((base + pFactor + sVariation + variation).toFixed(1))));
-        let fin = Math.min(10, Math.max(3.0, Number((base + pFactor + sVariation + variation + 0.1).toFixed(1))));
-
-        // Subcomponent generation for Khmer language (4 sub-skills):
-        const khmerReading = Math.min(10, Math.max(4.0, Number((base + pFactor + 0.2 + (seed % 4) * 0.1).toFixed(1))));
-        const khmerWriting = Math.min(10, Math.max(3.5, Number((base + pFactor + 0.1 + (seed % 3) * 0.1).toFixed(1))));
-        const khmerListening = Math.min(10, Math.max(4.0, Number((base + pFactor + 0.3).toFixed(1))));
-        const khmerSpeaking = Math.min(10, Math.max(4.0, Number((base + pFactor + 0.2).toFixed(1))));
-
-        // Subcomponent generation for Mathematics (5 sections):
-        const mathNumbers = Math.min(10, Math.max(4.0, Number((base + pFactor + 0.1 + (seed % 3) * 0.1).toFixed(1))));
-        const mathAlgebra = Math.min(10, Math.max(3.5, Number((base + pFactor + (seed % 3) * 0.1).toFixed(1))));
-        const mathMeasurement = Math.min(10, Math.max(3.5, Number((base + pFactor - 0.2 + (seed % 4) * 0.1).toFixed(1))));
-        const mathGeometry = Math.min(10, Math.max(3.5, Number((base + pFactor + 0.1).toFixed(1))));
-        const mathStatistics = Math.min(10, Math.max(4.0, Number((base + pFactor + 0.2).toFixed(1))));
-
-        // Calculate weighted score: HW 20%, QZ 20%, MID 20%, FIN 40%
-        let raw = Number((hw * 0.2 + qz * 0.2 + mid * 0.2 + fin * 0.4).toFixed(2));
-        
-        // If Khmer, raw is average of 4 components (អាន, សរសេរ, ស្ដាប់, និយាយ)
-        if (subj.id === 'sub_khmer') {
-          raw = Number(((khmerReading + khmerWriting + khmerListening + khmerSpeaking) / 4).toFixed(2));
-        } else if (subj.id === 'sub_math') {
-          // If Math, raw is average of 5 components (ចំនួន, ពិជគណិត, រង្វាស់រង្វល់, ធរណីមាត្រ, ស្ថិតិ)
-          raw = Number(((mathNumbers + mathAlgebra + mathMeasurement + mathGeometry + mathStatistics) / 5).toFixed(2));
-        }
-
-        const behRating = Math.min(5, Math.max(3, Math.round(base / 2)));
-
-        const scoreEntry: Record<string, any> = {
-          homework: hw,
-          quizzes: qz,
-          midterm: mid,
-          finalExam: fin,
-          rawScore: raw,
-          behaviorRating: behRating,
-        };
-
-        if (subj.id === 'sub_khmer') {
-          scoreEntry.khmerReading = khmerReading;
-          scoreEntry.khmerWriting = khmerWriting;
-          scoreEntry.khmerDictation = khmerWriting;
-          scoreEntry.khmerComposition = khmerWriting;
-          scoreEntry.khmerListening = khmerListening;
-          scoreEntry.khmerSpeaking = khmerSpeaking;
-        } else if (subj.id === 'sub_math') {
-          scoreEntry.mathNumbers = mathNumbers;
-          scoreEntry.mathAlgebra = mathAlgebra;
-          scoreEntry.mathMeasurement = mathMeasurement;
-          scoreEntry.mathGeometry = mathGeometry;
-          scoreEntry.mathStatistics = mathStatistics;
-        }
-
-        scores[stuId][period.id][subj.id] = scoreEntry;
-      }
-    }
-  }
-
-  return scores;
+  // Empty scores matrix as requested: scores will be entered by teacher later
+  return {};
 }
 
 /**

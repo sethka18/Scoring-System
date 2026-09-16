@@ -332,9 +332,6 @@ export const ClassroomToolsHub: React.FC<ClassroomToolsHubProps> = ({ initialTab
               <h2 className="text-xl font-bold text-slate-900 dark:text-white">
                 {language === 'km' ? 'ប្រអប់ឧបករណ៍បង្រៀនក្នុងថ្នាក់ (Classroom Tools)' : 'Classroom Teaching & Utility Widgets'}
               </h2>
-              <span className="px-2 py-0.5 rounded-full text-2xs font-semibold bg-sky-100 text-sky-800 dark:bg-sky-950/80 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
-                Teacher Power-Pack
-              </span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               {language === 'km' 

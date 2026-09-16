@@ -1,110 +1,92 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { UserAccount } from '../types';
+import { UserAccount, RegisterCredentials } from '../types';
 
-export interface OnboardingSchoolData {
-  schoolNameKm: string;
-  schoolNameEn?: string;
-  province: string;
-  district: string;
-  classNameKm: string;
-  gradeLevel: number;
-  academicYear: string;
-  teacherName: string;
-  seedSampleStudents?: boolean;
+export function cleanPhoneNumber(phone: string): string {
+  return phone.replace(/[\s\-\(\)\.]/g, '');
 }
 
-export interface CreateUserDataByAdmin {
+export function isValidCambodianPhone(phone: string): boolean {
+  const cleaned = cleanPhoneNumber(phone);
+  // Cambodian phone numbers: starts with 0 or +855, followed by 8 or 9 digits (total 9 or 10 digits)
+  // E.g., 012345678, 0971234567, +85512345678
+  const cambodianRegex = /^(?:\+855|0)[1-9]\d{7,8}$/;
+  return cambodianRegex.test(cleaned);
+}
+
+export function formatPhoneNumber(phone: string): string {
+  const cleaned = cleanPhoneNumber(phone);
+  if (cleaned.startsWith('0') && cleaned.length === 9) {
+    return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6)}`;
+  }
+  if (cleaned.startsWith('0') && cleaned.length === 10) {
+    return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6)}`;
+  }
+  return phone;
+}
+
+const DEFAULT_USERS: UserAccount[] = [
+  {
+    id: 'user_admin_sethka',
+    phoneNumber: '012999888',
+    username: 'sethka',
+    password: '12344321',
+    fullName: 'សេដ្ឋកា (Admin)',
+    schoolName: 'សាលាបឋមសិក្សា ព្រែកជីក',
+    className: '',
+    gradeLevel: 'គ្រប់កម្រិត',
+    role: 'admin',
+    isActive: true,
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'user_teacher_sethka18',
+    phoneNumber: '012999818',
+    username: 'sethka18',
+    password: '12344321',
+    fullName: 'លោកគ្រូ ផាន សិតការណ៍',
+    schoolName: 'សាលាបឋមសិក្សា ព្រែកជីក',
+    className: 'ថ្នាក់ទី៦ក',
+    gradeLevel: 'ថ្នាក់ទី៦',
+    role: 'teacher',
+    isActive: true,
+    createdAt: '2026-01-01T00:00:00.000Z',
+  }
+];
+
+const LS_USERS_KEY = 'primary_gradebook_users_v3';
+const LS_CURRENT_USER_KEY = 'primary_gradebook_current_user_id_v3';
+const LS_ADMIN_ORIGINAL_KEY = 'primary_gradebook_admin_original_id_v3';
+
+interface UpdateProfileData {
   fullName: string;
-  username: string;
-  password?: string;
-  role: 'teacher' | 'principal' | 'administrator';
-  schoolNameKm: string;
-  schoolNameEn?: string;
-  province: string;
-  district: string;
-  classNameKm?: string;
-  gradeLevel?: number;
+  phoneNumber: string;
+  username?: string;
+  schoolName?: string;
+  className?: string;
+  currentPassword?: string;
+  newPassword?: string;
 }
 
 interface AuthContextType {
   currentUser: UserAccount | null;
   users: UserAccount[];
-  isAuthenticated: boolean;
   isAdmin: boolean;
-  impersonatingFromAdminId: string | null;
-  login: (username: string, password?: string) => { success: boolean; message?: string };
-  register: (data: {
-    fullName: string;
-    username: string;
-    password?: string;
-    role?: 'teacher' | 'principal' | 'administrator';
-  }) => { success: boolean; message?: string };
+  isSwitchedView: boolean;
+  originalAdminUser: UserAccount | null;
+  login: (identifier: string, password: string) => { success: boolean; message?: string };
+  register: (data: RegisterCredentials) => { success: boolean; message?: string };
   logout: () => void;
-  completeOnboarding: (data: OnboardingSchoolData) => void;
-  updateCurrentUser: (updates: Partial<UserAccount>) => void;
-  switchAccount: (userId: string) => void;
-  impersonateUser: (userId: string) => void;
-  revertToAdmin: () => void;
-  deleteUser: (userId: string) => { success: boolean; message?: string };
-  updateUser: (userId: string, updates: Partial<UserAccount>) => { success: boolean; message?: string };
-  createUserByAdmin: (userData: CreateUserDataByAdmin) => { success: boolean; message?: string };
-  resetUserPassword: (userId: string, newPassword?: string) => { success: boolean; message?: string };
+  updateUserProfile: (data: UpdateProfileData) => { success: boolean; message?: string };
+  adminCreateUser: (data: RegisterCredentials & { role?: 'admin' | 'teacher' }) => { success: boolean; message?: string };
+  adminUpdateUser: (userId: string, updates: Partial<UserAccount>) => boolean;
+  adminDeleteUser: (userId: string) => { success: boolean; message?: string };
+  adminResetPassword: (userId: string, newPass: string) => boolean;
+  adminToggleStatus: (userId: string) => boolean;
+  adminSwitchToUser: (userId: string) => boolean;
+  adminReturnToAdmin: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const LS_USERS_KEY = 'gradebook_users_v2';
-const LS_CURRENT_USER_ID_KEY = 'gradebook_current_user_id_v2';
-
-export const ADMIN_USER: UserAccount = {
-  id: 'user_admin',
-  username: 'admin',
-  fullName: 'អភិបាលប្រព័ន្ធ (System Administrator)',
-  role: 'administrator',
-  password: 'password123',
-  schoolNameKm: 'រដ្ឋបាលប្រព័ន្ធគ្រប់គ្រងសាលារៀនកម្ពុជា',
-  schoolNameEn: 'Cambodia Primary Education Administration',
-  province: 'រាជធានីភ្នំពេញ',
-  district: 'ខណ្ឌដូនពេញ',
-  defaultGradeLevel: 6,
-  initialClassNameKm: 'គ្រប់ថ្នាក់រៀន',
-  createdAt: '2026-01-01T00:00:00.000Z',
-  hasCompletedOnboarding: true,
-};
-
-const DEFAULT_USERS: UserAccount[] = [
-  ADMIN_USER,
-  {
-    id: 'user_prekchik',
-    username: 'teacher',
-    password: 'password123',
-    fullName: 'លោកគ្រូ សុខា (គ្រូបន្ទុកថ្នាក់)',
-    role: 'teacher',
-    schoolNameKm: 'សាលាបឋមសិក្សា ព្រែកជីក',
-    schoolNameEn: 'Prek Chik Primary School',
-    province: 'ខេត្តត្បូងឃ្មុំ',
-    district: 'ស្រុកក្រូចឆ្មារ',
-    defaultGradeLevel: 6,
-    initialClassNameKm: 'ថ្នាក់ទី ៦(ក)',
-    createdAt: '2026-01-01T00:00:00.000Z',
-    hasCompletedOnboarding: true,
-  },
-  {
-    id: 'user_principal',
-    username: 'principal',
-    password: 'password123',
-    fullName: 'អ្នកគ្រូ ចាន់ថន (នាយិកាសាលា)',
-    role: 'principal',
-    schoolNameKm: 'សាលាបឋមសិក្សា អនុវត្ត',
-    schoolNameEn: 'Practice Primary School',
-    province: 'រាជធានីភ្នំពេញ',
-    district: 'ខណ្ឌដូនពេញ',
-    defaultGradeLevel: 5,
-    initialClassNameKm: 'ថ្នាក់ទី ៥(ក)',
-    createdAt: '2026-01-15T00:00:00.000Z',
-    hasCompletedOnboarding: true,
-  }
-];
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [users, setUsers] = useState<UserAccount[]>(() => {
@@ -113,290 +95,325 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Ensure admin account always exists
-          if (!parsed.some((u: any) => u.username === 'admin' || u.id === 'user_admin' || u.role === 'administrator')) {
-            return [ADMIN_USER, ...parsed];
+          // Make sure sethka admin exists and has role admin and password 12344321
+          const sethkaIndex = parsed.findIndex(u => (u.username || '').toLowerCase() === 'sethka');
+          if (sethkaIndex === -1) {
+            parsed.unshift(DEFAULT_USERS[0]);
+          } else {
+            parsed[sethkaIndex].role = 'admin';
+            parsed[sethkaIndex].password = '12344321';
           }
+
+          // Make sure sethka18 teacher exists and has credentials
+          const sethka18Index = parsed.findIndex(u => (u.username || '').toLowerCase() === 'sethka18');
+          if (sethka18Index === -1) {
+            parsed.push(DEFAULT_USERS[1]);
+          } else {
+            parsed[sethka18Index].password = '12344321';
+            parsed[sethka18Index].fullName = 'លោកគ្រូ ផាន សិតការណ៍';
+            parsed[sethka18Index].className = 'ថ្នាក់ទី៦ក';
+            parsed[sethka18Index].schoolName = 'សាលាបឋមសិក្សា ព្រែកជីក';
+            parsed[sethka18Index].isActive = true;
+          }
+
+          localStorage.setItem(LS_USERS_KEY, JSON.stringify(parsed));
           return parsed;
         }
       }
     } catch (e) {
-      console.error('Failed to load users from localStorage:', e);
+      console.error(e);
     }
+    localStorage.setItem(LS_USERS_KEY, JSON.stringify(DEFAULT_USERS));
     return DEFAULT_USERS;
   });
 
   const [currentUserId, setCurrentUserId] = useState<string | null>(() => {
     try {
-      const savedId = localStorage.getItem(LS_CURRENT_USER_ID_KEY);
-      if (savedId) {
-        return savedId;
-      }
+      const saved = localStorage.getItem(LS_CURRENT_USER_KEY);
+      if (saved) return saved;
+      return 'user_teacher_sethka18';
     } catch (e) {
-      console.error('Failed to load current user ID:', e);
+      return 'user_teacher_sethka18';
     }
-    return 'user_admin'; // Default to admin for convenient first-time administrative management
   });
 
-  const [impersonatingFromAdminId, setImpersonatingFromAdminId] = useState<string | null>(() => {
+  const [originalAdminId, setOriginalAdminId] = useState<string | null>(() => {
     try {
-      return sessionStorage.getItem('admin_impersonating_id');
-    } catch {
+      return localStorage.getItem(LS_ADMIN_ORIGINAL_KEY) || null;
+    } catch (e) {
       return null;
     }
   });
 
   const currentUser = users.find(u => u.id === currentUserId) || null;
-  const isAdmin = currentUser?.role === 'administrator';
+  const originalAdminUser = users.find(u => u.id === originalAdminId) || null;
+  const isSwitchedView = !!originalAdminId && !!currentUser && originalAdminId !== currentUser.id;
+  const isAdmin = (currentUser?.role === 'admin') || (isSwitchedView && originalAdminUser?.role === 'admin');
 
-  // Persist users
-  useEffect(() => {
+  const saveUsers = (updatedUsers: UserAccount[]) => {
+    setUsers(updatedUsers);
     try {
-      localStorage.setItem(LS_USERS_KEY, JSON.stringify(users));
+      localStorage.setItem(LS_USERS_KEY, JSON.stringify(updatedUsers));
     } catch (e) {
-      console.error('Failed to save users:', e);
+      console.error(e);
     }
-  }, [users]);
+  };
 
-  // Persist currentUserId
-  useEffect(() => {
-    try {
-      if (currentUserId) {
-        localStorage.setItem(LS_CURRENT_USER_ID_KEY, currentUserId);
-      } else {
-        localStorage.removeItem(LS_CURRENT_USER_ID_KEY);
-      }
-    } catch (e) {
-      console.error('Failed to save current user ID:', e);
+  const login = (identifier: string, password: string): { success: boolean; message?: string } => {
+    const rawId = identifier.trim().toLowerCase();
+    const cleanId = cleanPhoneNumber(identifier).toLowerCase().trim();
+    const cleanPass = password.trim();
+
+    if (!rawId || !cleanPass) {
+      return { success: false, message: 'សូមបញ្ចូលឈ្មោះគណនី (Username) ឬលេខទូរស័ព្ទ និងពាក្យសម្ងាត់' };
     }
-  }, [currentUserId]);
 
-  const login = (username: string, password?: string): { success: boolean; message?: string } => {
-    const cleanUsername = username.trim().toLowerCase();
-    const user = users.find(u => u.username.toLowerCase() === cleanUsername);
+    const matchedUser = users.find(u => {
+      const uPhoneClean = cleanPhoneNumber(u.phoneNumber).toLowerCase();
+      const uUsername = (u.username || '').toLowerCase().trim();
+      return (uUsername === rawId || uUsername === cleanId || uPhoneClean === cleanId || uPhoneClean === rawId) && u.password === cleanPass;
+    });
 
-    if (!user) {
-      return {
-        success: false,
-        message: 'រកមិនឃើញគណនីនេះទេ។ សូមពិនិត្យឈ្មោះអ្នកប្រើប្រាស់ ឬចុះឈ្មោះគណនីថ្មី។',
+    if (!matchedUser) {
+      return { 
+        success: false, 
+        message: 'ឈ្មោះគណនី/លេខទូរស័ព្ទ ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ! សូមពិនិត្យម្ដងទៀត' 
       };
     }
 
-    // Optional password verification
-    if (user.password && password && user.password !== password) {
-      return {
-        success: false,
-        message: 'ពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ។ សូមព្យាយាមម្តងទៀត។',
+    if (!matchedUser.isActive) {
+      return { 
+        success: false, 
+        message: 'គណនីនេះត្រូវបានផ្អាកដំណើរការជាបណ្តោះអាសន្ន។ សូមទាក់ទងអ្នកគ្រប់គ្រង (Admin)' 
       };
     }
 
-    setCurrentUserId(user.id);
+    // Update last login
+    const updated = users.map(u => u.id === matchedUser.id ? { ...u, lastLoginAt: new Date().toISOString() } : u);
+    saveUsers(updated);
+
+    setCurrentUserId(matchedUser.id);
+    localStorage.setItem(LS_CURRENT_USER_KEY, matchedUser.id);
+    setOriginalAdminId(null);
+    localStorage.removeItem(LS_ADMIN_ORIGINAL_KEY);
+
     return { success: true };
   };
 
-  const register = (data: {
-    fullName: string;
-    username: string;
-    password?: string;
-    role?: 'teacher' | 'principal' | 'administrator';
-  }): { success: boolean; message?: string } => {
-    const cleanUsername = data.username.trim().toLowerCase();
+  const register = (data: RegisterCredentials): { success: boolean; message?: string } => {
+    const rawPhone = cleanPhoneNumber(data.phoneNumber);
+    if (!isValidCambodianPhone(rawPhone)) {
+      return { 
+        success: false, 
+        message: 'សូមបញ្ចូលលេខទូរស័ព្ទឱ្យបានត្រឹមត្រូវ (ឧទាហរណ៍៖ 012 345 678 ឬ 097 123 4567)' 
+      };
+    }
 
     if (!data.fullName.trim()) {
-      return { success: false, message: 'សូមបញ្ចូលឈ្មោះពេញ ឬគោត្តនាម-នាមរបស់អ្នក' };
+      return { success: false, message: 'សូមបញ្ចូលឈ្មោះលោកគ្រូ-អ្នកគ្រូឱ្យបានពេញលេញ' };
     }
 
-    if (!cleanUsername) {
-      return { success: false, message: 'សូមបញ្ចូលឈ្មោះអ្នកប្រើប្រាស់ ឬអ៊ីមែល' };
+    if (!data.schoolName.trim()) {
+      return { success: false, message: 'សូមបញ្ចូលឈ្មោះសាលារៀន' };
     }
 
-    // Check if username already exists
-    if (users.some(u => u.username.toLowerCase() === cleanUsername)) {
-      return { success: false, message: 'ឈ្មោះអ្នកប្រើប្រាស់នេះមានរួចហើយ។ សូមជ្រើសរើសឈ្មោះផ្សេង។' };
+    if (!data.className.trim()) {
+      return { success: false, message: 'សូមបញ្ចូលឈ្មោះថ្នាក់រៀន (ឧទាហរណ៍៖ ថ្នាក់ទី ៤(គ))' };
+    }
+
+    if (!data.password || data.password.length < 4) {
+      return { success: false, message: 'ពាក្យសម្ងាត់ត្រូវមានយ៉ាងតិច ៤ តួអក្សរ' };
+    }
+
+    // Check duplicate phone
+    const exists = users.some(u => cleanPhoneNumber(u.phoneNumber) === rawPhone);
+    if (exists) {
+      return { success: false, message: 'លេខទូរស័ព្ទនេះត្រូវបានចុះឈ្មោះរួចហើយ! សូមចូលប្រើប្រាស់' };
     }
 
     const newUser: UserAccount = {
-      id: `user_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-      username: cleanUsername,
+      id: `user_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      phoneNumber: rawPhone,
+      password: data.password.trim(),
       fullName: data.fullName.trim(),
-      password: data.password || '',
-      role: data.role || 'teacher',
-      schoolNameKm: '',
-      province: '',
-      district: '',
+      schoolName: data.schoolName.trim(),
+      className: data.className.trim(),
+      gradeLevel: data.gradeLevel?.trim() || '៤',
+      role: 'teacher',
+      isActive: true,
       createdAt: new Date().toISOString(),
-      hasCompletedOnboarding: false, // Must set up school & class right after registering!
+      lastLoginAt: new Date().toISOString(),
     };
 
-    const updatedUsers = [...users, newUser];
-    setUsers(updatedUsers);
+    const updated = [...users, newUser];
+    saveUsers(updated);
+
     setCurrentUserId(newUser.id);
+    localStorage.setItem(LS_CURRENT_USER_KEY, newUser.id);
+    setOriginalAdminId(null);
+    localStorage.removeItem(LS_ADMIN_ORIGINAL_KEY);
 
     return { success: true };
   };
 
   const logout = () => {
     setCurrentUserId(null);
-    setImpersonatingFromAdminId(null);
-    try {
-      sessionStorage.removeItem('admin_impersonating_id');
-    } catch {}
+    localStorage.removeItem(LS_CURRENT_USER_KEY);
+    setOriginalAdminId(null);
+    localStorage.removeItem(LS_ADMIN_ORIGINAL_KEY);
   };
 
-  const switchAccount = (userId: string) => {
-    const exists = users.some(u => u.id === userId);
+  const updateUserProfile = (data: UpdateProfileData): { success: boolean; message?: string } => {
+    if (!currentUser) {
+      return { success: false, message: 'មិនមានគណនីដែលកំពុងដំណើរការទេ' };
+    }
+
+    const rawPhone = cleanPhoneNumber(data.phoneNumber);
+    if (!isValidCambodianPhone(rawPhone)) {
+      return { success: false, message: 'លេខទូរស័ព្ទមិនត្រឹមត្រូវតាមទម្រង់ប្រទេសកម្ពុជាទេ (ឧ. 012 345 678)' };
+    }
+
+    if (!data.fullName.trim()) {
+      return { success: false, message: 'សូមបញ្ចូលឈ្មោះឱ្យបានពេញលេញ' };
+    }
+
+    // Check if phone is taken by another user
+    const phoneDuplicate = users.some(u => u.id !== currentUser.id && cleanPhoneNumber(u.phoneNumber) === rawPhone);
+    if (phoneDuplicate) {
+      return { success: false, message: 'លេខទូរស័ព្ទនេះមានអ្នកផ្សេងប្រើប្រាស់រួចហើយ' };
+    }
+
+    // Check if username is taken by another user (case-insensitive)
+    const cleanUsername = data.username ? data.username.trim().toLowerCase() : undefined;
+    if (cleanUsername) {
+      const usernameDuplicate = users.some(u => u.id !== currentUser.id && (u.username || '').toLowerCase() === cleanUsername);
+      if (usernameDuplicate) {
+        return { success: false, message: 'ឈ្មោះគណនី (Username) នេះមានអ្នកផ្សេងប្រើរួចហើយ' };
+      }
+    }
+
+    // If changing password, verify current password
+    if (data.newPassword) {
+      if (!data.currentPassword || data.currentPassword !== currentUser.password) {
+        return { success: false, message: 'ពាក្យសម្ងាត់ចាស់មិនត្រឹមត្រូវទេ' };
+      }
+      if (data.newPassword.length < 4) {
+        return { success: false, message: 'ពាក្យសម្ងាត់ថ្មីត្រូវមានយ៉ាងតិច ៤ តួអក្សរ' };
+      }
+    }
+
+    const updatedUsers = users.map(u => {
+      if (u.id === currentUser.id) {
+        return {
+          ...u,
+          fullName: data.fullName.trim(),
+          phoneNumber: rawPhone,
+          username: cleanUsername || u.username,
+          schoolName: data.schoolName !== undefined ? data.schoolName.trim() : u.schoolName,
+          className: data.className !== undefined ? data.className.trim() : u.className,
+          password: data.newPassword ? data.newPassword.trim() : u.password,
+        };
+      }
+      return u;
+    });
+
+    saveUsers(updatedUsers);
+    return { success: true };
+  };
+
+  const adminCreateUser = (data: RegisterCredentials & { role?: 'admin' | 'teacher' }): { success: boolean; message?: string } => {
+    const rawPhone = cleanPhoneNumber(data.phoneNumber);
+    if (!isValidCambodianPhone(rawPhone)) {
+      return { success: false, message: 'លេខទូរស័ព្ទមិនត្រឹមត្រូវ' };
+    }
+
+    const exists = users.some(u => cleanPhoneNumber(u.phoneNumber) === rawPhone);
     if (exists) {
-      setCurrentUserId(userId);
+      return { success: false, message: 'លេខទូរស័ព្ទនេះមានរួចហើយ' };
     }
-  };
 
-  const impersonateUser = (userId: string) => {
-    if (currentUser?.role === 'administrator') {
-      try {
-        sessionStorage.setItem('admin_impersonating_id', currentUser.id);
-      } catch {}
-      setImpersonatingFromAdminId(currentUser.id);
-      setCurrentUserId(userId);
-    }
-  };
-
-  const revertToAdmin = () => {
-    if (impersonatingFromAdminId) {
-      setCurrentUserId(impersonatingFromAdminId);
-      setImpersonatingFromAdminId(null);
-      try {
-        sessionStorage.removeItem('admin_impersonating_id');
-      } catch {}
-    } else {
-      const adminAcc = users.find(u => u.role === 'administrator');
-      if (adminAcc) {
-        setCurrentUserId(adminAcc.id);
+    const cleanUsername = data.username ? data.username.trim().toLowerCase() : undefined;
+    if (cleanUsername) {
+      const usernameExists = users.some(u => (u.username || '').toLowerCase() === cleanUsername);
+      if (usernameExists) {
+        return { success: false, message: 'ឈ្មោះគណនី (Username) នេះមានអ្នកផ្សេងប្រើរួចហើយ' };
       }
-    }
-  };
-
-  const updateCurrentUser = (updates: Partial<UserAccount>) => {
-    if (!currentUserId) return;
-    setUsers(prev =>
-      prev.map(u => (u.id === currentUserId ? { ...u, ...updates } : u))
-    );
-  };
-
-  const updateUser = (userId: string, updates: Partial<UserAccount>): { success: boolean; message?: string } => {
-    const exists = users.some(u => u.id === userId);
-    if (!exists) {
-      return { success: false, message: 'រកមិនឃើញគណនីដែលត្រូវកែប្រែទេ' };
-    }
-
-    if (updates.username) {
-      const cleanUsername = updates.username.trim().toLowerCase();
-      const duplicate = users.some(u => u.id !== userId && u.username.toLowerCase() === cleanUsername);
-      if (duplicate) {
-        return { success: false, message: 'ឈ្មោះអ្នកប្រើប្រាស់នេះមានរួចហើយ' };
-      }
-      updates.username = cleanUsername;
-    }
-
-    setUsers(prev => prev.map(u => (u.id === userId ? { ...u, ...updates } : u)));
-    return { success: true };
-  };
-
-  const deleteUser = (userId: string): { success: boolean; message?: string } => {
-    if (userId === currentUserId) {
-      return { success: false, message: 'មិនអាចលុបគណនីដែលកំពុងដំណើរការបានទេ' };
-    }
-
-    const targetUser = users.find(u => u.id === userId);
-    if (!targetUser) {
-      return { success: false, message: 'រកមិនឃើញគណនីដែលត្រូវលុបទេ' };
-    }
-
-    if (targetUser.username === 'admin' && users.filter(u => u.role === 'administrator').length <= 1) {
-      return { success: false, message: 'មិនអាចលុបគណនី Admin ចុងក្រោយនៃប្រព័ន្ធបានឡើយ' };
-    }
-
-    // Remove user and clean up their localStorage keys
-    setUsers(prev => prev.filter(u => u.id !== userId));
-
-    try {
-      const prefix = `primary_gradebook_v2_${userId}_`;
-      const keysToRemove: string[] = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i);
-        if (k && k.startsWith(prefix)) {
-          keysToRemove.push(k);
-        }
-      }
-      keysToRemove.forEach(k => localStorage.removeItem(k));
-    } catch (e) {
-      console.error('Error cleaning up user storage:', e);
-    }
-
-    return { success: true };
-  };
-
-  const createUserByAdmin = (userData: CreateUserDataByAdmin): { success: boolean; message?: string } => {
-    const cleanUsername = userData.username.trim().toLowerCase();
-
-    if (!userData.fullName.trim()) {
-      return { success: false, message: 'សូមបញ្ចូលឈ្មោះពេញ' };
-    }
-    if (!cleanUsername) {
-      return { success: false, message: 'សូមបញ្ចូលឈ្មោះសម្គាល់គណនី' };
-    }
-    if (users.some(u => u.username.toLowerCase() === cleanUsername)) {
-      return { success: false, message: 'ឈ្មោះអ្នកប្រើប្រាស់នេះមានរួចហើយ' };
     }
 
     const newUser: UserAccount = {
-      id: `user_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      id: `user_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      phoneNumber: rawPhone,
       username: cleanUsername,
-      fullName: userData.fullName.trim(),
-      password: userData.password || 'password123',
-      role: userData.role,
-      schoolNameKm: userData.schoolNameKm.trim(),
-      schoolNameEn: userData.schoolNameEn?.trim() || '',
-      province: userData.province.trim(),
-      district: userData.district.trim(),
-      defaultGradeLevel: userData.gradeLevel || 6,
-      initialClassNameKm: userData.classNameKm?.trim() || 'ថ្នាក់ទី ៦(ក)',
+      password: data.password.trim() || '123456',
+      fullName: data.fullName.trim(),
+      schoolName: data.schoolName.trim() || 'សាលាបឋមសិក្សា',
+      className: data.className.trim() || 'ថ្នាក់ទី ៤',
+      gradeLevel: data.gradeLevel?.trim() || '៤',
+      role: data.role || 'teacher',
+      isActive: true,
       createdAt: new Date().toISOString(),
-      hasCompletedOnboarding: true,
     };
 
-    setUsers(prev => [...prev, newUser]);
+    saveUsers([...users, newUser]);
     return { success: true };
   };
 
-  const resetUserPassword = (userId: string, newPassword = 'password123'): { success: boolean; message?: string } => {
-    const exists = users.some(u => u.id === userId);
-    if (!exists) {
-      return { success: false, message: 'រកមិនឃើញគណនី' };
+  const adminUpdateUser = (userId: string, updates: Partial<UserAccount>): boolean => {
+    const updated = users.map(u => {
+      if (u.id === userId) {
+        return { ...u, ...updates };
+      }
+      return u;
+    });
+    saveUsers(updated);
+    return true;
+  };
+
+  const adminDeleteUser = (userId: string): { success: boolean; message?: string } => {
+    if (userId === currentUserId && !isSwitchedView) {
+      return { success: false, message: 'មិនអាចលុបគណនីដែលកំពុងដំណើរការនេះបានទេ' };
     }
-    setUsers(prev => prev.map(u => (u.id === userId ? { ...u, password: newPassword } : u)));
+    const target = users.find(u => u.id === userId);
+    if (target?.username === 'sethka' || target?.id === 'user_admin_sethka') {
+      return { success: false, message: 'មិនអាចលុបគណនី Admin មេ (sethka) បានទេ' };
+    }
+    const filtered = users.filter(u => u.id !== userId);
+    saveUsers(filtered);
     return { success: true };
   };
 
-  const completeOnboarding = (data: OnboardingSchoolData) => {
-    if (!currentUserId) return;
+  const adminResetPassword = (userId: string, newPass: string): boolean => {
+    if (!newPass || newPass.trim().length < 4) return false;
+    const updated = users.map(u => u.id === userId ? { ...u, password: newPass.trim() } : u);
+    saveUsers(updated);
+    return true;
+  };
 
-    setUsers(prev =>
-      prev.map(u => {
-        if (u.id === currentUserId) {
-          return {
-            ...u,
-            schoolNameKm: data.schoolNameKm.trim(),
-            schoolNameEn: data.schoolNameEn?.trim() || '',
-            province: data.province.trim(),
-            district: data.district.trim(),
-            defaultGradeLevel: data.gradeLevel,
-            initialClassNameKm: data.classNameKm.trim(),
-            hasCompletedOnboarding: true,
-          };
-        }
-        return u;
-      })
-    );
+  const adminToggleStatus = (userId: string): boolean => {
+    const updated = users.map(u => u.id === userId ? { ...u, isActive: !u.isActive } : u);
+    saveUsers(updated);
+    return true;
+  };
+
+  const adminSwitchToUser = (userId: string): boolean => {
+    if (!currentUser) return false;
+    // Remember original admin
+    if (!originalAdminId) {
+      setOriginalAdminId(currentUser.id);
+      localStorage.setItem(LS_ADMIN_ORIGINAL_KEY, currentUser.id);
+    }
+    setCurrentUserId(userId);
+    localStorage.setItem(LS_CURRENT_USER_KEY, userId);
+    return true;
+  };
+
+  const adminReturnToAdmin = () => {
+    if (originalAdminId) {
+      setCurrentUserId(originalAdminId);
+      localStorage.setItem(LS_CURRENT_USER_KEY, originalAdminId);
+      setOriginalAdminId(null);
+      localStorage.removeItem(LS_ADMIN_ORIGINAL_KEY);
+    }
   };
 
   return (
@@ -404,21 +421,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         currentUser,
         users,
-        isAuthenticated: !!currentUser,
         isAdmin,
-        impersonatingFromAdminId,
+        isSwitchedView,
+        originalAdminUser,
         login,
         register,
         logout,
-        completeOnboarding,
-        updateCurrentUser,
-        switchAccount,
-        impersonateUser,
-        revertToAdmin,
-        deleteUser,
-        updateUser,
-        createUserByAdmin,
-        resetUserPassword,
+        updateUserProfile,
+        adminCreateUser,
+        adminUpdateUser,
+        adminDeleteUser,
+        adminResetPassword,
+        adminToggleStatus,
+        adminSwitchToUser,
+        adminReturnToAdmin,
       }}
     >
       {children}
@@ -426,7 +442,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
