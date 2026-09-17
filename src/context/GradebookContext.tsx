@@ -432,13 +432,25 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
       } catch (e) { console.error(e); }
     }
+
+    if (currentUser?.fullName?.includes('កេងស្រីលាង') || currentUser?.username?.toLowerCase().includes('kengsreyliang') || currentUser?.username?.toLowerCase().includes('sreyliang')) {
+      return {
+        ...DEFAULT_SCHOOL_PROFILE,
+        schoolName: 'សាលាបឋមសិក្សាព្រែកជីក',
+        schoolNameKm: 'សាលាបឋមសិក្សាព្រែកជីក',
+        province: 'ខេត្តត្បូងឃ្មុំ',
+        district: 'ស្រុកត្បូងឃ្មុំ',
+        cluster: 'កម្រងទន្លេបិត',
+        principalName: 'ជា សំអុល',
+        principalNameKm: 'ជា សំអុល',
+      };
+    }
+
     if (currentUser?.schoolName) {
       return {
         ...DEFAULT_SCHOOL_PROFILE,
         schoolName: currentUser.schoolName,
         schoolNameKm: currentUser.schoolName,
-        principalName: currentUser.fullName,
-        principalNameKm: currentUser.fullName,
       };
     }
     return DEFAULT_SCHOOL_PROFILE;
@@ -466,16 +478,28 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 const allUsers = JSON.parse(usersRaw);
                 if (Array.isArray(allUsers)) {
                   allUsers.forEach((u: any) => {
-                    if (u.role === 'teacher' && u.className) {
-                      const uClassId = `class_${u.id}`;
-                      // Use saved class if available to preserve student list and customized details
-                      const savedClass = parsed.find((c: ClassSection) => c.id === uClassId);
-                      if (savedClass) {
-                        validClasses.push(savedClass);
-                      } else {
+                    if (u.role === 'teacher') {
+                      // Try to load the teacher's actual classes
+                      try {
+                        const tClassesRaw = localStorage.getItem(`${LS_PREFIX}${u.id}_classes`);
+                        if (tClassesRaw) {
+                          const tClasses = JSON.parse(tClassesRaw);
+                          if (Array.isArray(tClasses) && tClasses.length > 0) {
+                             tClasses.forEach(tc => {
+                               // Inject teacherId so we can switch to them later
+                               validClasses.push({ ...tc, teacherId: u.id });
+                             });
+                             return; // Next user
+                          }
+                        }
+                      } catch(e) {}
+                      
+                      if (u.className) {
+                        const uClassId = `class_${u.id}`;
                         const gradeNum = parseInt(u.gradeLevel?.replace(/\D/g, '') || '6') || 6;
                         validClasses.push({
                           id: uClassId,
+                          teacherId: u.id,
                           name: u.className,
                           nameKm: u.className,
                           gradeLevel: gradeNum,
@@ -604,6 +628,33 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   });
 
   const [students, setStudents] = useState<Student[]>(() => {
+    if (currentUser?.role === 'admin') {
+       const allStudents: Student[] = [];
+       try {
+          const usersRaw = localStorage.getItem('primary_gradebook_users_v3');
+          if (usersRaw) {
+             const allUsers = JSON.parse(usersRaw);
+             if (Array.isArray(allUsers)) {
+                allUsers.forEach((u: any) => {
+                   if (u.role === 'teacher') {
+                      const tStudentsRaw = localStorage.getItem(`${LS_PREFIX}${u.id}_students`);
+                      if (tStudentsRaw) {
+                         const tStudents = JSON.parse(tStudentsRaw);
+                         if (Array.isArray(tStudents)) {
+                            tStudents.forEach(ts => {
+                               // Inject teacherId so we know whose student this is
+                               allStudents.push({ ...ts, teacherId: u.id } as any);
+                            });
+                         }
+                      }
+                   }
+                });
+             }
+          }
+       } catch (e) { console.error(e); }
+       if (allStudents.length > 0) return allStudents;
+    }
+
     const saved = localStorage.getItem(`${userPrefix}students`);
     if (saved !== null) {
       try {
@@ -688,6 +739,31 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   });
 
   const [scoresMatrix, setScoresMatrix] = useState<Record<string, Record<string, Record<string, any>>>>(() => {
+    if (currentUser?.role === 'admin') {
+       const allScores: Record<string, Record<string, Record<string, any>>> = {};
+       try {
+          const usersRaw = localStorage.getItem('primary_gradebook_users_v3');
+          if (usersRaw) {
+             const allUsers = JSON.parse(usersRaw);
+             if (Array.isArray(allUsers)) {
+                allUsers.forEach((u: any) => {
+                   if (u.role === 'teacher') {
+                      const tScoresRaw = localStorage.getItem(`${LS_PREFIX}${u.id}_scores`);
+                      if (tScoresRaw) {
+                         const tScores = JSON.parse(tScoresRaw);
+                         if (tScores && typeof tScores === 'object') {
+                            // Merge objects at top level (studentId)
+                            Object.assign(allScores, tScores);
+                         }
+                      }
+                   }
+                });
+             }
+          }
+       } catch (e) { console.error(e); }
+       if (Object.keys(allScores).length > 0) return allScores;
+    }
+
     const initialGenerated = generateInitialScores();
     const saved = localStorage.getItem(`${userPrefix}scores`);
     if (saved) {

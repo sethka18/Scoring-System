@@ -120,18 +120,56 @@ export async function pushDataToCloud(syncKey: string, payload: SyncPayload): Pr
   const timestamp = payload.updatedAt || Date.now();
   payload.updatedAt = timestamp;
 
+  let payloadString = JSON.stringify({ data: payload, timestamp });
+  const payloadSizeMB = (payloadString.length / (1024 * 1024)).toFixed(2);
+  
+  if (payloadString.length > 900 * 1024) {
+    console.warn(`Sync payload is large: ${payloadSizeMB} MB. Stripping large images to prevent 413 errors.`);
+    // Deep clone to not mutate the actual app state
+    const strippedPayload = JSON.parse(JSON.stringify(payload));
+    
+    // Strip school logo if it's large
+    if (strippedPayload.schoolProfile?.logoUrl?.length > 50000) {
+      strippedPayload.schoolProfile.logoUrl = '';
+    }
+    
+    // Strip student photos
+    if (Array.isArray(strippedPayload.students)) {
+      strippedPayload.students.forEach((s: any) => {
+        if (s.photoUrl && s.photoUrl.length > 20000) {
+          s.photoUrl = '';
+        }
+      });
+    }
+    
+    payloadString = JSON.stringify({ data: strippedPayload, timestamp });
+  }
+
   // 1. Try local /api/sync endpoint
+  let localFetchFailedNetwork = false;
   try {
     const res = await fetch(`/api/sync/${cleanKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: payload, timestamp })
+      body: payloadString
     });
+    
     if (res.ok) {
       return { success: true, updatedAt: timestamp };
+    } else {
+      const errorText = await res.text();
+      console.warn(`Local sync failed with status ${res.status}: ${errorText}`);
+      if (res.status === 413) {
+        throw new Error('ទំហំទិន្នន័យធំពេក (Payload Too Large) សូមទាក់ទង Admin');
+      }
+      // If it's a server error but we reached it, don't fallback to a worse public API.
+      // But for resilience, we can still try the fallback if we want.
+      // Actually, if it's 413, the fallback will fail too.
     }
-  } catch (e) {
-    // API endpoint unreachable, fallback to cloud storage
+  } catch (e: any) {
+    console.warn(`Local sync request threw error:`, e);
+    if (e.message?.includes('ទំហំទិន្នន័យធំពេក')) throw e;
+    localFetchFailedNetwork = true;
   }
 
   // 2. Fallback to resilient cloud store
@@ -168,8 +206,11 @@ export async function pushDataToCloud(syncKey: string, payload: SyncPayload): Pr
       }
       return { success: true, updatedAt: timestamp };
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error('Cloud push failed:', err);
+    if (err.message?.includes('ទំហំទិន្នន័យធំពេក')) {
+      throw err;
+    }
     throw new Error('ពុំអាចតភ្ជាប់ទៅកាន់ម៉ាស៊ីន Cloud បានទេ សូមពិនិត្យមើលអ៊ីនធឺណិតរបស់អ្នក');
   }
 
@@ -183,6 +224,7 @@ export async function pullDataFromCloud(syncKey: string): Promise<{ success: boo
   const cleanKey = syncKey.trim().toUpperCase();
 
   // 1. Try local /api/sync endpoint
+  let localFetchFailedNetwork = false;
   try {
     const res = await fetch(`/api/sync/${cleanKey}`);
     if (res.ok) {
@@ -190,9 +232,12 @@ export async function pullDataFromCloud(syncKey: string): Promise<{ success: boo
       if (json && json.data) {
         return { success: true, data: json.data, updatedAt: json.updatedAt };
       }
+    } else {
+      console.warn(`Local pull failed with status ${res.status}: ${await res.text()}`);
     }
   } catch (e) {
-    // Fallback to cloud store
+    console.warn(`Local pull request threw error:`, e);
+    localFetchFailedNetwork = true;
   }
 
   // 2. Fallback to resilient cloud store

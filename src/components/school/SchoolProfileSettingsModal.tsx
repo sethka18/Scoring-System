@@ -38,6 +38,7 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
     district: schoolProfile.district || 'ស្រុកស្ទឹងត្រង់',
     commune: schoolProfile.commune || 'ឃុំអូរម្លូ',
     village: schoolProfile.village || 'ភូមិប្រទង',
+    cluster: schoolProfile.cluster || 'កម្រងដងក្តារ',
     schoolCode: schoolProfile.schoolCode || '',
     principalName: schoolProfile.principalName || '',
     principalNameKm: schoolProfile.principalNameKm || '',
@@ -61,6 +62,7 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
         district: schoolProfile.district || 'ស្រុកស្ទឹងត្រង់',
         commune: schoolProfile.commune || 'ឃុំអូរម្លូ',
         village: schoolProfile.village || 'ភូមិប្រទង',
+        cluster: schoolProfile.cluster || 'កម្រងដងក្តារ',
         schoolCode: schoolProfile.schoolCode || '',
         principalName: schoolProfile.principalName || '',
         principalNameKm: schoolProfile.principalNameKm || '',
@@ -96,11 +98,38 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
     const reader = new FileReader();
     reader.onload = (e) => {
       const dataUrl = e.target?.result as string;
-      setFormData(prev => ({ ...prev, logoUrl: dataUrl }));
-      showToast(
-        language === 'km' ? 'បានបញ្ចូលឡូហ្គូសាលារៀនជោគជ័យ' : 'School logo uploaded successfully',
-        'success'
-      );
+      
+      // Compress and resize image
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        
+        // Max dimensions
+        const MAX_SIZE = 400;
+        if (width > height && width > MAX_SIZE) {
+          height = Math.round((height * MAX_SIZE) / width);
+          width = MAX_SIZE;
+        } else if (height > MAX_SIZE) {
+          width = Math.round((width * MAX_SIZE) / height);
+          height = MAX_SIZE;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedDataUrl = canvas.toDataURL('image/png', 0.8);
+          setFormData(prev => ({ ...prev, logoUrl: compressedDataUrl }));
+          showToast(
+            language === 'km' ? 'បានបញ្ចូលឡូហ្គូសាលារៀនជោគជ័យ' : 'School logo uploaded successfully',
+            'success'
+          );
+        }
+      };
+      img.src = dataUrl;
     };
     reader.readAsDataURL(file);
   };
@@ -434,6 +463,19 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
                   placeholder="ឧ. ភូមិប្រទង"
                   value={formData.village || ''}
                   onChange={(e) => setFormData({ ...formData, village: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  {language === 'km' ? 'កម្រង (បើមាន)' : 'Cluster (Optional)'}
+                </label>
+                <input
+                  type="text"
+                  placeholder="ឧ. កម្រងដងក្តារ"
+                  value={formData.cluster || ''}
+                  onChange={(e) => setFormData({ ...formData, cluster: e.target.value })}
                   className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
                 />
               </div>

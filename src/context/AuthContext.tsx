@@ -31,7 +31,7 @@ const DEFAULT_USERS: UserAccount[] = [
     username: 'sethka',
     password: '12344321',
     fullName: 'សេដ្ឋកា (Admin)',
-    schoolName: 'សាលាបឋមសិក្សា ព្រែកជីក',
+    schoolName: 'សាលាបឋមសិក្សាហ៊ុនណេងប្រទង',
     className: '',
     gradeLevel: 'គ្រប់កម្រិត',
     role: 'admin',
@@ -44,7 +44,7 @@ const DEFAULT_USERS: UserAccount[] = [
     username: 'sethka18',
     password: '12344321',
     fullName: 'លោកគ្រូ ផាន សិតការណ៍',
-    schoolName: 'សាលាបឋមសិក្សា ព្រែកជីក',
+    schoolName: 'សាលាបឋមសិក្សាហ៊ុនណេងប្រទង',
     className: 'ថ្នាក់ទី៦ក',
     gradeLevel: 'ថ្នាក់ទី៦',
     role: 'teacher',
@@ -112,7 +112,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             parsed[sethka18Index].password = '12344321';
             parsed[sethka18Index].fullName = 'លោកគ្រូ ផាន សិតការណ៍';
             parsed[sethka18Index].className = 'ថ្នាក់ទី៦ក';
-            parsed[sethka18Index].schoolName = 'សាលាបឋមសិក្សា ព្រែកជីក';
+            parsed[sethka18Index].schoolName = 'សាលាបឋមសិក្សាហ៊ុនណេងប្រទង';
             parsed[sethka18Index].isActive = true;
           }
 

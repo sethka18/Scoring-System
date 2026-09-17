@@ -2,31 +2,28 @@ import React, { useState } from 'react';
 import { useGradebook } from '../../context/GradebookContext';
 import { useAuth } from '../../context/AuthContext';
 import { 
+  Building2, 
   Settings, 
   ChevronDown, 
+  LogOut, 
+  Check, 
+  Edit3, 
+  User, 
+  ShieldCheck,
   BookOpen,
   Sun,
   Moon,
-  Plus,
-  Edit3,
-  Building2,
-  Cloud,
-  RefreshCw,
-  ShieldCheck,
-  LogOut,
-  User,
-  Check
+  Eye
 } from 'lucide-react';
-import { SchoolLogo } from '../common/SchoolLogo';
-import { PWAInstallButton } from '../pwa/PWAInstallButton';
 import { SchoolProfileSettingsModal } from '../school/SchoolProfileSettingsModal';
 import { ClassModal } from '../school/ClassModal';
 import { AdminUserManagementModal } from '../auth/AdminUserManagementModal';
 import { UserProfileSettingsModal } from '../auth/UserProfileSettingsModal';
+import { SchoolLogo } from '../common/SchoolLogo';
 import { ClassSection } from '../../types';
 
 export const Header: React.FC = () => {
-  const {
+  const { 
     theme,
     toggleTheme,
     language,
@@ -41,7 +38,7 @@ export const Header: React.FC = () => {
     setIsSyncModalOpen,
   } = useGradebook();
 
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, isAdmin, isSwitchedView, adminReturnToAdmin, adminSwitchToUser } = useAuth();
 
   const [showClassDropdown, setShowClassDropdown] = useState(false);
   const [isSchoolSettingsOpen, setIsSchoolSettingsOpen] = useState(false);
@@ -56,7 +53,7 @@ export const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-15 sm:h-18 gap-1.5 sm:gap-4">
           
-          {/* Logo & School Name with Configurable School Emblem */}
+          {/* Logo & School Name */}
           <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
             <button 
               type="button"
@@ -79,31 +76,31 @@ export const Header: React.FC = () => {
               </div>
               <p className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 hidden sm:block mt-0.5">
                 {language === 'km' 
-                  ? `${schoolProfile.district || 'ស្រុកត្បូងឃ្មុំ'} • ${schoolProfile.province || 'ខេត្តត្បូងឃ្មុំ'} • ឆ្នាំសិក្សា ${schoolProfile.academicYear || activeClass?.academicYear || '២០២៥-២០២៦'}`
-                  : `${schoolProfile.district || 'Tboung Khmum'} • ${schoolProfile.province || 'Tboung Khmum'} • Year ${schoolProfile.academicYear || activeClass?.academicYear || '2025-2026'}`}
+                  ? `${schoolProfile.cluster ? `${schoolProfile.cluster} • ` : ''}${schoolProfile.district || 'ស្រុកស្ទឹងត្រង់'} • ${schoolProfile.province || 'ខេត្តកំពង់ចាម'} • ឆ្នាំសិក្សា ${schoolProfile.academicYear || activeClass?.academicYear || '២០២៦-២០២៧'}`
+                  : `${schoolProfile.cluster ? `${schoolProfile.cluster} • ` : ''}${schoolProfile.district || 'Stueng Trang'} • ${schoolProfile.province || 'Kampong Cham'} • Year ${schoolProfile.academicYear || activeClass?.academicYear || '2026-2027'}`}
               </p>
             </div>
           </div>
 
-          {/* Global Class Switcher Selector Dropdown (Only switchable for Admins) */}
-          {currentUser?.role === 'admin' && (
+          {/* Global Class Switcher Selector Dropdown (Admin & Switched View) */}
+          {isAdmin && (
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setShowClassDropdown(!showClassDropdown)}
-                className="flex items-center space-x-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border transition cursor-pointer text-left shadow-2xs bg-amber-50 hover:bg-amber-100/90 dark:bg-amber-950/50 dark:hover:bg-amber-900/60 border-amber-300 dark:border-amber-750 text-amber-950 dark:text-amber-100"
+                className={`flex items-center space-x-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border transition cursor-pointer text-left shadow-2xs ${isSwitchedView ? 'bg-indigo-50/80 border-indigo-300 text-indigo-950 dark:bg-indigo-950/50 dark:border-indigo-750 dark:text-indigo-100' : 'bg-amber-50 hover:bg-amber-100/90 dark:bg-amber-950/50 dark:hover:bg-amber-900/60 border-amber-300 dark:border-amber-750 text-amber-950 dark:text-amber-100'}`}
                 title={language === 'km' ? 'សិទ្ធិ Admin៖ ចុចដើម្បីប្តូរពិនិត្យ ឬកែប្រែថ្នាក់ណាក៏បាន' : 'Admin: Switch to inspect/edit any class'}
               >
-                <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-2xs bg-amber-500 text-white">
-                  <Building2 className="w-3.5 h-3.5" />
+                <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-2xs text-white ${isSwitchedView ? 'bg-indigo-500' : 'bg-amber-500'}`}>
+                  {isSwitchedView ? <Eye className="w-3.5 h-3.5" /> : <Building2 className="w-3.5 h-3.5" />}
                 </div>
                 <div className="flex flex-col min-w-0">
                   <div className="flex items-center space-x-1.5">
                     <span className="font-heading font-black text-xs sm:text-sm text-slate-900 dark:text-white truncate max-w-[90px] xs:max-w-[130px] sm:max-w-[170px]">
                       {language === 'km' ? (activeClass?.nameKm || activeClass?.name) : (activeClass?.name || activeClass?.nameKm)}
                     </span>
-                    <span className="text-[9px] px-1.5 py-0.2 rounded-md font-black bg-amber-200 dark:bg-amber-900/80 text-amber-900 dark:text-amber-200 uppercase tracking-wider shrink-0">
-                      Admin
+                    <span className={`text-[9px] px-1.5 py-0.2 rounded-md font-black uppercase tracking-wider shrink-0 ${isSwitchedView ? 'bg-indigo-200 dark:bg-indigo-900/80 text-indigo-900 dark:text-indigo-200' : 'bg-amber-200 dark:bg-amber-900/80 text-amber-900 dark:text-amber-200'}`}>
+                      {isSwitchedView ? 'Viewing' : 'Admin'}
                     </span>
                   </div>
                   <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate max-w-[110px] xs:max-w-[150px] sm:max-w-[180px]">
@@ -115,107 +112,118 @@ export const Header: React.FC = () => {
                 <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform ${showClassDropdown ? 'rotate-180' : ''}`} />
               </button>
 
-              {/* Dropdown Menu (Only shown when admin opens it) */}
+              {/* Dropdown Menu */}
               {showClassDropdown && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setShowClassDropdown(false)} />
-                <div className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-72 sm:w-84 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 py-2 z-50 animate-in fade-in zoom-in-95">
-                  <div className="px-3.5 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                        {language === 'km' ? 'ជ្រើសរើសថ្នាក់រៀន' : 'Switch Class'}
-                      </p>
-                      {currentUser?.role === 'admin' && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowClassDropdown(false)} />
+                  <div className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-72 sm:w-84 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 py-2 z-50 animate-in fade-in zoom-in-95">
+                    <div className="px-3.5 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                          {language === 'km' ? 'ជ្រើសរើសថ្នាក់រៀន' : 'Switch Class'}
+                        </p>
                         <p className="text-[10px] text-amber-600 dark:text-amber-400 font-bold">
                           {language === 'km' ? '★ សិទ្ធិ Admin៖ ពិនិត្យ & កែប្រែគ្រប់ថ្នាក់ក្នុងប្រព័ន្ធ' : '★ Admin: Review & edit any class'}
                         </p>
-                      )}
+                      </div>
+                      <span className="text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full">
+                        {classes.length} ថ្នាក់
+                      </span>
                     </div>
-                    <span className="text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full">
-                      {classes.length} ថ្នាក់
-                    </span>
-                  </div>
 
-                  {/* List of classes */}
-                  <div className="max-h-64 overflow-y-auto py-1 space-y-0.5">
-                    {classes.map(cls => {
-                      const isSelected = cls.id === activeClassId;
-                      const studentCount = (cls.studentIds || []).length;
-
-                      return (
+                    {/* List of classes */}
+                    <div className="max-h-64 overflow-y-auto py-1 space-y-0.5">
+                      {classes.map(cls => {
+                        const isSelected = cls.id === activeClassId;
+                        const studentCount = (cls.studentIds || []).length;
+                        return (
+                          <button
+                            key={cls.id}
+                            type="button"
+                            onClick={() => {
+                              const targetUserId = cls.id.replace('class_', '');
+                              adminSwitchToUser(targetUserId);
+                              setShowClassDropdown(false);
+                            }}
+                            className={`w-full px-3 py-2 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/80 transition cursor-pointer ${
+                              isSelected ? 'bg-indigo-50/80 dark:bg-indigo-950/60 font-bold text-indigo-700 dark:text-indigo-300' : 'text-slate-700 dark:text-slate-300'
+                            }`}
+                          >
+                            <div className="flex items-center space-x-2.5 truncate">
+                              <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black shrink-0 ${
+                                isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                              }`}>
+                                {cls.gradeLevel || cls.name.charAt(0)}
+                              </div>
+                              <div className="truncate">
+                                <p className="text-xs font-black truncate">{cls.nameKm || cls.name}</p>
+                                <p className="text-[10px] text-slate-400 truncate">
+                                  {cls.teacherNameKm || cls.teacherName || 'គ្រូបន្ទុកថ្នាក់'} • {cls.roomNumber || 'បន្ទប់'}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-1.5 shrink-0">
+                              <span className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-1.5 py-0.5 rounded font-mono">
+                                {studentCount} នាក់
+                              </span>
+                              {isSelected && <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    
+                    {/* Class actions inside dropdown */}
+                    <div className="pt-2 mt-1 border-t border-slate-100 dark:border-slate-800 px-2 space-y-1">
+                      {isSwitchedView ? (
                         <button
-                          key={cls.id}
                           type="button"
                           onClick={() => {
-                            setActiveClassId(cls.id);
+                            adminReturnToAdmin();
                             setShowClassDropdown(false);
                           }}
-                          className={`w-full px-3 py-2 text-left flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/80 transition cursor-pointer ${
-                            isSelected ? 'bg-indigo-50/80 dark:bg-indigo-950/60 font-bold text-indigo-700 dark:text-indigo-300' : 'text-slate-700 dark:text-slate-300'
-                          }`}
+                          className="w-full py-2 px-3 rounded-xl text-left text-xs font-black text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/70 bg-amber-50 dark:bg-amber-950/40 flex items-center justify-center space-x-2 cursor-pointer transition shadow-xs"
                         >
-                          <div className="flex items-center space-x-2.5 truncate">
-                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black shrink-0 ${
-                              isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
-                            }`}>
-                              {cls.gradeLevel || cls.name.charAt(0)}
-                            </div>
-                            <div className="truncate">
-                              <p className="text-xs font-black truncate">{cls.nameKm || cls.name}</p>
-                              <p className="text-[10px] text-slate-400 truncate">
-                                {cls.teacherNameKm || cls.teacherName || 'គ្រូបន្ទុកថ្នាក់'} • {cls.roomNumber || 'បន្ទប់'}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-center space-x-1.5 shrink-0">
-                            <span className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-1.5 py-0.5 rounded font-mono">
-                              {studentCount} នាក់
-                            </span>
-                            {isSelected && <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />}
-                          </div>
+                          <Building2 className="w-4 h-4" />
+                          <span>{language === 'km' ? 'ត្រឡប់ទៅផ្ទាំង Admin ដើមវិញ' : 'Return to Admin Hub'}</span>
                         </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Class actions inside dropdown */}
-                  <div className="pt-2 mt-1 border-t border-slate-100 dark:border-slate-800 px-2 space-y-1">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowClassDropdown(false);
-                        setClassModalInitial(activeClass || null);
-                        setIsClassModalOpen(true);
-                      }}
-                      className="w-full py-1.5 px-3 rounded-xl text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center space-x-2 cursor-pointer transition"
-                    >
-                      <Edit3 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-                      <span>{language === 'km' ? 'កែប្រែព័ត៌មានថ្នាក់បច្ចុប្បន្ន' : 'Edit Current Class'}</span>
-                    </button>
-
-                    {currentUser?.role === 'admin' && (
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowClassDropdown(false);
+                            setActiveTab('all_classes');
+                          }}
+                          className="w-full py-1.5 px-3 rounded-xl text-left text-xs font-bold text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/50 flex items-center space-x-2 cursor-pointer transition"
+                        >
+                          <Building2 className="w-3.5 h-3.5" />
+                          <span>{language === 'km' ? 'មជ្ឈមណ្ឌលគ្រប់គ្រងគ្រប់ថ្នាក់ (Hub)' : 'All Classes Management Hub'}</span>
+                        </button>
+                      )}
+                      
                       <button
                         type="button"
                         onClick={() => {
                           setShowClassDropdown(false);
-                          setActiveTab('all_classes');
+                          setClassModalInitial(activeClass || null);
+                          setIsClassModalOpen(true);
                         }}
-                        className="w-full py-1.5 px-3 rounded-xl text-left text-xs font-bold text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/50 flex items-center space-x-2 cursor-pointer transition"
+                        className="w-full py-1.5 px-3 rounded-xl text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center space-x-2 cursor-pointer transition mt-1"
                       >
-                        <Building2 className="w-3.5 h-3.5" />
-                        <span>{language === 'km' ? 'មជ្ឈមណ្ឌលគ្រប់គ្រងគ្រប់ថ្នាក់ (Hub)' : 'All Classes Management Hub'}</span>
+                        <Edit3 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                        <span>{language === 'km' ? 'កែប្រែព័ត៌មានថ្នាក់បច្ចុប្បន្ន' : 'Edit Current Class'}</span>
                       </button>
-                    )}
+                    </div>
                   </div>
-                </div>
-              </>
-            )}
+                </>
+              )}
             </div>
           )}
+
           <div className="flex items-center space-x-1.5 sm:space-x-2">
             
             {/* Admin Management Button (Visible if user is admin) */}
-            {currentUser?.role === 'admin' && (
+            {isAdmin && !isSwitchedView && (
               <button
                 onClick={() => setIsAdminModalOpen(true)}
                 className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-700 text-white transition cursor-pointer shadow-xs font-bold text-xs"
@@ -236,7 +244,8 @@ export const Header: React.FC = () => {
               {theme === 'dark' ? (
                 <Sun className="w-4 h-4 text-amber-400 transition-transform duration-200 group-hover:rotate-45" />
               ) : (
-                <Moon className="w-4 h-4 text-indigo-600 transition-transform duration-200 group-hover:-rotate-12" />
+                <Moon
+ className="w-4 h-4 text-indigo-600 transition-transform duration-200 group-hover:-rotate-12" />
               )}
             </button>
 
@@ -258,7 +267,7 @@ export const Header: React.FC = () => {
                   className="flex items-center space-x-2 px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer text-left border border-transparent hover:border-slate-200 dark:hover:border-slate-700 group"
                   title="កែប្រែព័ត៌មានគណនី (ឈ្មោះ លេខទូរស័ព្ទ username និងពាក្យសម្ងាត់)"
                 >
-                  <div className="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <div className={`w-7 h-7 rounded-lg ${isSwitchedView ? 'bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300' : 'bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300'} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
                     <User className="w-4 h-4" />
                   </div>
                   <div className="hidden sm:flex flex-col">
@@ -281,9 +290,7 @@ export const Header: React.FC = () => {
                 </button>
               </div>
             )}
-
           </div>
-
         </div>
       </div>
 
@@ -338,7 +345,6 @@ export const Header: React.FC = () => {
         isOpen={isSchoolSettingsOpen} 
         onClose={() => setIsSchoolSettingsOpen(false)} 
       />
-
       <ClassModal
         isOpen={isClassModalOpen}
         initialClass={classModalInitial}
@@ -347,12 +353,10 @@ export const Header: React.FC = () => {
           setClassModalInitial(null);
         }}
       />
-
       <AdminUserManagementModal
         isOpen={isAdminModalOpen}
         onClose={() => setIsAdminModalOpen(false)}
       />
-
       <UserProfileSettingsModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}

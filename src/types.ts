@@ -122,6 +122,7 @@ export interface SchoolProfile {
   district: string; // e.g. "ស្រុកស្ទឹងត្រង់"
   commune: string; // e.g. "ឃុំអូរម្លូ"
   village?: string; // e.g. "ភូមិប្រទង"
+  cluster?: string; // e.g. "កម្រងដងក្តារ"
   schoolCode?: string; // e.g. "030704"
   principalName?: string;
   principalNameKm?: string;
@@ -134,6 +135,7 @@ export interface SchoolProfile {
 
 export interface ClassSection {
   id: string;
+  teacherId?: string; // Optional property to associate class with a specific teacher account
   name: string; // e.g. "Grade 6A - ថ្នាក់ទី៦(ក)"
   nameKm: string;
   gradeLevel: number; // 1 to 6
@@ -146,6 +148,7 @@ export interface ClassSection {
   province?: string;
   district?: string;
   commune?: string;
+  cluster?: string;
   logoUrl?: string;
   studentIds: string[];
 }

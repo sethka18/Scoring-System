@@ -12,17 +12,18 @@ import {
 import { PREK_CHIK_CLASSES, PREK_CHIK_STUDENTS, PREK_CHIK_STUDENT_PROFILES } from './prekChikStudents';
 
 export const DEFAULT_SCHOOL_PROFILE: SchoolProfile = {
-  schoolName: 'Prek Chik Primary School',
-  schoolNameKm: 'សាលាបឋមសិក្សា ព្រែកជីក',
-  province: 'ខេត្តស្ទឹងត្រែង',
-  district: 'ស្រុកសៀមបូក',
-  commune: 'ឃុំអូរម្រះ',
+  schoolName: 'Hun Neng Pratong Primary School',
+  schoolNameKm: 'សាលាបឋមសិក្សាហ៊ុនណេងប្រទង',
+  province: 'ខេត្តកំពង់ចាម',
+  district: 'ស្រុកស្ទឹងត្រង់',
+  commune: 'ឃុំអូរម្លូ',
   village: 'ភូមិប្រទង',
-  schoolCode: '190402',
-  principalName: 'លោកគ្រូ ផាន សិតការណ៍',
-  principalNameKm: 'លោកគ្រូ ផាន សិតការណ៍',
-  phone: '012 999 818',
-  email: 'prekchik.primary@moeys.gov.kh',
+  cluster: 'កម្រងដងក្តារ',
+  schoolCode: '030704',
+  principalName: 'ថាត ថា',
+  principalNameKm: 'ថាត ថា',
+  phone: '',
+  email: '',
   logoUrl: '',
   academicYear: '២០២៦-២០២៧',
 };

@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useGradebook } from '../../context/GradebookContext';
+import { useAuth } from '../../context/AuthContext';
 import { ClassSection, Student } from '../../types';
 import { 
   Building2, 
@@ -59,6 +60,7 @@ export const SchoolAllClassesHub: React.FC = () => {
     setActiveTab, 
     showToast 
   } = useGradebook();
+  const { adminSwitchToUser } = useAuth();
 
   const [selectedGradeFilter, setSelectedGradeFilter] = useState<number | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -94,7 +96,17 @@ export const SchoolAllClassesHub: React.FC = () => {
     let totalScoreCount = 0;
 
     const classMetrics = classes.map(cls => {
-      const classStudents = students.filter(s => cls.studentIds?.includes(s.id));
+      const classStudents = students.filter(s => {
+        if (cls.studentIds && cls.studentIds.length > 0 && cls.studentIds.includes(s.id)) {
+          return true;
+        }
+        // Fallback: If student has a teacherId that matches the class teacherId, include them
+        // This handles cases where the class studentIds array wasn't properly synced
+        if ((s as any).teacherId && (cls as any).teacherId && (s as any).teacherId === (cls as any).teacherId) {
+          return true;
+        }
+        return false;
+      });
       const boys = classStudents.filter(s => s.gender === 'Male').length;
       const girls = classStudents.filter(s => s.gender === 'Female').length;
       
@@ -301,7 +313,12 @@ export const SchoolAllClassesHub: React.FC = () => {
 
   // Jump directly to specific class and tab
   const handleSelectClassAndTab = (classId: string, tab: 'scoring' | 'rankings' | 'report_card' | 'roster' | 'dashboard') => {
-    setActiveClassId(classId);
+    const classObj = classes.find(c => c.id === classId);
+    if (classObj && (classObj as any).teacherId) {
+      adminSwitchToUser((classObj as any).teacherId);
+    } else {
+      adminSwitchToUser(classId.replace('class_', ''));
+    }
     setActiveTab(tab);
   };
 
@@ -330,7 +347,7 @@ export const SchoolAllClassesHub: React.FC = () => {
                 {schoolProfile?.schoolNameKm || activeClass?.schoolNameKm || 'សាលាបឋមសិក្សាហ៊ុនណេងប្រទង'}
               </h1>
               <p className="text-xs sm:text-sm text-slate-300 font-medium truncate sm:whitespace-normal mt-0.5">
-                {schoolProfile?.district || 'ស្រុកស្ទឹងត្រង់'} • {schoolProfile?.commune || 'ឃុំអូរម្លូ'} • {schoolProfile?.province || 'ខេត្តកំពង់ចាម'} • {language === 'km' ? 'ឆ្នាំសិក្សា៖' : 'Academic Year:'} {schoolProfile?.academicYear || activeClass?.academicYear || '២០២៦-២០២៧'}
+                {schoolProfile?.cluster ? `${schoolProfile.cluster} • ` : ''}{schoolProfile?.district || 'ស្រុកស្ទឹងត្រង់'} • {schoolProfile?.commune || 'ឃុំអូរម្លូ'} • {schoolProfile?.province || 'ខេត្តកំពង់ចាម'} • {language === 'km' ? 'ឆ្នាំសិក្សា៖' : 'Academic Year:'} {schoolProfile?.academicYear || activeClass?.academicYear || '២០២៦-២០២៧'}
               </p>
             </div>
           </div>
