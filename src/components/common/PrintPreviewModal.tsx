@@ -213,7 +213,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
     { key: 'showAttendance', labelKm: 'វត្តមាន & អវត្តមាន (Attendance)', labelEn: 'Attendance Record', descKm: 'វត្តមាន អវត្តមានមានច្បាប់ និងឥតច្បាប់', descEn: 'Attendance rates and absence records' },
     { key: 'showTeacherComments', labelKm: 'មតិយោបល់គ្រូបន្ទុកថ្នាក់', labelEn: 'Teacher Comments', descKm: 'ការសង្កេត និងការវាយតម្លៃរបស់គ្រូ', descEn: 'Homeroom teacher feedback and notes' },
     { key: 'showParentFeedback', labelKm: 'ប្រអប់មតិមាតាបិតា', labelEn: 'Parent Feedback', descKm: 'បន្ទាត់ឆ្លើយតបសម្រាប់មាតាបិតា', descEn: 'Lines for parent observation & reply' },
-    { key: 'show3Pillars', labelKm: 'សម្បទាទាំង ៣ MoEYS', labelEn: '3-Pillars Competency', descKm: 'វិជ្ជាសម្បទា បំណិនសម្បទា ចរិយាសម្បទា', descEn: 'Knowledge, skills, attitude scores' },
+    { key: 'show3Pillars', labelKm: 'សម្បទាទាំង ៣ Ministry', labelEn: '3-Pillars Competency', descKm: 'វិជ្ជាសម្បទា បំណិនសម្បទា ចរិយាសម្បទា', descEn: 'Knowledge, skills, attitude scores' },
     { key: 'showSignatures', labelKm: 'ហត្ថលេខា & ត្រាសាលា', labelEn: 'Signatures & Seal', descKm: 'ហត្ថលេខាគ្រូ នាយកសាលា និងអាណាព្យាបាល', descEn: 'Official signature blocks and stamp' },
   ];
 
@@ -384,8 +384,8 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
 
     const originalTitle = document.title;
     const docTitle = type === 'roster'
-      ? `MoEYS_Roster_${activeClass?.nameKm || 'Class'}_${pageSize.toUpperCase()}`
-      : `MoEYS_Report_${currentStudent?.name || 'Student'}_${pageSize.toUpperCase()}`;
+      ? `Ministry_Roster_${activeClass?.nameKm || 'Class'}_${pageSize.toUpperCase()}`
+      : `Ministry_Report_${currentStudent?.name || 'Student'}_${pageSize.toUpperCase()}`;
     document.title = docTitle;
 
     setTimeout(() => {
@@ -406,8 +406,8 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
       const orientation = type === 'roster' ? rosterSettings.orientation : reportOrientation;
       const pageSize = type === 'roster' ? rosterSettings.pageSize : reportPageSize;
       const fileName = type === 'roster'
-        ? `MoEYS_Roster_${activeClass?.nameKm || activeClass?.name || 'Class'}`
-        : `MoEYS_Report_${currentStudent?.name || 'Student'}_${reportMode}`;
+        ? `Ministry_Roster_${activeClass?.nameKm || activeClass?.name || 'Class'}`
+        : `Ministry_Report_${currentStudent?.name || 'Student'}_${reportMode}`;
 
       const element = document.getElementById('print-preview-document-sheet');
       if (!element) {
@@ -472,7 +472,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
             </div>
             <p className="text-xs text-slate-400 truncate hidden sm:block">
               {type === 'roster'
-                ? `${activeClass?.nameKm || activeClass?.name || 'Class'} • ${schoolProfile?.schoolNameKm || 'MoEYS'} • ${displayedStudents.length} ${language === 'km' ? 'នាក់' : 'students'}`
+                ? `${activeClass?.nameKm || activeClass?.name || 'Class'} • ${schoolProfile?.schoolNameKm || 'Ministry'} • ${displayedStudents.length} ${language === 'km' ? 'នាក់' : 'students'}`
                 : `${currentStudent?.name || 'Student'} • ${reportMode === 'monthly' ? currentPeriod?.nameKm : activeClass?.academicYear}`}
             </p>
           </div>
@@ -775,13 +775,13 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
           {activeTab === 'layout' && (
             <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
               
-              {/* MoEYS Layout & Stamp Configuration Trigger (for report cards) */}
+              {/* Ministry Layout & Stamp Configuration Trigger (for report cards) */}
               {type === 'report' && onOpenLayoutConfig && (
                 <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 text-slate-800 dark:text-amber-100">
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="font-heading font-black text-xs text-amber-950 dark:text-amber-200 flex items-center space-x-1.5">
                       <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                      <span>{language === 'km' ? 'ទម្រង់ MoEYS & ត្រាសាលា' : 'MoEYS Style & Stamp'}</span>
+                      <span>{language === 'km' ? 'ទម្រង់ Ministry & ត្រាសាលា' : 'Ministry Style & Stamp'}</span>
                     </span>
                     <span className="px-1.5 py-0.5 rounded bg-amber-200/80 text-[10px] font-black text-amber-950">
                       {language === 'km' ? 'ផ្លូវការ' : 'Official'}
@@ -789,8 +789,8 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
                   </div>
                   <p className="text-[11px] text-amber-900/80 dark:text-amber-300 mb-2.5">
                     {language === 'km' 
-                      ? 'ប្តូររចនាបថទម្រង់ក្រសួង MoEYS ៤ បែប បន្ថែមឡូហ្គោ ឬត្រាមូលក្រហម' 
-                      : 'Switch between 4 MoEYS layout styles, custom school logos, or red official stamps.'}
+                      ? 'ប្តូររចនាបថទម្រង់ក្រសួង Ministry ៤ បែប បន្ថែមឡូហ្គោ ឬត្រាមូលក្រហម' 
+                      : 'Switch between 4 Ministry layout styles, custom school logos, or red official stamps.'}
                   </p>
                   <button
                     type="button"
@@ -798,7 +798,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
                     className="w-full py-2 px-3 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs transition cursor-pointer shadow-xs flex items-center justify-center space-x-1.5"
                   >
                     <Layers className="w-3.5 h-3.5" />
-                    <span>{language === 'km' ? 'បើកផ្ទាំងកំណត់ទម្រង់ & ត្រា' : 'Configure MoEYS Layout & Stamp'}</span>
+                    <span>{language === 'km' ? 'បើកផ្ទាំងកំណត់ទម្រង់ & ត្រា' : 'Configure Ministry Layout & Stamp'}</span>
                   </button>
                 </div>
               )}
@@ -906,7 +906,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
                     </label>
 
                     {[
-                      { key: 'showHeader', labelKm: 'បង្ហាញក្បាលទំព័រផ្លូវការ MoEYS', labelEn: 'Show Official MoEYS Header' },
+                      { key: 'showHeader', labelKm: 'បង្ហាញក្បាលទំព័រផ្លូវការ Ministry', labelEn: 'Show Official Ministry Header' },
                       { key: 'showStatistics', labelKm: 'បង្ហាញស្ថិតិសិស្ស (សរុប & ស្រី)', labelEn: 'Show Student Statistics Summary' },
                       { key: 'showSignatures', labelKm: 'បង្ហាញកន្លែងចុះហត្ថលេខាគ្រូ & នាយក', labelEn: 'Show Signatures & Date Block' },
                     ].map(h => {
@@ -1060,12 +1060,12 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
               {type === 'roster' && (
                 <div className="space-y-5">
                   
-                  {/* MoEYS Official Header */}
+                  {/* Ministry Official Header */}
                   {rosterSettings.showHeader && (
                     <div className="border-b-2 border-slate-900 pb-3">
                       <div className="flex justify-between items-start text-xs font-semibold text-slate-800">
                         {/* School / Ministry Info */}
-                        <div className="text-left flex items-start space-x-3">
+                        <div className="text-left flex items-start space-x-3 mt-6">
                           <SchoolLogo size={42} customLogoUrl={schoolProfile?.logoUrl} />
                           <div>
                             <p className="font-extrabold text-slate-950 uppercase text-xs tracking-wide">
@@ -1099,7 +1099,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
                         <h1 className="font-heading font-black text-base sm:text-xl text-slate-950 uppercase tracking-wide">
                           {language === 'km' ? 'បញ្ជីរាយនាមសិស្សប្រចាំថ្នាក់' : 'Official Class Student Roster'}
                         </h1>
-                        <div className="flex flex-wrap items-center justify-center gap-x-3 text-xs font-bold text-indigo-950 mt-1">
+                        <div className="flex flex-wrap items-center justify-center gap-x-3 text-xs font-bold text-indigo-950 mt-1 mt-8">
                           <span>
                             {language === 'km' ? `ថ្នាក់ទី៖ ${activeClass?.nameKm || activeClass?.name || '៦ក'}` : `Class: ${activeClass?.name || 'Grade 6A'}`}
                           </span>

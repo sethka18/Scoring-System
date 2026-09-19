@@ -6,7 +6,7 @@ export const CURRICULUM_MATH_GRADE4: CurriculumProgram = {
   academicYear: '២០២៦-២០២៧',
   subjectId: 'sub_math',
   titleKm: 'បំណែងចែកកម្មវិធីសិក្សាប្រចាំឆ្នាំ មុខវិជ្ជា ៖ គណិតវិទ្យា ថ្នាក់ទី៤ (ក្រសួងអប់រំ)',
-  titleEn: 'Annual Curriculum Distribution: Mathematics Grade 4 (MoEYS)',
+  titleEn: 'Annual Curriculum Distribution: Mathematics Grade 4',
   lessons: [
     // Month 11: វិច្ឆិកា
     {
@@ -305,7 +305,7 @@ export const CURRICULUM_MATH_GRADE4: CurriculumProgram = {
       dateStr: 'ចន្ទ_03_08_26',
       chapterKm: 'មេរៀនសារឡើងវិញ',
       lessonTitleKm: 'មេរៀនសារឡើងវិញ និងការធ្វើតេស្តស្តង់ដាចុងឆ្នាំសិក្សា',
-      lessonTitleEn: 'Year-End Review & MoEYS Final Assessment',
+      lessonTitleEn: 'Year-End Review & Ministry Final Assessment',
       objectivesKm: 'រំឭកមេរៀនគណិតវិទ្យាថ្នាក់ទី៤ និងប្រឡងតេស្តស្តង់ដាចុងឆ្នាំ។',
       hoursCount: 2,
       semester: 2,

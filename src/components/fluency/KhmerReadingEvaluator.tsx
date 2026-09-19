@@ -12,7 +12,7 @@ import {
   tokenizeKhmerText, 
   calculateWCPM, 
   diagnoseKhmerReadingFluency,
-  MOEYS_READING_BENCHMARKS,
+  Ministry_READING_BENCHMARKS,
   KhmerReadingDiagnosticReport
 } from '../../utils/fluencyCalculations';
 import { 
@@ -158,7 +158,7 @@ export const KhmerReadingEvaluator: React.FC<KhmerReadingEvaluatorProps> = ({
 
   // Grade level benchmark
   const gradeLevel = activeClass?.gradeLevel || 1;
-  const gradeBenchmark = MOEYS_READING_BENCHMARKS[gradeLevel] || MOEYS_READING_BENCHMARKS[1];
+  const gradeBenchmark = Ministry_READING_BENCHMARKS[gradeLevel] || Ministry_READING_BENCHMARKS[1];
 
   // Passage selection
   const [selectedPassageId, setSelectedPassageId] = useState<string>(() => {
@@ -179,7 +179,7 @@ export const KhmerReadingEvaluator: React.FC<KhmerReadingEvaluatorProps> = ({
   }, [activePassage]);
 
   // Timer State
-  const [readingTimerLimit, setReadingTimerLimit] = useState<number>(60); // 60s standard MoEYS reading test
+  const [readingTimerLimit, setReadingTimerLimit] = useState<number>(60); // 60s standard Ministry reading test
   const [readingRemainingSeconds, setReadingRemainingSeconds] = useState<number>(60);
   const [readingElapsedSeconds, setReadingElapsedSeconds] = useState<number>(0);
   const [isReadingRunning, setIsReadingRunning] = useState<boolean>(false);
@@ -384,7 +384,7 @@ export const KhmerReadingEvaluator: React.FC<KhmerReadingEvaluatorProps> = ({
     if (!currentStudent) return;
 
     const scoreVal = readingMetrics.score10;
-    const remark = diagnosticReport.moeysOfficialRemark;
+    const remark = diagnosticReport.MinistryOfficialRemark;
 
     const scoreData: any = {
       teacherRemark: remark
@@ -423,7 +423,7 @@ export const KhmerReadingEvaluator: React.FC<KhmerReadingEvaluatorProps> = ({
       errorBreakdown: combinedErrorBreakdown,
       markedErrors: Array.from(markedWordErrors.values()),
       diagnosedWeakness: diagnosticReport.primaryWeaknessKm,
-      predictedMoEYSLevel: diagnosticReport.predictedLevel,
+      predictedStandardLevel: diagnosticReport.predictedLevel,
       remedialAdvice: diagnosticReport.remedialAdviceKm[0] || '',
       notes: remark
     };
@@ -1071,10 +1071,10 @@ export const KhmerReadingEvaluator: React.FC<KhmerReadingEvaluatorProps> = ({
               </div>
             </div>
 
-            {/* MoEYS Benchmark Level Pill */}
+            {/* Ministry Benchmark Level Pill */}
             <div className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-between">
               <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
-                {language === 'km' ? 'កម្រិតសមត្ថភាពក្រសួង៖' : 'MoEYS Level:'}
+                {language === 'km' ? 'កម្រិតសមត្ថភាពក្រសួង៖' : 'Ministry Level:'}
               </span>
               <span
                 className="font-heading font-black text-xs px-3 py-1 rounded-full text-white shadow-xs"
@@ -1093,7 +1093,7 @@ export const KhmerReadingEvaluator: React.FC<KhmerReadingEvaluatorProps> = ({
                 {readingMetrics.score10.toFixed(1)} <span className="text-lg font-bold text-slate-400">/ ១០</span>
               </div>
               <div className="text-[11px] text-indigo-600 dark:text-indigo-400">
-                {language === 'km' ? 'គណនាផ្អែកលើ WCPM, ភាពសុក្រឹត និងស្តង់ដារថ្នាក់ទី ' + gradeLevel : 'Aligned with MoEYS primary curriculum'}
+                {language === 'km' ? 'គណនាផ្អែកលើ WCPM, ភាពសុក្រឹត និងស្តង់ដារថ្នាក់ទី ' + gradeLevel : 'Aligned with Ministry primary curriculum'}
               </div>
             </div>
           </div>
@@ -1185,11 +1185,11 @@ export const KhmerReadingEvaluator: React.FC<KhmerReadingEvaluatorProps> = ({
             </div>
           </div>
 
-          {/* MoEYS Gradebook Sync Card */}
+          {/* Ministry Gradebook Sync Card */}
           <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-2xs space-y-4">
             <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white flex items-center space-x-2">
               <Save className="w-4 h-4 text-indigo-600" />
-              <span>{language === 'km' ? 'បញ្ចូលពិន្ទុក្នុងតារាងពិន្ទុក្រសួង' : 'Sync to MoEYS Gradebook'}</span>
+              <span>{language === 'km' ? 'បញ្ចូលពិន្ទុក្នុងតារាងពិន្ទុក្រសួង' : 'Sync to Ministry Gradebook'}</span>
             </h3>
 
             {/* Target Component Selector */}
@@ -1211,7 +1211,7 @@ export const KhmerReadingEvaluator: React.FC<KhmerReadingEvaluatorProps> = ({
             {/* Official Remark Preview */}
             <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 text-[11px] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
               <div className="font-bold text-slate-500 mb-0.5">ការកត់សម្គាល់ក្នុងបញ្ជីពិន្ទុ៖</div>
-              <div>{diagnosticReport.moeysOfficialRemark}</div>
+              <div>{diagnosticReport.MinistryOfficialRemark}</div>
             </div>
 
             {/* Save Button */}
@@ -1332,7 +1332,7 @@ export const KhmerReadingEvaluator: React.FC<KhmerReadingEvaluatorProps> = ({
               id="khmer-reading-diagnostic-slip"
               className="p-6 bg-white text-slate-900 border-2 border-slate-900 rounded-2xl space-y-5"
             >
-              {/* MoEYS Official Header */}
+              {/* Ministry Official Header */}
               <div className="text-center space-y-1">
                 <div className="font-heading font-bold text-xs tracking-wider uppercase">
                   ព្រះរាជាណាចក្រកម្ពុជា
@@ -1345,7 +1345,7 @@ export const KhmerReadingEvaluator: React.FC<KhmerReadingEvaluatorProps> = ({
                   ប័ណ្ណវាយតម្លៃល្បឿនអាន និងវិភាគចំណុចខ្សោយភាសាខ្មែរ
                 </div>
                 <div className="text-[11px] text-slate-600">
-                  (Khmer Reading Speed & Fluency Diagnostic Slip - MoEYS Standard)
+                  (Khmer Reading Speed & Fluency Diagnostic Slip - Ministry Standard)
                 </div>
               </div>
 

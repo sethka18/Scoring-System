@@ -1,5 +1,5 @@
 /**
- * ឧបសម្ព័ន្ធ៤៖ ឧបករណ៍វាយតម្លៃពិន្ទុចរិយាសម្បទារបស់សិស្ស (MoEYS Appendix 4 Attitude Evaluation)
+ * ឧបសម្ព័ន្ធ៤៖ ឧបករណ៍វាយតម្លៃពិន្ទុចរិយាសម្បទារបស់សិស្ស (Ministry Appendix 4 Attitude Evaluation)
  * សាលាបឋមសិក្សាហ៊ុន ណេង ប្រទង - ភូមិប្រទង ឃុំអូរម្លូ ស្រុកស្ទឹងត្រង់ ខេត្តកំពង់ចាម
  */
 
@@ -148,7 +148,7 @@ export const REAL_CLASS_STUDENTS_LIST: Array<{ id: string; studentId: string; na
 ];
 
 /**
- * Generates initial default attitude records for all 25 students based on MoEYS Appendix 4
+ * Generates initial default attitude records for all 25 students based on Ministry Appendix 4
  */
 export function getDefaultAttitudeRecords(): Record<string, StudentAttitudeEvaluationRecord> {
   const defaultScoresMap: Record<string, number> = {};

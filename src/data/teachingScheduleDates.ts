@@ -1,5 +1,5 @@
 /**
- * Academic Year 2026-2027 MoEYS Teaching Calendar Metadata & Week Mappings
+ * Academic Year 2026-2027 Ministry Teaching Calendar Metadata & Week Mappings
  * School Opening Date (ថ្ងៃបើកបវេសនកាល): 01 November 2026 (០១ វិច្ឆិកា ២០២៦)
  * Primary School: Hun Neng Pratong Primary School
  */
@@ -94,7 +94,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2026-12-05',
     monthKm: 'ធ្នូ',
     monthEn: 'December',
-    noteKm: 'សប្តាហ៍ទី៥ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី៥ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 5 Curriculum'
   },
   {
@@ -104,7 +104,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2026-12-12',
     monthKm: 'ធ្នូ',
     monthEn: 'December',
-    noteKm: 'សប្តាហ៍ទី៦ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី៦ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 6 Curriculum'
   },
   {
@@ -114,7 +114,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2026-12-19',
     monthKm: 'ធ្នូ',
     monthEn: 'December',
-    noteKm: 'សប្តាហ៍ទី៧ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី៧ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 7 Curriculum'
   },
   {
@@ -135,7 +135,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-01-02',
     monthKm: 'មករា',
     monthEn: 'January',
-    noteKm: 'សប្តាហ៍ទី៩ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី៩ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 9 Curriculum'
   },
   {
@@ -155,7 +155,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-01-16',
     monthKm: 'មករា',
     monthEn: 'January',
-    noteKm: 'សប្តាហ៍ទី១១ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី១១ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 11 Curriculum'
   },
   {
@@ -165,7 +165,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-01-23',
     monthKm: 'មករា',
     monthEn: 'January',
-    noteKm: 'សប្តាហ៍ទី១២ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី១២ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 12 Curriculum'
   },
   {
@@ -186,7 +186,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-02-06',
     monthKm: 'កុម្ភៈ',
     monthEn: 'February',
-    noteKm: 'សប្តាហ៍ទី១៤ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី១៤ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 14 Curriculum'
   },
   {
@@ -196,7 +196,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-02-13',
     monthKm: 'កុម្ភៈ',
     monthEn: 'February',
-    noteKm: 'សប្តាហ៍ទី១៥ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី១៥ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 15 Curriculum'
   },
   {
@@ -206,7 +206,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-02-20',
     monthKm: 'កុម្ភៈ',
     monthEn: 'February',
-    noteKm: 'សប្តាហ៍ទី១៦ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី១៦ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 16 Curriculum'
   },
   {
@@ -249,7 +249,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-03-20',
     monthKm: 'មីនា',
     monthEn: 'March',
-    noteKm: 'សប្តាហ៍ទី២០ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី២០ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 20 Curriculum'
   },
   {
@@ -259,7 +259,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-03-27',
     monthKm: 'មីនា',
     monthEn: 'March',
-    noteKm: 'សប្តាហ៍ទី២១ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី២១ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 21 Curriculum'
   },
   {
@@ -279,7 +279,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-05-01',
     monthKm: 'មេសា',
     monthEn: 'April',
-    noteKm: 'សប្តាហ៍ទី២៣ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី២៣ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 23 Curriculum'
   },
   {
@@ -289,7 +289,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-05-08',
     monthKm: 'ឧសភា',
     monthEn: 'May',
-    noteKm: 'សប្តាហ៍ទី២៤ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី២៤ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 24 Curriculum'
   },
   {
@@ -299,7 +299,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-05-15',
     monthKm: 'ឧសភា',
     monthEn: 'May',
-    noteKm: 'សប្តាហ៍ទី២៥ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី២៥ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 25 Curriculum'
   },
   {
@@ -309,7 +309,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-05-22',
     monthKm: 'ឧសភា',
     monthEn: 'May',
-    noteKm: 'សប្តាហ៍ទី២៦ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី២៦ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 26 Curriculum'
   },
   {
@@ -330,7 +330,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-06-05',
     monthKm: 'មិថុនា',
     monthEn: 'June',
-    noteKm: 'សប្តាហ៍ទី២៨ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី២៨ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 28 Curriculum'
   },
   {
@@ -350,7 +350,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-06-19',
     monthKm: 'មិថុនា',
     monthEn: 'June',
-    noteKm: 'សប្តាហ៍ទី៣០ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី៣០ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 30 Curriculum'
   },
   {
@@ -371,7 +371,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-07-03',
     monthKm: 'កក្កដា',
     monthEn: 'July',
-    noteKm: 'សប្តាហ៍ទី៣២ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី៣២ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 32 Curriculum'
   },
   {
@@ -381,7 +381,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-07-10',
     monthKm: 'កក្កដា',
     monthEn: 'July',
-    noteKm: 'សប្តាហ៍ទី៣៣ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី៣៣ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 33 Curriculum'
   },
   {
@@ -391,7 +391,7 @@ export const ACADEMIC_WEEKS_2026_2027: AcademicWeekMapping[] = [
     endDate: '2027-07-17',
     monthKm: 'កក្កដា',
     monthEn: 'July',
-    noteKm: 'សប្តាហ៍ទី៣៤ កម្មវិធីសិក្សា MoEYS',
+    noteKm: 'សប្តាហ៍ទី៣៤ កម្មវិធីសិក្សាជាតិ',
     noteEn: 'Week 34 Curriculum'
   },
   {

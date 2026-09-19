@@ -209,8 +209,8 @@ export const CurriculumTeachingCalendar: React.FC<CurriculumTeachingCalendarProp
                 <CalendarDays className="w-3.5 h-3.5 text-amber-400" />
                 <span>
                   {language === 'km' 
-                    ? 'ប្រតិទិនបង្រៀនផ្លូវការ MoEYS • ឆ្នាំសិក្សា ២០២៦-២០២៧' 
-                    : 'MoEYS Academic Teaching Calendar 2026-2027'}
+                    ? 'ប្រតិទិនបង្រៀនផ្លូវការ Ministry • ឆ្នាំសិក្សា ២០២៦-២០២៧' 
+                    : 'Ministry Academic Teaching Calendar 2026-2027'}
                 </span>
               </div>
               <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
@@ -475,7 +475,7 @@ export const CurriculumTeachingCalendar: React.FC<CurriculumTeachingCalendarProp
 
         {/* Lessons List for Selected Day */}
         <div className="mt-6 pt-5 border-t border-white/15">
-          {/* Thursday Special MoEYS Notice */}
+          {/* Thursday Special Ministry Notice */}
           {selectedDayOfWeekNum === 4 ? (
             <div className="mb-4 bg-amber-500/20 border border-amber-400/50 rounded-2xl p-4 text-white">
               <div className="flex items-start space-x-3">
@@ -487,7 +487,7 @@ export const CurriculumTeachingCalendar: React.FC<CurriculumTeachingCalendarProp
                     <h4 className="font-heading font-black text-amber-300 text-sm sm:text-base">
                       {language === 'km' 
                         ? '✨ ថ្ងៃព្រហស្បតិ៍ ៖ មិនបង្រៀនមេរៀនតទេ (គោលការណ៍ក្រសួងអប់រំ យុវជន និងកីឡា)' 
-                        : '✨ Thursday: Non-Curriculum Day (MoEYS Official Standard)'}
+                        : '✨ Thursday: Non-Curriculum Day (Ministry Official Standard)'}
                     </h4>
                     <p className="text-amber-100/90 text-[11px] mt-0.5">
                       {language === 'km' 
@@ -648,7 +648,7 @@ export const CurriculumTeachingCalendar: React.FC<CurriculumTeachingCalendarProp
         {/* Printable Official Header */}
         <div className="pb-5 border-b-2 border-slate-900 mb-6">
           <div className="flex justify-between items-start text-xs font-semibold text-slate-800 mb-3">
-            <div className="text-left flex items-start space-x-3">
+            <div className="text-left flex items-start space-x-3 mt-8">
               <SchoolLogo size={48} customLogoUrl={schoolProfile?.logoUrl} />
               <div className="space-y-0.5">
                 <p className="font-black text-slate-950 text-xs">ក្រសួងអប់រំ យុវជន និងកីឡា</p>
@@ -823,7 +823,7 @@ export const CurriculumTeachingCalendar: React.FC<CurriculumTeachingCalendarProp
           })}
         </div>
 
-        {/* Legend / Key Milestones for MoEYS Guidelines */}
+        {/* Legend / Key Milestones for Ministry Guidelines */}
         <div className="mt-6 pt-5 border-t border-slate-200 grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
           <div className="flex items-center space-x-2">
             <span className="w-3.5 h-3.5 rounded bg-amber-500 shrink-0" />

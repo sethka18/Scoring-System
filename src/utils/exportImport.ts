@@ -558,7 +558,7 @@ export function downloadStudentCSVTemplate(): void {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.setAttribute('href', url);
-  link.setAttribute('download', `គំរូនាំចូលបញ្ជីសិស្ស_MoEYS_Template.csv`);
+  link.setAttribute('download', `គំរូនាំចូលបញ្ជីសិស្ស_Ministry_Template.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

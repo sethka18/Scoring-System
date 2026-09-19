@@ -22,13 +22,13 @@ import {
 } from 'lucide-react';
 import { useGradebook } from '../../context/GradebookContext';
 import { 
-  MoeysLayoutStyle, 
+  MinistryLayoutStyle, 
   ReportLogoMode, 
   ReportStampMode, 
   StampPosition, 
   ReportLayoutConfig, 
   DEFAULT_REPORT_LAYOUT_CONFIG,
-  MOEYS_LAYOUT_STYLES 
+  Ministry_LAYOUT_STYLES 
 } from './reportLayoutTypes';
 import { OfficialSchoolStamp } from './OfficialSchoolStamp';
 import { SchoolLogo } from '../common/SchoolLogo';
@@ -81,7 +81,7 @@ export const ReportLayoutConfigPanel: React.FC<ReportLayoutConfigPanelProps> = (
       const dataUrl = reader.result as string;
       updateConfig({ 
         customLogoUrl: dataUrl,
-        logoMode: config.logoMode === 'moeys_only' ? 'school_only' : config.logoMode 
+        logoMode: config.logoMode === 'Ministry_only' ? 'school_only' : config.logoMode 
       });
       // Also update school profile so other components can use it
       updateSchoolProfile({ logoUrl: dataUrl });
@@ -151,10 +151,10 @@ export const ReportLayoutConfigPanel: React.FC<ReportLayoutConfigPanelProps> = (
           <div>
             <div className="flex items-center space-x-2">
               <h2 className="font-heading font-black text-sm sm:text-base text-white">
-                {language === 'km' ? 'ផ្ទាំងកំណត់ទម្រង់ក្រសួង (MoEYS) & ត្រាផ្លូវការ' : 'MoEYS Layout & Official Stamp Configuration'}
+                {language === 'km' ? 'ផ្ទាំងកំណត់ទម្រង់ក្រសួង & ត្រាផ្លូវការ' : 'Ministry Layout & Official Stamp Configuration'}
               </h2>
               <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-slate-950 uppercase tracking-wide font-sans">
-                {MOEYS_LAYOUT_STYLES.find(s => s.id === config.layoutStyle)?.nameKm || 'ស្តង់ដារ'}
+                {Ministry_LAYOUT_STYLES.find(s => s.id === config.layoutStyle)?.nameKm || 'ស្តង់ដារ'}
               </span>
             </div>
             <p className="text-[11px] text-slate-300 mt-0.5">
@@ -210,7 +210,7 @@ export const ReportLayoutConfigPanel: React.FC<ReportLayoutConfigPanelProps> = (
               }`}
             >
               <Layers className="w-3.5 h-3.5 text-indigo-600" />
-              <span>{language === 'km' ? '១. ទម្រង់ក្រសួង MoEYS' : '1. MoEYS Layouts'}</span>
+              <span>{language === 'km' ? '១. ទម្រង់ក្រសួង Ministry' : '1. Ministry Layouts'}</span>
             </button>
 
             <button
@@ -253,13 +253,13 @@ export const ReportLayoutConfigPanel: React.FC<ReportLayoutConfigPanelProps> = (
             </button>
           </div>
 
-          {/* TAB 1: MOEYS LAYOUT STYLES */}
+          {/* TAB 1: Ministry LAYOUT STYLES */}
           {activeTab === 'layout' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <h3 className="font-heading font-black text-sm text-slate-900">
-                    {language === 'km' ? 'ជ្រើសរើសទម្រង់រចនាសន្លឹកលទ្ធផល MoEYS' : 'Select MoEYS Layout Template'}
+                    {language === 'km' ? 'ជ្រើសរើសទម្រង់រចនាសន្លឹកលទ្ធផល Ministry' : 'Select Ministry Layout Template'}
                   </h3>
                   <p className="text-xs text-slate-500">
                     {language === 'km' 
@@ -270,7 +270,7 @@ export const ReportLayoutConfigPanel: React.FC<ReportLayoutConfigPanelProps> = (
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-                {MOEYS_LAYOUT_STYLES.map((style) => {
+                {Ministry_LAYOUT_STYLES.map((style) => {
                   const isSelected = config.layoutStyle === style.id;
                   return (
                     <div
@@ -350,7 +350,7 @@ export const ReportLayoutConfigPanel: React.FC<ReportLayoutConfigPanelProps> = (
                         {style.id === 'honor_formal' && (
                           <div className="h-full border-2 border-amber-400/90 rounded-lg p-1 bg-amber-50/40 flex flex-col justify-between">
                             <div className="flex justify-between items-center text-[7px] text-amber-900 font-bold">
-                              <span>⚜️ MoEYS</span>
+                              <span>⚜️ Ministry</span>
                               <span>ព្រះរាជាណាចក្រកម្ពុជា</span>
                             </div>
                             <div className="h-2 w-14 bg-amber-700 rounded-xs mx-auto"></div>
@@ -410,7 +410,7 @@ export const ReportLayoutConfigPanel: React.FC<ReportLayoutConfigPanelProps> = (
                     icon: <FileText className="w-4 h-4 text-slate-600" />,
                   },
                 ].map((item) => {
-                  const isSelected = config.logoMode === item.mode || (item.mode === 'school_only' && (config.logoMode === 'dual' || config.logoMode === 'moeys_only'));
+                  const isSelected = config.logoMode === item.mode || (item.mode === 'school_only' && (config.logoMode === 'dual' || config.logoMode === 'Ministry_only'));
                   return (
                     <button
                       key={item.mode}
@@ -548,7 +548,7 @@ export const ReportLayoutConfigPanel: React.FC<ReportLayoutConfigPanelProps> = (
                 {[
                   {
                     mode: 'generated' as ReportStampMode,
-                    titleKm: 'ត្រាមូលឌីជីថល MoEYS (ស្វ័យប្រវត្តិ)',
+                    titleKm: 'ត្រាមូលឌីជីថល Ministry (ស្វ័យប្រវត្តិ)',
                     descKm: 'បង្កើតត្រាមូលក្រហមរដ្ឋបាលដោយស្វ័យប្រវត្តិតាមឈ្មោះសាលា និងខេត្ត',
                     badge: 'ណែនាំ (Recommended)',
                   },
@@ -790,7 +790,7 @@ export const ReportLayoutConfigPanel: React.FC<ReportLayoutConfigPanelProps> = (
                   </h4>
                   <p className="text-xs text-slate-500 mt-0.5">
                     {language === 'km' 
-                      ? 'បង្ហាញរូបសញ្ញាសម្គាល់ MoEYS ឬឡូហ្គោសាលាស្រាលៗនៅកណ្តាលសន្លឹកលទ្ធផល'
+                      ? 'បង្ហាញរូបសញ្ញាសម្គាល់ Ministry ឬឡូហ្គោសាលាស្រាលៗនៅកណ្តាលសន្លឹកលទ្ធផល'
                       : 'Faint crest watermark in the center of the report card for anti-counterfeit authenticity'}
                   </p>
                 </div>

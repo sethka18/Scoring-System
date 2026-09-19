@@ -64,7 +64,7 @@
   background: #475569;
 }
 
-/* Print specific optimizations for MoEYS Gradebook (A4 Default, A5 for Track Book) */
+/* Print specific optimizations for Ministry Gradebook (A4 Default, A5 for Track Book) */
 @media print {
   html, body {
     background-color: white !important;

@@ -57,10 +57,10 @@ export const MultiPillarStudentReportModal: React.FC<Props> = ({
 
   const [activeTab, setActiveTab] = useState<'knowledge' | 'skills' | 'attitude' | 'annual'>('annual');
 
-  // Attitude records in state initialized with MoEYS Appendix 4 data (63 / 74 default)
+  // Attitude records in state initialized with Ministry Appendix 4 data (63 / 74 default)
   const [attitudeRecords, setAttitudeRecords] = useState<Record<string, StudentAttitudeEvaluationRecord>>(() => {
     try {
-      const saved = localStorage.getItem('moeys_appendix4_records');
+      const saved = localStorage.getItem('Ministry_appendix4_records');
       if (saved) return JSON.parse(saved);
     } catch {
       // fallback
@@ -140,7 +140,7 @@ export const MultiPillarStudentReportModal: React.FC<Props> = ({
 
     setAttitudeRecords(updatedAll);
     try {
-      localStorage.setItem('moeys_appendix4_records', JSON.stringify(updatedAll));
+      localStorage.setItem('Ministry_appendix4_records', JSON.stringify(updatedAll));
     } catch {
       // ignore
     }
@@ -174,7 +174,7 @@ export const MultiPillarStudentReportModal: React.FC<Props> = ({
 
     setAttitudeRecords(updatedAll);
     try {
-      localStorage.setItem('moeys_appendix4_records', JSON.stringify(updatedAll));
+      localStorage.setItem('Ministry_appendix4_records', JSON.stringify(updatedAll));
     } catch {
       // ignore
     }
@@ -323,7 +323,7 @@ export const MultiPillarStudentReportModal: React.FC<Props> = ({
                   របាយការណ៍វាយតម្លៃសិស្ស (វិជ្ជា ៨០% + បំណិន ១០% + ចរិយា ១០%)
                 </h2>
                 <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">
-                  MoEYS Standard
+                  Ministry Standard
                 </span>
               </div>
               <p className="text-xs text-indigo-200 font-sans">
@@ -1049,7 +1049,7 @@ export const MultiPillarStudentReportModal: React.FC<Props> = ({
           <div className="flex items-center space-x-2 text-slate-600">
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
             <span>
-              ទិន្នន័យត្រូវបានរៀបចំតាមក្បួនគណនា MoEYS (៨០% វិជ្ជា, ១០% បំណិន, ១០% ចរិយា) ត្រៀមរួចជាស្រេចសម្រាប់ទាញយក
+              ទិន្នន័យត្រូវបានរៀបចំតាមក្បួនគណនា Ministry (៨០% វិជ្ជា, ១០% បំណិន, ១០% ចរិយា) ត្រៀមរួចជាស្រេចសម្រាប់ទាញយក
             </span>
           </div>
 

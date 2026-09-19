@@ -52,7 +52,7 @@ export const YearlyBackupRestoreCenter: React.FC = () => {
     showToast
   } = useGradebook();
 
-  const ARCHIVES_STORAGE_KEY = 'moeys_yearly_archives_list';
+  const ARCHIVES_STORAGE_KEY = 'Ministry_yearly_archives_list';
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Saved yearly archives in browser
@@ -121,7 +121,7 @@ export const YearlyBackupRestoreCenter: React.FC = () => {
   const handleExportFullJSON = () => {
     const fullBackup = {
       version: '2.5.0',
-      system: 'MoEYS Primary Gradebook & School Management System',
+      system: 'Ministry Primary Gradebook & School Management System',
       exportedAt: new Date().toISOString(),
       academicYear: activeClass?.academicYear || '២០២៦-២០២៧',
       schoolName: activeClass?.schoolNameKm || 'សាលាបឋមសិក្សាគំរូ',

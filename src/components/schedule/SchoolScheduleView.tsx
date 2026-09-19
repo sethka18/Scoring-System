@@ -130,7 +130,7 @@ export const SchoolScheduleView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner / MoEYS Schedule Header */}
+      {/* Top Banner / Ministry Schedule Header */}
       <div className="bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-slate-800 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -144,8 +144,8 @@ export const SchoolScheduleView: React.FC = () => {
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                 <span>
                   {language === 'km' 
-                    ? `កាលវិភាគផ្លូវការ MoEYS ${isLowerGrade ? 'ថ្នាក់ទី១-ទី៣' : 'ថ្នាក់ទី៤-ទី៦'} (សេចក្តីណែនាំលេខ ៤១)` 
-                    : `MoEYS Standard Timetable ${isLowerGrade ? 'Grades 1-3' : 'Grades 4-6'}`}
+                    ? `កាលវិភាគផ្លូវការ Ministry ${isLowerGrade ? 'ថ្នាក់ទី១-ទី៣' : 'ថ្នាក់ទី៤-ទី៦'} (សេចក្តីណែនាំលេខ ៤១)` 
+                    : `Ministry Standard Timetable ${isLowerGrade ? 'Grades 1-3' : 'Grades 4-6'}`}
                 </span>
               </div>
               <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
@@ -278,15 +278,15 @@ export const SchoolScheduleView: React.FC = () => {
           </div>
         </div>
 
-        {/* MoEYS Standard Weekly Hours Allocation Breakdown */}
+        {/* Ministry Standard Weekly Hours Allocation Breakdown */}
         <div className="no-print mb-6 p-4 rounded-2xl bg-indigo-50/70 border border-indigo-200">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3">
             <div className="flex items-center space-x-2">
               <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse" />
               <h3 className="font-heading font-black text-xs sm:text-sm text-indigo-950 uppercase tracking-wide">
                 {language === 'km' 
-                  ? `បន្ទុកម៉ោងបង្រៀនប្រចាំសប្តាហ៍ MoEYS (${isLowerGrade ? 'ថ្នាក់ទី១-ទី៣' : 'ថ្នាក់ទី៤-ទី៦'} ៖ សរុប ៣០ ម៉ោង)` 
-                  : `MoEYS Weekly Teaching Load (${isLowerGrade ? 'Grades 1-3' : 'Grades 4-6'}: 30 Hours Total)`}
+                  ? `បន្ទុកម៉ោងបង្រៀនប្រចាំសប្តាហ៍ Ministry (${isLowerGrade ? 'ថ្នាក់ទី១-ទី៣' : 'ថ្នាក់ទី៤-ទី៦'} ៖ សរុប ៣០ ម៉ោង)` 
+                  : `Ministry Weekly Teaching Load (${isLowerGrade ? 'Grades 1-3' : 'Grades 4-6'}: 30 Hours Total)`}
               </h3>
             </div>
             <span className="px-2.5 py-1 rounded-full bg-amber-200 border border-amber-400 text-amber-950 font-black text-[10px]">

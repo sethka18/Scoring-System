@@ -12,7 +12,7 @@ export const GRADE_CRITERIA_NOTE = [
 ];
 
 /**
- * Convert a raw numerical score (0 to 10) to the official MoEYS Grade Letter
+ * Convert a raw numerical score (0 to 10) to the official Ministry Grade Letter
  */
 export const scoreToGradeLetter = (score: number | undefined | null): GradeLetter | undefined => {
   if (score === undefined || score === null || isNaN(score)) return undefined;

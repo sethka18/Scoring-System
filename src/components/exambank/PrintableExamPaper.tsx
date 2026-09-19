@@ -130,7 +130,7 @@ export const PrintableExamPaper: React.FC<PrintableExamPaperProps> = ({
           {/* Official Kingdom Header */}
           <div className="flex justify-between items-start border-b-2 border-slate-800 pb-4 mb-4">
             {/* Left: Ministry / School Info */}
-            <div className="text-center sm:text-left space-y-1">
+            <div className="text-center sm:text-left space-y-1 mt-6">
               <p className="font-bold text-xs uppercase tracking-wider text-slate-700">
                 {schoolProfile?.provinceEn ? `មន្ទីរអប់រំ យុវជន និងកីឡា ${schoolProfile.provinceKm || 'រាជធានីភ្នំពេញ'}` : 'មន្ទីរអប់រំ យុវជន និងកីឡា'}
               </p>
@@ -140,7 +140,7 @@ export const PrintableExamPaper: React.FC<PrintableExamPaperProps> = ({
               <p className="font-black text-sm text-slate-900">
                 {examPaper.schoolName || schoolProfile?.schoolNameKm || 'សាលាបឋមសិក្សាគំរូ'}
               </p>
-              <div className="pt-1 text-[11px] text-slate-600">
+              <div className="pt-1 text-[11px] text-slate-600 mt-8">
                 <span>ឆ្នាំសិក្សា៖ <strong>{examPaper.academicYear || '២០២៥ - ២០២៦'}</strong></span>
               </div>
             </div>

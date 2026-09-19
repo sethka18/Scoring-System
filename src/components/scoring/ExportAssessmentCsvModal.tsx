@@ -303,7 +303,7 @@ export const ExportAssessmentCsvModal: React.FC<ExportAssessmentCsvModalProps> =
                 />
                 <div>
                   <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                    {language === 'km' ? 'រួមបញ្ចូលសម្បទា ៣ យ៉ាង (៨០/១០/១០)' : 'Include MoEYS 3-Pillars Competencies'}
+                    {language === 'km' ? 'រួមបញ្ចូលសម្បទា ៣ យ៉ាង (៨០/១០/១០)' : 'Include Ministry 3-Pillars Competencies'}
                   </div>
                   <div className="text-[11px] text-slate-500 dark:text-slate-400">
                     {language === 'km' 

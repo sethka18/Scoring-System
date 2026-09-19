@@ -6,7 +6,7 @@ export const CURRICULUM_MATH_GRADE3: CurriculumProgram = {
   academicYear: '២០២៦-២០២៧',
   subjectId: 'sub_math',
   titleKm: 'បំណែងចែកកម្មវិធីសិក្សាប្រចាំឆ្នាំ មុខវិជ្ជា ៖ គណិតវិទ្យា ថ្នាក់ទី៣ (ក្រសួងអប់រំ)',
-  titleEn: 'Annual Curriculum Distribution: Mathematics Grade 3 (MoEYS)',
+  titleEn: 'Annual Curriculum Distribution: Mathematics Grade 3',
   lessons: [
     // Month 11: វិច្ឆិកា
     {
@@ -390,7 +390,7 @@ export const CURRICULUM_MATH_GRADE3: CurriculumProgram = {
       dateStr: 'ចន្ទ_24_08_26 - សុក្រ_28_08_26',
       chapterKm: 'មេរៀនសារឡើងវិញ',
       lessonTitleKm: 'មេរៀនសារឡើងវិញ និងការធ្វើតេស្តស្តង់ដាចុងឆ្នាំសិក្សា',
-      lessonTitleEn: 'Year-End Review & MoEYS Standard Assessment',
+      lessonTitleEn: 'Year-End Review & Ministry Standard Assessment',
       objectivesKm: 'រំឭកមេរៀន និងប្រឡងតេស្តស្តង់ដារបញ្ចប់ឆ្នាំសិក្សា។',
       hoursCount: 2,
       semester: 2,

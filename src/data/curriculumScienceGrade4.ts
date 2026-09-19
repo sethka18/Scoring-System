@@ -5,8 +5,8 @@ export const CURRICULUM_SCIENCE_GRADE4: CurriculumProgram = {
   gradeLevel: 4,
   academicYear: '២០២៥-២០២៦',
   subjectId: 'sub_science',
-  titleKm: 'កម្មវិធីសិក្សាវិទ្យាសាស្ត្រ ថ្នាក់ទី៤ (MoEYS ផ្លូវការ)',
-  titleEn: 'Grade 4 Science Curriculum (MoEYS Official)',
+  titleKm: 'កម្មវិធីសិក្សាវិទ្យាសាស្ត្រ ថ្នាក់ទី៤ (ផ្លូវការ)',
+  titleEn: 'Grade 4 Science Curriculum (Ministry Official)',
   lessons: [
     // ខែ វិច្ឆិកា (November)
     {

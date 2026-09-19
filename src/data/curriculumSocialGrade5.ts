@@ -5,7 +5,7 @@ export const CURRICULUM_SOCIAL_GRADE5: CurriculumProgram = {
   gradeLevel: 5,
   academicYear: '២០២៥-២០២៦',
   subjectId: 'sub_social',
-  titleKm: 'កម្មវិធីសិក្សាសង្គម ថ្នាក់ទី៥ (MoEYS)',
+  titleKm: 'កម្មវិធីសិក្សាសង្គម ថ្នាក់ទី៥',
   titleEn: 'Social Studies Grade 5 Curriculum',
   lessons: [
   {

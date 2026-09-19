@@ -278,7 +278,7 @@ export const ExamQuestionBankHub: React.FC = () => {
               <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
                 {language === 'km' 
                   ? 'រក្សាទុកលំហាត់ កម្រងសំណួរប្រឡងប្រចាំខែ ឬប្រចាំឆមាស និងកែច្នៃចេញជាវិញ្ញាសាថ្មីៗភ្លាមៗ' 
-                  : 'Manage exercises, monthly & semester questions, and instantly assemble official MoEYS exam papers'}
+                  : 'Manage exercises, monthly & semester questions, and instantly assemble official Ministry exam papers'}
               </p>
             </div>
           </div>

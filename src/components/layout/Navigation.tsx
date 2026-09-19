@@ -140,7 +140,7 @@ export const Navigation: React.FC = () => {
           labelEn: 'Curriculum', 
           labelKm: 'កម្មវិធីសិក្សា', 
           descKm: 'មេរៀន និងកម្មវិធីលម្អិតតាមមុខវិជ្ជា',
-          descEn: 'MoEYS syllabus & lessons plan',
+          descEn: 'Ministry syllabus & lessons plan',
           icon: BookOpen 
         },
       ]
@@ -231,7 +231,7 @@ export const Navigation: React.FC = () => {
           labelEn: 'Student Record Book', 
           labelKm: 'សៀវភៅសិក្ខាគរិក', 
           descKm: 'សៀវភៅសិក្ខាគរិកបឋមសិក្សាស្តង់ដារក្រសួង (ក, ខ, គ, ឃ)',
-          descEn: 'MoEYS primary pupil cumulative record booklet',
+          descEn: 'Ministry primary pupil cumulative record booklet',
           icon: BookOpen,
           badge: 'គំរូក្រសួង'
         },

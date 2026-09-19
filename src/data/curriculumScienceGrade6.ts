@@ -5,8 +5,8 @@ export const CURRICULUM_SCIENCE_GRADE6: CurriculumProgram = {
   gradeLevel: 6,
   academicYear: '២០២៥-២០២៦',
   subjectId: 'sub_science',
-  titleKm: 'កម្មវិធីសិក្សាវិទ្យាសាស្ត្រ ថ្នាក់ទី៦ (MoEYS ផ្លូវការ)',
-  titleEn: 'Grade 6 Science Curriculum (MoEYS Official)',
+  titleKm: 'កម្មវិធីសិក្សាវិទ្យាសាស្ត្រ ថ្នាក់ទី៦ (ផ្លូវការ)',
+  titleEn: 'Grade 6 Science Curriculum (Ministry Official)',
   lessons: [
     // ខែ វិច្ឆិកា (November) - 11 ម៉ោង
     {

@@ -24,7 +24,7 @@ import {
 } from '../../utils/calculations';
 import { Student, AssessmentPeriod } from '../../types';
 
-export type RankingSheetTheme = 'moeys_standard' | 'royal_gold' | 'sapphire_blue' | 'emerald_green' | 'crimson_lotus';
+export type RankingSheetTheme = 'Ministry_standard' | 'royal_gold' | 'sapphire_blue' | 'emerald_green' | 'crimson_lotus';
 
 export type RankingPeriodMode = 'monthly' | 'sem1' | 'sem2' | 'yearly';
 
@@ -43,10 +43,10 @@ interface ThemeConfig {
 }
 
 export const RANKING_THEMES: Record<RankingSheetTheme, ThemeConfig> = {
-  moeys_standard: {
-    id: 'moeys_standard',
-    nameKm: 'ក្រសួងស្តង់ដារ (MoEYS Standard)',
-    nameEn: 'Official MoEYS Standard',
+  Ministry_standard: {
+    id: 'Ministry_standard',
+    nameKm: 'ក្រសួងស្តង់ដារ (Ministry Standard)',
+    nameEn: 'Official Ministry Standard',
     borderColor: 'border-slate-900',
     headerBg: 'bg-slate-100',
     headerTextColor: 'text-slate-900',
@@ -145,7 +145,7 @@ export const OfficialClassRankingSheet: React.FC = () => {
   });
 
   // Selected visual theme
-  const [theme, setTheme] = useState<RankingSheetTheme>('moeys_standard');
+  const [theme, setTheme] = useState<RankingSheetTheme>('Ministry_standard');
 
   // Inline Customizable Header & Details State
   const [isEditingHeaders, setIsEditingHeaders] = useState(false);
@@ -448,7 +448,7 @@ export const OfficialClassRankingSheet: React.FC = () => {
             {/* PDF Export Button */}
             <PrintToPdfButton
               targetElementId="official-ranking-sheet-a4"
-              documentTitle={`MoEYS_Ranking_${customClass}_${periodMode}_${customAcademicYear}`}
+              documentTitle={`Ministry_Ranking_${customClass}_${periodMode}_${customAcademicYear}`}
               pageSize="a4"
               orientation="portrait"
               variant="primary"
@@ -556,7 +556,7 @@ export const OfficialClassRankingSheet: React.FC = () => {
                   }`}
                 >
                   <span className={`w-2.5 h-2.5 rounded-full ${
-                    t.id === 'moeys_standard' ? 'bg-slate-800' :
+                    t.id === 'Ministry_standard' ? 'bg-slate-800' :
                     t.id === 'royal_gold' ? 'bg-amber-500' :
                     t.id === 'sapphire_blue' ? 'bg-blue-600' :
                     t.id === 'emerald_green' ? 'bg-emerald-600' : 'bg-rose-600'
@@ -698,8 +698,8 @@ export const OfficialClassRankingSheet: React.FC = () => {
           <div className="flex justify-between items-start mb-2">
             
             {/* Left Block */}
-            <div className="text-left space-y-0.5">
-              <div className="font-moul text-[11px] text-slate-900 leading-normal tracking-wide">
+            <div className="text-left space-y-0.5 mt-6">
+              <div className="font-moul text-[11px] text-slate-900 leading-normal tracking-wide mt-8">
                 {customOffice}
               </div>
               <div className="font-moul text-[11.5px] text-slate-900 leading-normal">

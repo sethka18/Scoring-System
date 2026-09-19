@@ -134,7 +134,7 @@ interface GradebookContextType {
   updateCurriculumLesson: (programId: string, lessonId: string, updated: Partial<CurriculumLesson>) => void;
   importCurriculumProgram: (program: CurriculumProgram) => void;
   syncCurriculumToCalendar: (programId: string) => void;
-  resetCurriculumToMoEYS: () => void;
+  resetCurriculumToStandard: () => void;
 
   // Attendance State & Actions
   attendanceRecords: DailyAttendanceRecord[];
@@ -148,7 +148,7 @@ interface GradebookContextType {
   schoolProfile: SchoolProfile;
   updateSchoolProfile: (profile: Partial<SchoolProfile>) => void;
   resetSchoolLogo: () => void;
-  resetMoEYSLogo: () => void;
+  resetMinistryLogo: () => void;
   duplicateClass: (classId: string, newNameKm: string, newNameEn: string, copyStudents: boolean) => void;
   
   // Actions
@@ -416,7 +416,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const [language, setLanguageState] = useState<Language>('km');
 
-  const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
+  const [activeTab, setActiveTab] = useState<NavTab>(currentUser?.role === 'admin' ? 'all_classes' : 'dashboard');
 
   const [schoolProfile, setSchoolProfileState] = useState<SchoolProfile>(() => {
     const saved = localStorage.getItem(`${userPrefix}school_profile`);
@@ -791,7 +791,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       try {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // If cached grade scales have old threshold where E < 50 or D <= 50, migrate to MoEYS standard
+          // If cached grade scales have old threshold where E < 50 or D <= 50, migrate to Ministry standard
           const eScale = parsed.find((s: GradeScaleThreshold) => s.grade === 'E');
           const dScale = parsed.find((s: GradeScaleThreshold) => s.grade === 'D');
           if ((eScale && eScale.minPercentage < 50) || (dScale && dScale.minPercentage <= 50)) {
@@ -843,9 +843,9 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (saved) {
       try {
         const parsed: TimetableSlot[] = JSON.parse(saved);
-        const hasMoEYSFormat = Array.isArray(parsed) && parsed.some(s => s.startTime === '07:10' || s.startTime === '06:55');
+        const hasStandardFormat = Array.isArray(parsed) && parsed.some(s => s.startTime === '07:10' || s.startTime === '06:55');
         const hasThursdayRule = parsed.some(s => s.subjectId === 'sub_lifeskills') && parsed.some(s => s.subjectId === 'sub_meeting');
-        if (hasMoEYSFormat && hasThursdayRule && parsed.length >= 20) {
+        if (hasStandardFormat && hasThursdayRule && parsed.length >= 20) {
           return parsed;
         }
       } catch (e) { console.error(e); }
@@ -1258,12 +1258,12 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const resetSchoolLogo = () => {
     updateSchoolProfile({ logoUrl: '' });
-    showToast(language === 'km' ? 'បានកំណត់ឡូហ្គូទៅសញ្ញាសម្គាល់ក្រសួងដើម' : 'Reset to default MoEYS emblem', 'info');
+    showToast(language === 'km' ? 'បានកំណត់ឡូហ្គូទៅសញ្ញាសម្គាល់ក្រសួងដើម' : 'Reset to default Ministry emblem', 'info');
   };
 
-  const resetMoEYSLogo = () => {
-    updateSchoolProfile({ moeysLogoUrl: '' });
-    showToast(language === 'km' ? 'បានកំណត់ឡូហ្គូក្រសួងទៅសញ្ញាសម្គាល់ផ្លូវការដើម' : 'Reset to official MoEYS emblem', 'info');
+  const resetMinistryLogo = () => {
+    updateSchoolProfile({ ministryLogoUrl: '' });
+    showToast(language === 'km' ? 'បានកំណត់ឡូហ្គូក្រសួងទៅសញ្ញាសម្គាល់ផ្លូវការដើម' : 'Reset to official Ministry emblem', 'info');
   };
 
   // ==========================================
@@ -1647,7 +1647,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const updateCompetencyWeights = (newWeights: CompetencyPillarsWeight) => {
     setCompetencyWeights(newWeights);
-    showToast(language === 'km' ? 'បានកែប្រែទម្ងន់សម្បទា ៣ យ៉ាង (៨០% / ១០% / ១០%)' : 'MoEYS competency weights updated');
+    showToast(language === 'km' ? 'បានកែប្រែទម្ងន់សម្បទា ៣ យ៉ាង (៨០% / ១០% / ១០%)' : 'Ministry competency weights updated');
   };
 
   const updateGradeScales = (scales: GradeScaleThreshold[]) => {
@@ -1718,7 +1718,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       safeLocalStorageSet(`${userPrefix}timetable_slots`, JSON.stringify(combined));
       return combined;
     });
-    showToast(language === 'km' ? 'បានកំណត់កាលវិភាគថ្នាក់នេះតាមស្តង់ដារក្រសួង' : 'Class timetable reset to MoEYS standard');
+    showToast(language === 'km' ? 'បានកំណត់កាលវិភាគថ្នាក់នេះតាមស្តង់ដារក្រសួង' : 'Class timetable reset to Ministry standard');
   };
 
   const saveTimetableBatch = (newSlots: TimetableSlot[]) => {
@@ -1766,7 +1766,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           color: '#0284c7',
           descriptionKm: `${lesson.objectivesKm || ''} (ចំនួន ${lesson.hoursCount} ម៉ោង)`,
           descriptionEn: `${lesson.objectivesEn || ''} (${lesson.hoursCount} Hours)`,
-          isMoEYSOfficial: true,
+          isOfficialStandard: true,
         });
       }
     });
@@ -1788,7 +1788,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   };
 
-  const resetCurriculumToMoEYS = () => {
+  const resetCurriculumToStandard = () => {
     setCurriculumPrograms(DEFAULT_CURRICULUM_PROGRAMS);
     try {
       localStorage.removeItem(`${userPrefix}curriculum_overrides`);
@@ -1798,8 +1798,8 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     } catch {}
     showToast(
       language === 'km' 
-        ? 'បានផ្ទុកកម្មវិធីសិក្សាផ្លូវការក្រសួងអប់រំ (MoEYS) ឡើងវិញដោយជោគជ័យ!' 
-        : 'Official MoEYS curriculum programs refreshed successfully!'
+        ? 'បានផ្ទុកកម្មវិធីសិក្សាផ្លូវការក្រសួងអប់រំ ឡើងវិញដោយជោគជ័យ!' 
+        : 'Official Ministry curriculum programs refreshed successfully!'
     );
   };
 
@@ -2190,7 +2190,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         updateCurriculumLesson,
         importCurriculumProgram,
         syncCurriculumToCalendar,
-        resetCurriculumToMoEYS,
+        resetCurriculumToStandard,
         attendanceRecords,
         markAttendance,
         batchMarkAttendance,
@@ -2200,7 +2200,7 @@ export const GradebookProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         schoolProfile,
         updateSchoolProfile,
         resetSchoolLogo,
-        resetMoEYSLogo,
+        resetMinistryLogo,
         duplicateClass,
         addClass,
         createClass,

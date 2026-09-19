@@ -368,7 +368,7 @@ export const TemplateLibraryModal: React.FC<TemplateLibraryModalProps> = ({
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                {language === 'km' ? 'ស្តង់ដារក្រសួង' : 'MoEYS Defaults'} ({templates.filter(t => t.isSystemDefault).length})
+                {language === 'km' ? 'ស្តង់ដារក្រសួង' : 'Ministry Defaults'} ({templates.filter(t => t.isSystemDefault).length})
               </button>
               <button
                 onClick={() => setActiveTab('custom')}
@@ -482,7 +482,7 @@ export const TemplateLibraryModal: React.FC<TemplateLibraryModalProps> = ({
                               {/* System vs Custom */}
                               {tpl.isSystemDefault ? (
                                 <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200">
-                                  MoEYS
+                                  Ministry
                                 </span>
                               ) : (
                                 <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
@@ -914,8 +914,8 @@ export const TemplateLibraryModal: React.FC<TemplateLibraryModalProps> = ({
 
           <div className="text-xs font-bold text-slate-400">
             {language === 'km' 
-              ? 'ស្តង់ដារក្រសួងអប់រំ យុវជន និងកីឡា (MoEYS Primary Assessment)' 
-              : 'MoEYS Primary School Grading Standards'}
+              ? 'ស្តង់ដារក្រសួងអប់រំ យុវជន និងកីឡា (Ministry Primary Assessment)' 
+              : 'Ministry Primary School Grading Standards'}
           </div>
         </div>
 

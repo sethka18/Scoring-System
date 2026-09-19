@@ -59,7 +59,7 @@ export const TelegramShareModal: React.FC<TelegramShareModalProps> = ({
   // Attendance for the period
   const attendance = getStudentMonthlyAttendance(student.id);
 
-  // Generate Cambodian MoEYS parent progress message
+  // Generate Cambodian Ministry parent progress message
   const generateMessage = (): string => {
     const isKm = language === 'km';
     const lines: string[] = [];

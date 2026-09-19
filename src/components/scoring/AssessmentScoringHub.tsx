@@ -253,7 +253,7 @@ export const AssessmentScoringHub: React.FC = () => {
               <p className="text-[11px] font-bold text-slate-400">
                 {language === 'km' 
                   ? 'គណនាពិន្ទុតាមស្តង់ដារក្រសួង៖ វិជ្ជាសម្បទា ៨០% + បំណិនសម្បទា ១០% + ចរិយាសម្បទា ១០%' 
-                  : 'MoEYS Primary Standard: Knowledge (80%) + Skill (10%) + Attitude (10%)'}
+                  : 'Ministry Primary Standard: Knowledge (80%) + Skill (10%) + Attitude (10%)'}
               </p>
             </div>
           </div>
@@ -338,7 +338,7 @@ export const AssessmentScoringHub: React.FC = () => {
             {/* Direct PDF Export for Score and Ranking Matrix */}
             <PrintToPdfButton
               targetElementId="scoring-matrix-table-container"
-              documentTitle={`MoEYS_${activeClass?.nameKm || 'Class'}_Score_Matrix_${currentPeriod.code}`}
+              documentTitle={`Ministry_${activeClass?.nameKm || 'Class'}_Score_Matrix_${currentPeriod.code}`}
               pageSize="a4"
               orientation="landscape"
               variant="primary"
@@ -914,7 +914,7 @@ export const AssessmentScoringHub: React.FC = () => {
         </div>
       )}
 
-      {/* 2. KHMER LANGUAGE SUB-SKILLS VIEW (4 MoEYS Components) */}
+      {/* 2. KHMER LANGUAGE SUB-SKILLS VIEW (4 Ministry Components) */}
       {selectedSubjectId === 'sub_khmer' && (
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
           <div className="p-5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
@@ -924,7 +924,7 @@ export const AssessmentScoringHub: React.FC = () => {
               </div>
               <div>
                 <h4 className="font-heading font-black text-base text-slate-900 uppercase tracking-tight">
-                  {language === 'km' ? 'ភាសាខ្មែរ (សមាសភាគ ៤ ជំនាញ)' : 'Khmer Language (4 MoEYS Sub-Skills)'}
+                  {language === 'km' ? 'ភាសាខ្មែរ (សមាសភាគ ៤ ជំនាញ)' : 'Khmer Language (4 Ministry Sub-Skills)'}
                 </h4>
                 <p className="text-xs font-bold text-slate-500 mt-0.5">
                   {language === 'km'
@@ -1032,7 +1032,7 @@ export const AssessmentScoringHub: React.FC = () => {
         </div>
       )}
 
-      {/* 3. MATHEMATICS SUB-SECTIONS VIEW (5 MoEYS Sections) */}
+      {/* 3. MATHEMATICS SUB-SECTIONS VIEW (5 Ministry Sections) */}
       {selectedSubjectId === 'sub_math' && (
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
           <div className="p-5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
@@ -1042,7 +1042,7 @@ export const AssessmentScoringHub: React.FC = () => {
               </div>
               <div>
                 <h4 className="font-heading font-black text-base text-slate-900 uppercase tracking-tight">
-                  {language === 'km' ? 'គណិតវិទ្យា (សមាសភាគ ៥ ផ្នែក)' : 'Mathematics (5 MoEYS Sections)'}
+                  {language === 'km' ? 'គណិតវិទ្យា (សមាសភាគ ៥ ផ្នែក)' : 'Mathematics (5 Ministry Sections)'}
                 </h4>
                 <p className="text-xs font-bold text-slate-500 mt-0.5">
                   {language === 'km'
@@ -1266,21 +1266,21 @@ export const AssessmentScoringHub: React.FC = () => {
         </div>
       )}
 
-      {/* MoEYS Competency Pillars Configuration Modal */}
+      {/* Ministry Competency Pillars Configuration Modal */}
       {showWeightsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
             <h3 className="font-heading font-bold text-lg text-slate-900 pb-3 border-b border-slate-100">
-              {language === 'km' ? 'កែប្រែទម្ងន់សម្បទា ៣ យ៉ាង (MoEYS Standard)' : 'MoEYS 3 Competency Pillars (%)'}
+              {language === 'km' ? 'កែប្រែទម្ងន់សម្បទា ៣ យ៉ាង (Ministry Standard)' : 'Ministry 3 Competency Pillars (%)'}
             </h3>
 
             <form onSubmit={handleSaveWeights} className="space-y-5 mt-4 text-xs sm:text-sm">
               
-              {/* MoEYS 3 Pillars Section */}
+              {/* Ministry 3 Pillars Section */}
               <div className="bg-indigo-50/60 p-4 rounded-xl border border-indigo-100 space-y-4">
                 <div className="font-black text-indigo-950 flex items-center space-x-1.5">
                   <Brain className="w-4 h-4 text-indigo-700" />
-                  <span>{language === 'km' ? 'សម្បទា ៣ យ៉ាង តាមស្តង់ដារបឋមសិក្សា' : '3 Primary MoEYS Competency Pillars'}</span>
+                  <span>{language === 'km' ? 'សម្បទា ៣ យ៉ាង តាមស្តង់ដារបឋមសិក្សា' : '3 Primary Ministry Competency Pillars'}</span>
                 </div>
 
                 <div>

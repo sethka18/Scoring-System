@@ -208,7 +208,7 @@ export function calculatePeriodRankings(
 
 /**
  * Calculates full year consolidated performance for all students in a class
- * strictly using the official Cambodian MoEYS breakdown:
+ * strictly using the official Cambodian Ministry breakdown:
  * - Knowledge (វិជ្ជាសម្បទា) = 80%
  * - Skill (បំណិនសម្បទា) = 10%
  * - Attitude (ចរិយាសម្បទា) = 10%

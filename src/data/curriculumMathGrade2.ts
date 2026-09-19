@@ -6,7 +6,7 @@ export const CURRICULUM_MATH_GRADE2: CurriculumProgram = {
   academicYear: '២០២៦-២០២៧',
   subjectId: 'sub_math',
   titleKm: 'បំណែងចែកកម្មវិធីសិក្សាប្រចាំឆ្នាំ មុខវិជ្ជា ៖ គណិតវិទ្យា ថ្នាក់ទី២ (ក្រសួងអប់រំ)',
-  titleEn: 'Annual Curriculum Distribution: Mathematics Grade 2 (MoEYS)',
+  titleEn: 'Annual Curriculum Distribution: Mathematics Grade 2',
   lessons: [
     // Month 11: វិច្ឆិកា
     {

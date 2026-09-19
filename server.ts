@@ -1,12 +1,17 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI, Type } from '@google/genai';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const PORT = 3000;
+// In production (Cloud Run), listen on the port assigned by the runtime environment (PORT, default 8080).
+// In development, the dev server must bind to port 3000 to match the reverse proxy.
+const PORT = process.env.NODE_ENV === 'production'
+  ? Number(process.env.PORT || 8080)
+  : 3000;
 
 // Lazy initialization of Gemini SDK
 let aiClient: GoogleGenAI | null = null;
@@ -378,7 +383,11 @@ REQUIREMENTS:
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), 'dist');
+    const distPath = fs.existsSync(path.join(process.cwd(), 'dist', 'index.html'))
+      ? path.join(process.cwd(), 'dist')
+      : (typeof __dirname !== 'undefined' && fs.existsSync(path.join(__dirname, 'index.html'))
+          ? __dirname
+          : path.join(process.cwd(), 'dist'));
     app.use(express.static(distPath));
     app.get('*', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));

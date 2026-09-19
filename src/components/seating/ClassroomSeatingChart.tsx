@@ -98,7 +98,7 @@ export const ClassroomSeatingChart: React.FC = () => {
   const [isFullWidth, setIsFullWidth] = useState(false);
 
   const classId = activeClass?.id || 'default_class';
-  const STORAGE_KEY = `moeys_seating_layout_${classId}`;
+  const STORAGE_KEY = `Ministry_seating_layout_${classId}`;
 
   // Seating grid settings: Default to 4 columns and 7 rows (as requested for Cambodian schools)
   const [rows, setRows] = useState<number>(() => {
@@ -909,7 +909,7 @@ export const ClassroomSeatingChart: React.FC = () => {
             {/* OFFICIAL PRINT HEADER (Only visible when printing) */}
             <div className="hidden print:block text-center pb-5 border-b-2 border-slate-900 mb-6 text-slate-900">
               <div className="flex justify-between items-start text-xs font-semibold mb-3">
-                <div className="text-left flex items-center space-x-3">
+                <div className="text-left flex items-center space-x-3 mt-6">
                   <SchoolLogo size={46} customLogoUrl={schoolProfile?.logoUrl || activeClass?.logoUrl} />
                   <div>
                     <p className="font-extrabold text-sm uppercase">
@@ -1185,7 +1185,7 @@ export const ClassroomSeatingChart: React.FC = () => {
             {/* PRINT SIGNATURE FOOTER */}
             <div className="hidden print:block mt-10 pt-6 border-t border-slate-300 text-slate-900">
               <div className="flex justify-between items-start text-xs font-semibold px-4">
-                <div className="text-center w-64">
+                <div className="text-center w-64 mt-6">
                   <p className="font-bold mb-1">{language === 'km' ? 'បានឃើញ និងឯកភាព' : 'Approved By'}</p>
                   <p className="font-black uppercase">{language === 'km' ? 'នាយកសាលា' : 'Principal'}</p>
                   <div className="h-16 flex items-end justify-center">

@@ -1038,7 +1038,7 @@ export const ClassStudentManagement: React.FC = () => {
                     {language === 'km' ? 'ទាញយកគំរូទម្រង់បញ្ជីសិស្ស (CSV Template)' : 'Download Standard CSV Template'}
                   </h5>
                   <p className="text-[11px] text-emerald-700">
-                    {language === 'km' ? 'ទម្រង់គំរូស្តង់ដារក្រសួង MoEYS ងាយស្រួលបំពេញក្នុង Excel' : 'Standard template ready to fill in Excel'}
+                    {language === 'km' ? 'ទម្រង់គំរូស្តង់ដារក្រសួង Ministry ងាយស្រួលបំពេញក្នុង Excel' : 'Standard template ready to fill in Excel'}
                   </p>
                 </div>
                 <button

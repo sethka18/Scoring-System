@@ -418,13 +418,13 @@ export const OfficialHonorRollPoster: React.FC<OfficialHonorRollPosterProps> = (
               <h2 className="font-heading font-black text-slate-900 dark:text-white text-base sm:text-lg flex items-center gap-2">
                 <span>{language === 'km' ? 'គំរូតារាងកិត្តិយសផ្លូវការ (Top 5)' : 'Official Top 5 Honor Roll Poster'}</span>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-800 border border-amber-200">
-                  {language === 'km' ? 'ស្តង់ដារក្រសួងអប់រំ' : 'MoEYS Standard'}
+                  {language === 'km' ? 'ស្តង់ដារក្រសួងអប់រំ' : 'Ministry Standard'}
                 </span>
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 {language === 'km' 
                   ? 'ទម្រង់ផ្ទាំងរូបភាព A4 ដូចគំរូក្រសួងអប់រំ ដែលអាចបញ្ចូលរូបថតសិស្ស (3x4) និងបោះពុម្ពបានយ៉ាងស្រស់ស្អាត' 
-                  : 'Official MoEYS A4 Portrait layout with student photo slots (3x4) and instant printing.'}
+                  : 'Official Ministry A4 Portrait layout with student photo slots (3x4) and instant printing.'}
               </p>
             </div>
           </div>

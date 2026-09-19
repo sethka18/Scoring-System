@@ -6,7 +6,7 @@ export const CURRICULUM_KHMER_GRADE5: CurriculumProgram = {
   academicYear: '២០២៥-២០២៦',
   subjectId: 'sub_khmer',
   titleKm: 'បំណែងចែកកម្មវិធីសិក្សាប្រចាំឆ្នាំ មុខវិជ្ជា ៖ ភាសាខ្មែរ ថ្នាក់ទី៥ (ក្រសួងអប់រំ)',
-  titleEn: 'Annual Curriculum Distribution: Khmer Language Grade 5 (MoEYS)',
+  titleEn: 'Annual Curriculum Distribution: Khmer Language Grade 5',
   lessons: [
   {
     "id": "g5_kh_1",

@@ -6,7 +6,7 @@ export const CURRICULUM_MATH_GRADE6: CurriculumProgram = {
   academicYear: '២០២៦-២០២៧',
   subjectId: 'sub_math',
   titleKm: 'បំណែងចែកកម្មវិធីសិក្សាប្រចាំឆ្នាំ មុខវិជ្ជា ៖ គណិតវិទ្យា ថ្នាក់ទី៦ (ក្រសួងអប់រំ)',
-  titleEn: 'Annual Curriculum Distribution: Mathematics Grade 6 (MoEYS)',
+  titleEn: 'Annual Curriculum Distribution: Mathematics Grade 6',
   lessons: [
     // Month 11: វិច្ឆិកា
     {
@@ -593,8 +593,8 @@ export const CURRICULUM_MATH_GRADE6: CurriculumProgram = {
       monthKm: 'សីហា',
       dateStr: 'ចន្ទ_24_08_26 - សុក្រ_28_08_26',
       chapterKm: 'ការប្រឡងផ្លូវការ',
-      lessonTitleKm: 'ការប្រឡងបញ្ចប់ភូមិសិក្សាបឋមសិក្សា និងតេស្តស្តង់ដាចុងឆ្នាំ (MoEYS)',
-      lessonTitleEn: 'Official Primary School Leaving Examination & MoEYS Final Assessment',
+      lessonTitleKm: 'ការប្រឡងបញ្ចប់ភូមិសិក្សាបឋមសិក្សា និងតេស្តស្តង់ដាចុងឆ្នាំ',
+      lessonTitleEn: 'Official Primary School Leaving Examination & Ministry Final Assessment',
       objectivesKm: 'ដំណើរការការប្រឡងបញ្ចប់កម្រិតបឋមសិក្សាថ្នាក់ជាតិ។',
       hoursCount: 2,
       semester: 2,

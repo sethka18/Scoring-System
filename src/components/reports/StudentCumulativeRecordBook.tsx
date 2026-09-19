@@ -40,7 +40,7 @@ export const formatRank = (val: number | undefined | null): string => {
   return toKhmerNumber(str);
 };
 
-// 11 Subjects defined in official MoEYS Record Book
+// 11 Subjects defined in official Ministry Record Book
 export interface RecordBookSubjectDef {
   key: string;
   nameKm: string;
@@ -100,7 +100,7 @@ export interface StudentRecordBookOverride {
 
 export type SheetDisplayMode = 'side_by_side' | 'both_a5' | 'sheet1' | 'sheet2';
 
-const STORAGE_KEY_PREFIX = 'moeys_student_record_book_';
+const STORAGE_KEY_PREFIX = 'Ministry_student_record_book_';
 
 export const StudentCumulativeRecordBook: React.FC = () => {
   const {
@@ -563,7 +563,7 @@ export const StudentCumulativeRecordBook: React.FC = () => {
                   សៀវភៅសិក្ខាគរិកសិស្ស (សន្លឹក A5)
                 </h1>
                 <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
-                  MoEYS A5 Booklet
+                  Ministry A5 Booklet
                 </span>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -1011,7 +1011,7 @@ interface SheetSpecificProps {
 }
 
 /**
- * A5 Sheet 1: Left Page of MoEYS Primary School Record Book
+ * A5 Sheet 1: Left Page of Ministry Primary School Record Book
  * Header: នាមត្រកូល និង នាមខ្លួន, ថ្នាក់ទី, ចំនួនសិស្ស
  * ផ្នែក ក. លទ្ធផលនៃការប្រឡងឆមាស (11 មុខវិជ្ជា + ពិន្ទុសរុប + មធ្យមភាគប្រចាំខែ + មធ្យមភាគប្រចាំឆមាស + លទ្ធផលដំណាច់ឆ្នាំ)
  * ផ្នែក ខ. ចំនួនពេលអវត្តមាន
@@ -1388,7 +1388,7 @@ const StudentRecordBookSheet1Content: React.FC<SheetSpecificProps> = ({
 };
 
 /**
- * A5 Sheet 2: Right Page of MoEYS Primary School Record Book
+ * A5 Sheet 2: Right Page of Ministry Primary School Record Book
  * Header: សាលា, ឆ្នាំសិក្សា
  * ផ្នែក គ. វាយតម្លៃសិស្សលើផ្នែកទាំង ៤
  * ផ្នែក ឃ. លទ្ធផលនៃការសិក្សាប្រចាំឆ្នាំ (ត្រូវបានឡើងថ្នាក់ទី/ត្រូវរៀនត្រួតថ្នាក់ទី, ការសរសើរ, កំណែម្អ)

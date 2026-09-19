@@ -1,18 +1,18 @@
-export type MoeysLayoutStyle = 
-  | 'standard'       // ទម្រង់ក្រសួងស្តង់ដារ (Official MoEYS Standard - classic administrative layout)
+export type MinistryLayoutStyle = 
+  | 'standard'       // ទម្រង់ក្រសួងស្តង់ដារ (Official Ministry Standard - classic administrative layout)
   | 'modern'         // ទម្រង់សម័យទំនើប (Contemporary Clean - tinted cards, refined typography)
   | 'compact_booklet'// ទម្រង់សៀវភៅតាមដាន (A5 Booklet / Dense Slip - optimized for student record booklets)
   | 'honor_formal';  // ទម្រង់កិត្តិយសផ្លូវការ (Academic Honors & Certificate - royal ornamental border, gold accents)
 
 export type ReportLogoMode = 
-  | 'moeys_only'     // Official MoEYS Emblem only
+  | 'Ministry_only'     // Official Ministry Emblem only
   | 'school_only'    // Custom School Logo only
-  | 'dual'           // Both MoEYS Emblem and School Logo
+  | 'dual'           // Both Ministry Emblem and School Logo
   | 'minimal';       // No graphic logo, text-only header
 
 export type ReportStampMode = 
   | 'none'           // No stamp (blank space for physical stamp)
-  | 'generated'      // Built-in official circular MoEYS / School red stamp
+  | 'generated'      // Built-in official circular Ministry / School red stamp
   | 'custom';        // Uploaded custom transparent stamp image
 
 export type StampPosition = 
@@ -21,7 +21,7 @@ export type StampPosition =
   | 'both';            // Both over principal signature and faint watermark
 
 export interface ReportLayoutConfig {
-  layoutStyle: MoeysLayoutStyle;
+  layoutStyle: MinistryLayoutStyle;
   logoMode: ReportLogoMode;
   customLogoUrl?: string;
   logoSize: 'sm' | 'md' | 'lg'; // sm: 38px, md: 48px, lg: 58px
@@ -62,8 +62,8 @@ export const DEFAULT_REPORT_LAYOUT_CONFIG: ReportLayoutConfig = {
   watermarkOpacity: 0.06,
 };
 
-export const MOEYS_LAYOUT_STYLES: {
-  id: MoeysLayoutStyle;
+export const Ministry_LAYOUT_STYLES: {
+  id: MinistryLayoutStyle;
   nameKm: string;
   nameEn: string;
   descKm: string;
@@ -73,7 +73,7 @@ export const MOEYS_LAYOUT_STYLES: {
   {
     id: 'standard',
     nameKm: 'ទម្រង់ក្រសួងស្តង់ដារ',
-    nameEn: 'Official MoEYS Standard',
+    nameEn: 'Official Ministry Standard',
     descKm: 'គំរូរដ្ឋបាលផ្លូវការ បន្ទាត់រឹងមាំ ក្បាលសន្លឹកព្រះរាជាណាចក្រកម្ពុជា និងហត្ថលេខា ៣ ជួរ',
     descEn: 'Classic administrative layout with national heading, dual-tone borders and 3 signature blocks',
     badge: 'ពេញនិយមបំផុត (Official)',

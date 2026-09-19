@@ -59,7 +59,7 @@ export interface AssessmentWeightConfig {
   behaviorBonus: number; // e.g. 5%
 }
 
-// MoEYS 3-Pillar Competency Yearly Evaluation Weights
+// Ministry 3-Pillar Competency Yearly Evaluation Weights
 export interface CompetencyPillarsWeight {
   knowledge: number; // 80% (វិជ្ជាសម្បទា)
   skill: number; // 10% (បំណិនសម្បទា)
@@ -87,7 +87,7 @@ export interface SubjectScore {
   behaviorRating?: number; // 1-5
   teacherRemark?: string;
   
-  // Specific MoEYS component scores
+  // Specific Ministry component scores
   // Khmer language 4 sub-skills:
   khmerReading?: number; // ការអាន (សមត្ថភាពអាន)
   khmerWriting?: number; // ការសរសេរ (សរសេរតាមអាន/តែងសេចក្តី)
@@ -129,7 +129,7 @@ export interface SchoolProfile {
   phone?: string;
   email?: string;
   logoUrl?: string; // Custom school logo (Base64 data URL or web link)
-  moeysLogoUrl?: string; // Custom Ministry of Education / MoEYS logo (Base64 data URL or web link)
+  ministryLogoUrl?: string; // Custom Ministry of Education / Ministry logo (Base64 data URL or web link)
   academicYear?: string; // e.g. "២០២៦-២០២៧"
 }
 
@@ -207,7 +207,7 @@ export interface CalendarEvent {
   descriptionKm?: string;
   descriptionEn?: string;
   color?: string;
-  isMoEYSOfficial?: boolean;
+  isOfficialStandard?: boolean;
   classId?: string; // Optional: all classes or specific class
   lunarDateKm?: string;
   isCompleted?: boolean;
@@ -248,7 +248,7 @@ export interface CurriculumLesson {
   status: 'upcoming' | 'in_progress' | 'completed';
   startDate?: string;
   endDate?: string;
-  // Official MoEYS Distribution Fields
+  // Official Ministry Distribution Fields
   dateStr?: string; // Calendar date, e.g. "ចន្ទ_10_11_25"
   monthKm?: string; // Month name, e.g. "វិច្ឆិកា", "ធ្នូ", "មករា", etc.
   subLessonCode?: string; // Sub-lesson number, e.g. "1.1.1"
@@ -393,7 +393,7 @@ export interface SpeedMathConfig {
   timeLimitSeconds: number; // e.g. 60
 }
 
-// Khmer Reading Diagnostic Error Types (4 standard MoEYS reading error types)
+// Khmer Reading Diagnostic Error Types (4 standard Ministry reading error types)
 export type KhmerReadingErrorType = 
   | 'misread'      // អានខុស
   | 'omission'     // អានរំលង
@@ -434,7 +434,7 @@ export interface FluencyTestRecord {
   errorBreakdown?: ReadingErrorBreakdown;
   markedErrors?: MarkedWordError[];
   diagnosedWeakness?: string;
-  predictedMoEYSLevel?: 'advanced' | 'proficient' | 'basic' | 'below_basic';
+  predictedStandardLevel?: 'advanced' | 'proficient' | 'basic' | 'below_basic';
   remedialAdvice?: string;
   
   // Math specific
@@ -493,7 +493,7 @@ export interface AssessmentTemplate {
   quickScorePills: number[]; // e.g. [5, 6, 7, 8, 8.5, 9, 10]
   presetRemarks: string[]; // Reusable feedback comments
   criteria?: string[]; // Grading criteria / rubric bullets
-  isSystemDefault?: boolean; // built-in MoEYS template
+  isSystemDefault?: boolean; // built-in Ministry template
   createdAt: string;
   updatedAt?: string;
 }

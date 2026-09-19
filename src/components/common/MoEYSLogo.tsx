@@ -1,7 +1,7 @@
 import React from 'react';
 import { SchoolLogo } from './SchoolLogo';
 
-interface MoEYSLogoProps {
+interface MinistryLogoProps {
   className?: string;
   size?: number | string;
   showText?: boolean;
@@ -10,10 +10,10 @@ interface MoEYSLogoProps {
 }
 
 /**
- * MoEYS Logo has been deleted across the system in favor of the School Logo
+ * Ministry Logo has been deleted across the system in favor of the School Logo
  * using the official emblem: https://en.wikipedia.org/wiki/File:Emblem_of_the_Ministry_of_Education,_Youth_and_Sport_%28Cambodia%29.svg
  */
-export const MoEYSLogo: React.FC<MoEYSLogoProps> = ({ 
+export const MinistryLogo: React.FC<MinistryLogoProps> = ({ 
   className = "w-10 h-10", 
   size,
   customLogoUrl,

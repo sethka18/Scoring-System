@@ -34,7 +34,7 @@ export const CurriculumProgramHub: React.FC = () => {
     curriculumPrograms, 
     updateCurriculumLesson, 
     syncCurriculumToCalendar,
-    resetCurriculumToMoEYS,
+    resetCurriculumToStandard,
     showToast 
   } = useGradebook();
 
@@ -96,7 +96,7 @@ export const CurriculumProgramHub: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner / MoEYS Curriculum Header */}
+      {/* Top Banner / Ministry Curriculum Header */}
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-slate-800 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -107,7 +107,7 @@ export const CurriculumProgramHub: React.FC = () => {
             </div>
             <div>
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-800/60 border border-indigo-400/30 text-amber-300 text-xs font-black tracking-wider uppercase mb-1.5">
-                <span>{language === 'km' ? 'កម្មវិធីសិក្សាលម្អិតថ្នាក់ជាតិ (MoEYS National Syllabus)' : 'MoEYS Official Primary Curriculum'}</span>
+                <span>{language === 'km' ? 'កម្មវិធីសិក្សាលម្អិតថ្នាក់ជាតិ (Ministry National Syllabus)' : 'Ministry Official Primary Curriculum'}</span>
               </div>
               <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                 {language === 'km' 
@@ -117,7 +117,7 @@ export const CurriculumProgramHub: React.FC = () => {
               <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1">
                 {language === 'km' 
                   ? `ផែនការបង្រៀន ៣៦ សប្តាហ៍ • អនុវត្តតាមសៀវភៅគោល និងគោលបំណងរបស់ក្រសួងអប់រំ` 
-                  : `36-Week standard lesson plan • Aligned with MoEYS national primary learning objectives`}
+                  : `36-Week standard lesson plan • Aligned with Ministry national primary learning objectives`}
               </p>
             </div>
           </div>
@@ -125,12 +125,12 @@ export const CurriculumProgramHub: React.FC = () => {
           {/* Action Buttons */}
           <div className="no-print flex flex-wrap items-center gap-2.5">
             <button
-              onClick={() => resetCurriculumToMoEYS()}
+              onClick={() => resetCurriculumToStandard()}
               className="inline-flex items-center space-x-2 px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-extrabold text-xs shadow-md transition cursor-pointer border border-slate-700"
-              title={language === 'km' ? 'ផ្ទុកឡើងវិញនូវកម្មវិធីសិក្សាគណិតវិទ្យាផ្លូវការ MoEYS' : 'Reload official MoEYS syllabus'}
+              title={language === 'km' ? 'ផ្ទុកឡើងវិញនូវកម្មវិធីសិក្សាគណិតវិទ្យាផ្លូវការ Ministry' : 'Reload official Ministry syllabus'}
             >
               <RotateCcw className="w-4 h-4 text-emerald-400" />
-              <span>{language === 'km' ? 'កម្មវិធី MoEYS ផ្លូវការ' : 'Reload MoEYS'}</span>
+              <span>{language === 'km' ? 'កម្មវិធី ផ្លូវការ' : 'Reload Ministry'}</span>
             </button>
 
             <button
@@ -327,19 +327,19 @@ export const CurriculumProgramHub: React.FC = () => {
           </div>
         </div>
 
-        {/* MoEYS Subject Specific Guidelines Notice */}
+        {/* Ministry Subject Specific Guidelines Notice */}
         {selectedGrade <= 3 && (selectedSubjectId === 'sub_social' || selectedSubjectId === 'sub_science') && (
           <div className="bg-amber-50/90 border border-amber-200 rounded-xl p-3 text-xs text-amber-950 flex items-start justify-between gap-3">
             <div className="flex items-start space-x-2.5">
               <span className="text-lg shrink-0">📘</span>
               <div className="space-y-0.5">
                 <p className="font-extrabold text-amber-950">
-                  {language === 'km' ? 'សម្គាល់កម្មវិធីសិក្សាក្រសួងអប់រំ ថ្នាក់ទី១ ដល់ ថ្នាក់ទី៣ (សៀវភៅក្បាលរួមគ្នា)៖' : 'MoEYS Primary Curriculum Policy for Grades 1-3:'}
+                  {language === 'km' ? 'សម្គាល់កម្មវិធីសិក្សាក្រសួងអប់រំ ថ្នាក់ទី១ ដល់ ថ្នាក់ទី៣ (សៀវភៅក្បាលរួមគ្នា)៖' : 'Ministry Primary Curriculum Policy for Grades 1-3:'}
                 </p>
                 <p className="text-amber-900 leading-relaxed text-[11px]">
                   {language === 'km' 
                     ? 'សម្រាប់ថ្នាក់ទី១ ដល់ទី៣ មុខវិជ្ជា «សិក្សាសង្គម» និង «វិទ្យាសាស្ត្រ» គឺចងក្រងរួមគ្នាក្នុងសៀវភៅតែមួយ «សិក្សាសង្គម-វិទ្យាសាស្ត្រ» ស្របតាមបំណែងចែកកម្មវិធីសិក្សារបស់ក្រសួងអប់រំ យុវជន និងកីឡា។ ដោយឡែកសម្រាប់ថ្នាក់ទី៤ ដល់ទី៦ មុខវិជ្ជាទាំងពីរត្រូវបានបែងចែកដាច់ដោយឡែកពីគ្នា (សិក្សាសង្គម ១ក្បាល និង វិទ្យាសាស្ត្រ ១ក្បាលផ្សេងគ្នា)។' 
-                    : 'For Grades 1 to 3, Social Studies and Science are combined into a single textbook ("Social Studies - Science") in accordance with MoEYS regulations. Grades 4 through 6 have separate dedicated textbooks and distinct curricula.'}
+                    : 'For Grades 1 to 3, Social Studies and Science are combined into a single textbook ("Social Studies - Science") in accordance with Ministry regulations. Grades 4 through 6 have separate dedicated textbooks and distinct curricula.'}
                 </p>
               </div>
             </div>
@@ -355,7 +355,7 @@ export const CurriculumProgramHub: React.FC = () => {
               <span className="text-lg shrink-0">🔬</span>
               <div className="space-y-0.5">
                 <p className="font-extrabold text-purple-950">
-                  {language === 'km' ? `កម្មវិធីសិក្សាវិទ្យាសាស្ត្រ ថ្នាក់ទី ${selectedGrade} (MoEYS ផ្លូវការ ៣៦ សប្តាហ៍)៖` : `Official MoEYS Science Curriculum for Grade ${selectedGrade}:`}
+                  {language === 'km' ? `កម្មវិធីសិក្សាវិទ្យាសាស្ត្រ ថ្នាក់ទី ${selectedGrade} (ផ្លូវការ ៣៦ សប្តាហ៍)៖` : `Official Ministry Science Curriculum for Grade ${selectedGrade}:`}
                 </p>
                 <p className="text-purple-900 leading-relaxed text-[11px]">
                   {language === 'km'
@@ -376,7 +376,7 @@ export const CurriculumProgramHub: React.FC = () => {
               <span className="text-lg shrink-0">🏛️</span>
               <div className="space-y-0.5">
                 <p className="font-extrabold text-amber-950">
-                  {language === 'km' ? `កម្មវិធីសិក្សាសិក្សាសង្គម ថ្នាក់ទី ${selectedGrade} (MoEYS ផ្លូវការ ៣៦ សប្តាហ៍)៖` : `Official MoEYS Social Studies Curriculum for Grade ${selectedGrade}:`}
+                  {language === 'km' ? `កម្មវិធីសិក្សាសិក្សាសង្គម ថ្នាក់ទី ${selectedGrade} (ផ្លូវការ ៣៦ សប្តាហ៍)៖` : `Official Ministry Social Studies Curriculum for Grade ${selectedGrade}:`}
                 </p>
                 <p className="text-amber-900 leading-relaxed text-[11px]">
                   {language === 'km'
@@ -446,7 +446,7 @@ export const CurriculumProgramHub: React.FC = () => {
         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex items-center justify-between">
           <div>
             <p className="text-xs font-black uppercase text-slate-500">
-              {language === 'km' ? 'ស្តង់ដារក្រសួង MoEYS' : 'MoEYS Standard'}
+              {language === 'km' ? 'ស្តង់ដារក្រសួង Ministry' : 'Ministry Standard'}
             </p>
             <h3 className="text-2xl font-black text-emerald-700 mt-1">១០០%</h3>
             <p className="text-[11px] font-semibold text-slate-500 mt-0.5">
@@ -464,7 +464,7 @@ export const CurriculumProgramHub: React.FC = () => {
         {/* Printable Official Header */}
         <div className="pb-5 border-b-2 border-slate-900 mb-6">
           <div className="flex justify-between items-start text-xs font-semibold text-slate-800 mb-4">
-            <div className="text-left flex items-start space-x-3">
+            <div className="text-left flex items-start space-x-3 mt-6">
               <SchoolLogo size={52} customLogoUrl={schoolProfile?.logoUrl} />
               <div className="space-y-0.5">
                 <p className="font-extrabold text-slate-950 text-xs sm:text-sm">ក្រសួងអប់រំ យុវជន និងកីឡា</p>

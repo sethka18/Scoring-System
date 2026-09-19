@@ -283,7 +283,7 @@ export function exportSingleStudentMultiSheetExcel(options: ExportStudentReportC
 
   const sheet4Data: (string | number)[][] = [
     [schoolName],
-    ['តារាងសរុបលទ្ធផលសិក្សាប្រចាំឆ្នាំ តាមស្តង់ដារក្រសួងអប់រំ យុវជន និងកីឡា (MoEYS)'],
+    ['តារាងសរុបលទ្ធផលសិក្សាប្រចាំឆ្នាំ តាមស្តង់ដារក្រសួងអប់រំ យុវជន និងកីឡា'],
     [`ឈ្មោះសិស្ស៖ ${student.name}`, `ភេទ៖ ${student.gender === 'Female' ? 'ស្រី' : 'ប្រុស'}`, `ថ្នាក់ទី៖ ${className}`, `ឆ្នាំសិក្សា៖ ${academicYear}`],
     [''],
     ['វិស័យវាយតម្លៃ', 'កម្រិតទម្ងន់', 'ពិន្ទុដើម (លើ ១០.០០)', 'ពិន្ទុបានទទួល (Weighted Score)', 'ការពិពណ៌នា'],

@@ -82,8 +82,8 @@ export const PtomLearningPlanDoc: React.FC<PtomLearningPlanDocProps> = ({
       <div>
         <div className="flex justify-between items-start pt-1 pb-3">
           {/* Left: Office & School */}
-          <div className="text-left space-y-1 max-w-[60%]">
-            <div className="font-moul text-sm sm:text-base leading-snug text-slate-950">
+          <div className="text-left space-y-1 max-w-[60%] mt-6">
+            <div className="font-moul text-sm sm:text-base leading-snug text-slate-950 mt-8">
               {districtOffice}
             </div>
             <div className="font-moul text-sm sm:text-base text-slate-950">
@@ -330,7 +330,7 @@ export const PtomLearningPlanDoc: React.FC<PtomLearningPlanDocProps> = ({
 
       {/* -------------------------------------------------------------
           7. DATES & SIGNATURES SECTION
-          Exact layout matching the uploaded MoEYS document
+          Exact layout matching the uploaded Ministry document
           ------------------------------------------------------------- */}
       <div className="pt-2">
         {/* Date line & student signature (right-aligned) */}

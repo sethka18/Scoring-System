@@ -1,0 +1,35 @@
+--- src/components/tools/ClassroomToolsHub.tsx
++++ src/components/tools/ClassroomToolsHub.tsx
+@@ -32,6 +32,7 @@
+ import { EditableLuckyWheel } from './EditableLuckyWheel';
+ import { InteractiveMiniGamesHub } from '../games/InteractiveMiniGamesHub';
+ import { ClassroomInventory } from './ClassroomInventory';
++import { AttendanceBookGenerator } from './AttendanceBookGenerator';
+ 
+ export interface ClassroomToolsHubProps {
+   initialTab?: 'lucky_wheel' | 'games' | 'picker' | 'groups' | 'timer' | 'inventory' | 'attendance';
+@@ -412,6 +413,16 @@
+             <ClipboardList className="w-3.5 h-3.5" />
+             <span>{language === 'km' ? 'បញ្ជីសារពើភណ្ឌ' : 'Inventory'}</span>
+           </button>
++          <button
++            onClick={() => setActiveTab('attendance')}
++            className={`px-3.5 py-1.5 rounded-xl font-bold text-xs transition cursor-pointer flex items-center space-x-1.5 ${
++              activeTab === 'attendance'
++                ? 'bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 shadow-xs'
++                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
++            }`}
++          >
++            <BookCheck className="w-3.5 h-3.5" />
++            <span>{language === 'km' ? 'បញ្ជីហៅឈ្មោះ' : 'Attendance Book'}</span>
++          </button>
+         </div>
+       </div>
+@@ -1012,6 +1023,7 @@
+       )}
+ 
+       {activeTab === 'inventory' && <ClassroomInventory />}
++      {activeTab === 'attendance' && <AttendanceBookGenerator />}
+     </div>
+   );
+ };

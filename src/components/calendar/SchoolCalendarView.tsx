@@ -201,7 +201,7 @@ export const SchoolCalendarView: React.FC = () => {
         type: eventType,
         descriptionKm: eventDescKm || undefined,
         lunarDateKm: eventLunarKm || undefined,
-        isMoEYSOfficial: true,
+        isOfficialStandard: true,
       });
     }
 
@@ -210,7 +210,7 @@ export const SchoolCalendarView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner / MoEYS National Header */}
+      {/* Top Banner / Ministry National Header */}
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-slate-800 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -221,7 +221,7 @@ export const SchoolCalendarView: React.FC = () => {
             </div>
             <div>
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-800/60 border border-indigo-400/30 text-amber-300 text-xs font-black tracking-wider uppercase mb-1.5">
-                <span>{language === 'km' ? 'ប្រតិទិនសិក្សាផ្លូវការ • ក្រសួងអប់រំ យុវជន និងកីឡា' : 'MoEYS Official Academic Calendar & Events'}</span>
+                <span>{language === 'km' ? 'ប្រតិទិនសិក្សាផ្លូវការ • ក្រសួងអប់រំ យុវជន និងកីឡា' : 'Ministry Official Academic Calendar & Events'}</span>
               </div>
               <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                 {language === 'km' ? 'ប្រតិទិនសាលារៀន និងកាលបរិច្ឆេទសិក្សា' : 'Primary School Academic Calendar'}
@@ -350,7 +350,7 @@ export const SchoolCalendarView: React.FC = () => {
           {/* Printable Kingdom Header (Visible on print) */}
           <div className="hidden print:block p-6 text-center border-b-2 border-slate-900">
             <div className="flex justify-between items-start text-xs font-semibold text-slate-800 mb-2">
-              <div className="text-left flex items-center space-x-2">
+              <div className="text-left flex items-center space-x-2 mt-8">
                 <SchoolLogo size={40} customLogoUrl={schoolProfile?.logoUrl} />
                 <div>
                   <p className="font-extrabold uppercase">{activeClass?.schoolNameKm}</p>

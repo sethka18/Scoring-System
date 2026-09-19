@@ -24,12 +24,12 @@ import { CURRICULUM_SCIENCE_GRADE4 } from './curriculumScienceGrade4';
 import { CURRICULUM_SCIENCE_GRADE5 } from './curriculumScienceGrade5';
 import { CURRICULUM_SCIENCE_GRADE6 } from './curriculumScienceGrade6';
 
-// For Grades 1-3, MoEYS curriculum combines Social Studies and Science into one single volume (សិក្សាសង្គម-វិទ្យាសាស្ត្រ)
+// For Grades 1-3, Ministry curriculum combines Social Studies and Science into one single volume (សិក្សាសង្គម-វិទ្យាសាស្ត្រ)
 export const CURRICULUM_SCIENCE_GRADE1_COMBINED: CurriculumProgram = {
   ...CURRICULUM_SOCIAL_GRADE1,
   id: 'prog_science_g1_combined',
   subjectId: 'sub_science',
-  titleKm: 'កម្មវិធីសិក្សាសិក្សាសង្គម-វិទ្យាសាស្ត្រ ថ្នាក់ទី១ (ក្បាលរួមគ្នា MoEYS)',
+  titleKm: 'កម្មវិធីសិក្សាសិក្សាសង្គម-វិទ្យាសាស្ត្រ ថ្នាក់ទី១ (ក្បាលរួមគ្នា Ministry)',
   titleEn: 'Social Studies & Science Grade 1 Curriculum (Combined Volume)',
 };
 
@@ -37,7 +37,7 @@ export const CURRICULUM_SCIENCE_GRADE2_COMBINED: CurriculumProgram = {
   ...CURRICULUM_SOCIAL_GRADE2,
   id: 'prog_science_g2_combined',
   subjectId: 'sub_science',
-  titleKm: 'កម្មវិធីសិក្សាសិក្សាសង្គម-វិទ្យាសាស្ត្រ ថ្នាក់ទី២ (ក្បាលរួមគ្នា MoEYS)',
+  titleKm: 'កម្មវិធីសិក្សាសិក្សាសង្គម-វិទ្យាសាស្ត្រ ថ្នាក់ទី២ (ក្បាលរួមគ្នា Ministry)',
   titleEn: 'Social Studies & Science Grade 2 Curriculum (Combined Volume)',
 };
 
@@ -45,7 +45,7 @@ export const CURRICULUM_SCIENCE_GRADE3_COMBINED: CurriculumProgram = {
   ...CURRICULUM_SOCIAL_GRADE3,
   id: 'prog_science_g3_combined',
   subjectId: 'sub_science',
-  titleKm: 'កម្មវិធីសិក្សាសិក្សាសង្គម-វិទ្យាសាស្ត្រ ថ្នាក់ទី៣ (ក្បាលរួមគ្នា MoEYS)',
+  titleKm: 'កម្មវិធីសិក្សាសិក្សាសង្គម-វិទ្យាសាស្ត្រ ថ្នាក់ទី៣ (ក្បាលរួមគ្នា Ministry)',
   titleEn: 'Social Studies & Science Grade 3 Curriculum (Combined Volume)',
 };
 

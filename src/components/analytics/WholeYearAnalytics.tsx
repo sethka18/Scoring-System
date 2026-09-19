@@ -129,7 +129,7 @@ export const WholeYearAnalytics: React.FC = () => {
           <div className="flex items-center space-x-2">
             <PrintToPdfButton
               targetElementId="yearly-rankings-print-container"
-              documentTitle={`MoEYS_${activeClass?.nameKm || 'Class'}_Annual_Results_Rankings_${activeClass?.academicYear || '2026'}`}
+              documentTitle={`Ministry_${activeClass?.nameKm || 'Class'}_Annual_Results_Rankings_${activeClass?.academicYear || '2026'}`}
               pageSize="a4"
               orientation="landscape"
               variant="primary"
@@ -211,7 +211,7 @@ export const WholeYearAnalytics: React.FC = () => {
               </p>
               <p>{language === 'km' ? `ថ្នាក់ទី ${activeClass?.gradeLevel} (${activeClass?.nameKm})` : `Class: ${activeClass?.name}`}</p>
             </div>
-            <div className="text-right">
+            <div className="text-right mt-8">
               <p className="font-bold text-slate-900">
                 {language === 'km' ? 'ព្រះរាជាណាចក្រកម្ពុជា' : 'Kingdom of Cambodia'}
               </p>

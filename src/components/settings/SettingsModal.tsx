@@ -326,7 +326,7 @@ export const SettingsModal: React.FC = () => {
                 className="text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline flex items-center space-x-1 cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span>{language === 'km' ? 'ប្រើត្រាក្រសួងដើម' : 'Reset to MoEYS'}</span>
+                <span>{language === 'km' ? 'ប្រើត្រាក្រសួងដើម' : 'Reset to Ministry'}</span>
               </button>
             )}
           </div>
@@ -493,13 +493,13 @@ export const SettingsModal: React.FC = () => {
           </div>
         </div>
 
-        {/* Section 2: MoEYS 3 Competency Pillars (Yearly Evaluation) */}
+        {/* Section 2: Ministry 3 Competency Pillars (Yearly Evaluation) */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-2xs space-y-4 transition-colors">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-heading font-black text-base text-slate-900 dark:text-white flex items-center space-x-2">
                 <Brain className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                <span>{language === 'km' ? 'ទម្ងន់សម្បទា ៣ យ៉ាងសម្រាប់ការវាយតម្លៃប្រចាំឆ្នាំ (MoEYS)' : 'Yearly 3-Pillar Competency Weights (%)'}</span>
+                <span>{language === 'km' ? 'ទម្ងន់សម្បទា ៣ យ៉ាងសម្រាប់ការវាយតម្លៃប្រចាំឆ្នាំ' : 'Yearly 3-Pillar Competency Weights (%)'}</span>
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 {language === 'km' 
@@ -576,13 +576,13 @@ export const SettingsModal: React.FC = () => {
           </div>
         </div>
 
-        {/* Section: MoEYS Letter Grade Scale (A, B, C, D, E, F) */}
+        {/* Section: Ministry Letter Grade Scale (A, B, C, D, E, F) */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-2xs space-y-4 transition-colors">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
               <h3 className="font-heading font-black text-base text-slate-900 dark:text-white flex items-center space-x-2">
                 <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                <span>{language === 'km' ? 'មាត្រដ្ឋាននិទ្ទេសសិក្សា MoEYS (Grade Scales: A, B, C, D, E, F)' : 'MoEYS Letter Grade Scales (A, B, C, D, E, F)'}</span>
+                <span>{language === 'km' ? 'មាត្រដ្ឋាននិទ្ទេសសិក្សា Ministry (Grade Scales: A, B, C, D, E, F)' : 'Ministry Letter Grade Scales (A, B, C, D, E, F)'}</span>
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 {language === 'km'

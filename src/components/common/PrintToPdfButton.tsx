@@ -58,7 +58,7 @@ export const PrintToPdfButton: React.FC<PrintToPdfButtonProps> = ({
     if (documentTitle) return documentTitle;
     const classCode = activeClass?.nameKm || activeClass?.name || 'Grade6';
     const year = activeClass?.academicYear || '2026-2027';
-    return `MoEYS_${classCode}_${pageSize.toUpperCase()}_${year}`;
+    return `Ministry_${classCode}_${pageSize.toUpperCase()}_${year}`;
   };
 
   const handleDownloadPdf = async () => {
@@ -260,7 +260,7 @@ export const PrintToPdfButton: React.FC<PrintToPdfButtonProps> = ({
                   2
                 </div>
                 <p>
-                  <strong>{language === 'km' ? 'ទំហំស្តង់ដារក្រសួង (MoEYS Standard):' : 'Standard Paper Size:'}</strong>{' '}
+                  <strong>{language === 'km' ? 'ទំហំស្តង់ដារក្រសួង (Ministry Standard):' : 'Standard Paper Size:'}</strong>{' '}
                   {pageSize === 'a5' ? (
                     <span>
                       {language === 'km' ? 'ទំហំ A5 សម្រាប់សៀវភៅតាមដាន និងព្រឹត្តិបត្រពិន្ទុប្រចាំខែ' : 'A5 size for student progress tracking slips & monthly report cards.'}
@@ -279,7 +279,7 @@ export const PrintToPdfButton: React.FC<PrintToPdfButtonProps> = ({
                 </div>
                 <p>
                   <strong>{language === 'km' ? 'ហត្ថលេខា និងត្រាសាលា (Signatures & Stamp):' : 'Official Authentication:'}</strong>{' '}
-                  {language === 'km' ? 'ឯកសារនីមួយៗរួមបញ្ចូលកន្លែងចុះហត្ថលេខារបស់គ្រូបន្ទុកថ្នាក់ និងនាយកសាលា' : 'Includes official signatures, dates, MoEYS crest, and school administrative seals.'}
+                  {language === 'km' ? 'ឯកសារនីមួយៗរួមបញ្ចូលកន្លែងចុះហត្ថលេខារបស់គ្រូបន្ទុកថ្នាក់ និងនាយកសាលា' : 'Includes official signatures, dates, Ministry crest, and school administrative seals.'}
                 </p>
               </div>
             </div>

@@ -95,7 +95,7 @@ export const useAssessmentTemplates = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `MoEYS_Assessment_Templates_${new Date().toISOString().split('T')[0]}.json`;
+    link.download = `Standard_Assessment_Templates_${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

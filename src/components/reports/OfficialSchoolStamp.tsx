@@ -14,7 +14,7 @@ interface OfficialSchoolStampProps {
 /**
  * Authentic Official Cambodian School Rubber Stamp (ត្រាមូលក្រហមរដ្ឋបាល)
  * - If customStampUrl is provided, renders the school's actual uploaded stamp PNG
- * - Otherwise, renders a vector-accurate circular MoEYS school administration stamp
+ * - Otherwise, renders a vector-accurate circular Ministry school administration stamp
  *   with concentric rings, official star, and Cambodian school administrative typography.
  */
 export const OfficialSchoolStamp: React.FC<OfficialSchoolStampProps> = ({

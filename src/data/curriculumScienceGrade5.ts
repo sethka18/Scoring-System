@@ -5,8 +5,8 @@ export const CURRICULUM_SCIENCE_GRADE5: CurriculumProgram = {
   gradeLevel: 5,
   academicYear: '២០២៥-២០២៦',
   subjectId: 'sub_science',
-  titleKm: 'កម្មវិធីសិក្សាវិទ្យាសាស្ត្រ ថ្នាក់ទី៥ (MoEYS ផ្លូវការ)',
-  titleEn: 'Grade 5 Science Curriculum (MoEYS Official)',
+  titleKm: 'កម្មវិធីសិក្សាវិទ្យាសាស្ត្រ ថ្នាក់ទី៥ (ផ្លូវការ)',
+  titleEn: 'Grade 5 Science Curriculum (Ministry Official)',
   lessons: [
     // ខែ វិច្ឆិកា (November) - 12 ម៉ោង
     {

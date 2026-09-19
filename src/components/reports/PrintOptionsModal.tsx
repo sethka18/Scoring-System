@@ -168,7 +168,7 @@ export const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
     },
     {
       key: 'show3Pillars',
-      title: 'សម្បទាទាំង ៣ MoEYS (3-Pillars Competency)',
+      title: 'សម្បទាទាំង ៣ Ministry (3-Pillars Competency)',
       description: 'បង្ហាញការគណនា វិជ្ជាសម្បទា បំណិនសម្បទា និងចរិយាសម្បទា',
       icon: <Award className="w-5 h-5 text-purple-600" />,
       tag: 'ប្រចាំឆ្នាំ (Annual)',
@@ -260,7 +260,7 @@ export const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                 <span className="text-base">🏛️</span>
                 <div>
                   <p className="font-heading font-black text-amber-950 text-xs">
-                    ចង់ប្តូរទម្រង់ MoEYS ឬបន្ថែមត្រាសាលា?
+                    ចង់ប្តូរទម្រង់ Ministry ឬបន្ថែមត្រាសាលា?
                   </p>
                   <p className="text-[11px] text-amber-800">
                     ជ្រើសរើសទម្រង់ក្រសួង ៤ បែប បន្ថែមឡូហ្គោ និងត្រាមូលក្រហមផ្លូវការ

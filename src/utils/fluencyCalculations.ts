@@ -16,7 +16,7 @@ export interface ReadingBenchmark {
   advancedWpm: number;
 }
 
-export const MOEYS_READING_BENCHMARKS: Record<number, ReadingBenchmark> = {
+export const Ministry_READING_BENCHMARKS: Record<number, ReadingBenchmark> = {
   1: { grade: 1, targetWpm: 35, minWpm: 20, advancedWpm: 45 },
   2: { grade: 2, targetWpm: 50, minWpm: 35, advancedWpm: 65 },
   3: { grade: 3, targetWpm: 70, minWpm: 50, advancedWpm: 85 },
@@ -38,7 +38,7 @@ export interface KhmerReadingDiagnosticReport {
   predictedGradeEquivalent: string;
   comprehensionBarrierRisk: 'ទាប' | 'មធ្យម' | 'ខ្ពស់';
   remedialAdviceKm: string[];
-  moeysOfficialRemark: string;
+  MinistryOfficialRemark: string;
 }
 
 /**
@@ -180,7 +180,7 @@ export function generateMathQuestion(
  */
 export function tokenizeKhmerText(text: string): string[] {
   if (!text) return [];
-  // Split by whitespace, punctuation, newlines, and MoEYS delimiters
+  // Split by whitespace, punctuation, newlines, and Ministry delimiters
   const words = text
     .replace(/[។៕៖ៗ]/g, ' $& ')
     .trim()
@@ -190,7 +190,7 @@ export function tokenizeKhmerText(text: string): string[] {
 }
 
 /**
- * Calculates Reading Fluency WCPM (Words Correct Per Minute) with MoEYS grade level awareness
+ * Calculates Reading Fluency WCPM (Words Correct Per Minute) with Ministry grade level awareness
  */
 export function calculateWCPM(
   wordsAttempted: number,
@@ -212,9 +212,9 @@ export function calculateWCPM(
   const wcpm = Math.round((correctWords / safeSeconds) * 60);
   const accuracy = wordsAttempted > 0 ? Math.round((correctWords / wordsAttempted) * 100) : 0;
 
-  const benchmark = MOEYS_READING_BENCHMARKS[gradeLevel] || MOEYS_READING_BENCHMARKS[1];
+  const benchmark = Ministry_READING_BENCHMARKS[gradeLevel] || Ministry_READING_BENCHMARKS[1];
 
-  // Grade-aware MoEYS Primary Fluency Benchmarks
+  // Grade-aware Ministry Primary Fluency Benchmarks
   let levelKm = 'ក្រោមមូលដ្ឋាន (ត្រូវការជំនួយ)';
   let levelEn = 'Below Basic (Needs Support)';
   let color = '#dc2626'; // Red
@@ -264,7 +264,7 @@ export function diagnoseKhmerReadingFluency(
   breakdown: ReadingErrorBreakdown,
   passageTitle?: string
 ): KhmerReadingDiagnosticReport {
-  const benchmark = MOEYS_READING_BENCHMARKS[gradeLevel] || MOEYS_READING_BENCHMARKS[1];
+  const benchmark = Ministry_READING_BENCHMARKS[gradeLevel] || Ministry_READING_BENCHMARKS[1];
   const totalErrors = 
     breakdown.misread + 
     breakdown.omission + 
@@ -292,7 +292,7 @@ export function diagnoseKhmerReadingFluency(
     weaknessPercentage = Math.round((highest.count / totalErrors) * 100);
   }
 
-  // Predicted MoEYS Level & Grade Equivalence
+  // Predicted Ministry Level & Grade Equivalence
   let predictedLevel: 'advanced' | 'proficient' | 'basic' | 'below_basic' = 'below_basic';
   let predictedLevelKm = 'កម្រិតក្រោមមូលដ្ឋាន (ត្រូវការជួយបំប៉នបន្ទាន់)';
   let predictedGradeEquivalent = `ក្រោមថ្នាក់ទី ${gradeLevel}`;
@@ -334,12 +334,12 @@ export function diagnoseKhmerReadingFluency(
     remedialAdviceKm.push('សិស្សមានមូលដ្ឋានអំណានរឹងមាំ! គួរលើកទឹកចិត្តឱ្យអានសៀវភៅរឿងកុមារប្លែកៗដើម្បីបង្កើនវាក្យសព្ទ និងការយល់ន័យស៊ីជម្រៅ។');
   }
 
-  // Official MoEYS Gradebook Evaluation Note
+  // Official Ministry Gradebook Evaluation Note
   const passNote = passageTitle ? ` «${passageTitle}»` : '';
   const errorNote = totalErrors > 0 
     ? `ចំណុចខ្សោយ៖ ${primaryWeaknessKm} (${highest.count}ពាក្យ)`
     : 'អានត្រូវឥតខ្ចោះ';
-  const moeysOfficialRemark = `តេស្តល្បឿនអំណាន${passNote}៖ ${wcpm} ពាក្យ/នាទី (ត្រូវ ${accuracy}%), ${errorNote} • កម្រិត៖ ${predictedLevelKm}`;
+  const MinistryOfficialRemark = `តេស្តល្បឿនអំណាន${passNote}៖ ${wcpm} ពាក្យ/នាទី (ត្រូវ ${accuracy}%), ${errorNote} • កម្រិត៖ ${predictedLevelKm}`;
 
   return {
     primaryWeaknessKm,
@@ -351,7 +351,7 @@ export function diagnoseKhmerReadingFluency(
     predictedGradeEquivalent,
     comprehensionBarrierRisk,
     remedialAdviceKm,
-    moeysOfficialRemark
+    MinistryOfficialRemark
   };
 }
 

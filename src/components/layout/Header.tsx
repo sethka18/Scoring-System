@@ -180,6 +180,7 @@ export const Header: React.FC = () => {
                           type="button"
                           onClick={() => {
                             adminReturnToAdmin();
+                            setActiveTab('all_classes');
                             setShowClassDropdown(false);
                           }}
                           className="w-full py-2 px-3 rounded-xl text-left text-xs font-black text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/70 bg-amber-50 dark:bg-amber-950/40 flex items-center justify-center space-x-2 cursor-pointer transition shadow-xs"

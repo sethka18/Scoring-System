@@ -5,8 +5,8 @@ export const CURRICULUM_SOCIAL_GRADE1: CurriculumProgram = {
   gradeLevel: 1,
   academicYear: '២០២៥-២០២៦',
   subjectId: 'sub_social',
-  titleKm: 'កម្មវិធីសិក្សាសិក្សាសង្គម-វិទ្យាសាស្ត្រ ថ្នាក់ទី១ (MoEYS ក្បាលរួម)',
-  titleEn: 'Social Studies & Science Grade 1 Curriculum (MoEYS Combined)',
+  titleKm: 'កម្មវិធីសិក្សាសិក្សាសង្គម-វិទ្យាសាស្ត្រ ថ្នាក់ទី១ (ក្បាលរួម)',
+  titleEn: 'Social Studies & Science Grade 1 Curriculum (Ministry Combined)',
   lessons: [
   {
     "id": "soc_g1_w02_01",

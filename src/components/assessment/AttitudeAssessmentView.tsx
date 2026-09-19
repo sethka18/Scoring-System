@@ -900,7 +900,7 @@ export const AttitudeAssessmentView: React.FC = () => {
         </div>
       )}
 
-      {/* Mode 3: Print Official Appendix 4 View (MoEYS Authentic Standard) */}
+      {/* Mode 3: Print Official Appendix 4 View (Ministry Authentic Standard) */}
       {viewMode === 'print' && (
         <div className="space-y-4">
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-xs border border-slate-200/90 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 print:hidden">
@@ -961,7 +961,7 @@ export const AttitudeAssessmentView: React.FC = () => {
                   </div>
 
                   <div className="flex justify-between items-start mb-3 text-xs">
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 mt-6">
                       <div className="font-semibold text-slate-900">មន្ទីរអប់រំ យុវជន និងកីឡា ខេត្តកំពង់ចាម</div>
                       <div className="font-semibold text-slate-900">ការិយាល័យអប់រំ យុវជន និងកីឡា ស្រុកស្ទឹងត្រង់</div>
                       <div className="font-bold text-slate-900">សាលាបឋមសិក្សា ហ៊ុន ណេង ប្រទង</div>
@@ -1131,7 +1131,7 @@ export const AttitudeAssessmentView: React.FC = () => {
 
                   {/* Date and Signatures */}
                   <div className="mt-6 flex justify-between items-start text-[10.5px]">
-                    <div className="text-center w-48 space-y-1">
+                    <div className="text-center w-48 space-y-1 mt-6">
                       <div>បានឃើញ និងឯកភាព</div>
                       <div className="font-bold">នាយកសាលា</div>
                       <div className="h-14"></div>

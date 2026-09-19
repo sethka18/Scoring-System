@@ -37,7 +37,7 @@ import { ReportLayoutConfigPanel } from './ReportLayoutConfigPanel';
 import { 
   ReportLayoutConfig, 
   DEFAULT_REPORT_LAYOUT_CONFIG, 
-  MOEYS_LAYOUT_STYLES 
+  Ministry_LAYOUT_STYLES 
 } from './reportLayoutTypes';
 import { MultiPillarStudentReportModal } from './MultiPillarStudentReportModal';
 import { exportSingleStudentMultiSheetExcel, exportAllStudentsClassWorkbook } from '../../utils/multiSheetExcelExport';
@@ -150,7 +150,7 @@ export const ReportCardView: React.FC = () => {
 
   // Date management per period and yearly
   const classId = activeClass?.id || 'default';
-  const DATE_STORAGE_KEY = `moeys_report_dates_${classId}`;
+  const DATE_STORAGE_KEY = `Ministry_report_dates_${classId}`;
 
   const [dateSettings, setDateSettings] = useState<Record<string, { isoDate: string; customText?: string }>>(() => {
     try {
@@ -167,7 +167,7 @@ export const ReportCardView: React.FC = () => {
 
   const [printOptions, setPrintOptions] = useState<ReportPrintOptions>(() => {
     try {
-      const saved = localStorage.getItem('moeys_report_print_options');
+      const saved = localStorage.getItem('Ministry_report_print_options');
       if (saved) return JSON.parse(saved);
     } catch {
       // fallback
@@ -178,16 +178,16 @@ export const ReportCardView: React.FC = () => {
   const handlePrintOptionsChange = (newOptions: ReportPrintOptions) => {
     setPrintOptions(newOptions);
     try {
-      localStorage.setItem('moeys_report_print_options', JSON.stringify(newOptions));
+      localStorage.setItem('Ministry_report_print_options', JSON.stringify(newOptions));
     } catch {
       // ignore
     }
   };
 
-  // MoEYS Layout Styles & Official Stamp Configuration
+  // Ministry Layout Styles & Official Stamp Configuration
   const [layoutConfig, setLayoutConfig] = useState<ReportLayoutConfig>(() => {
     try {
-      const saved = localStorage.getItem('moeys_report_layout_config');
+      const saved = localStorage.getItem('Ministry_report_layout_config');
       if (saved) return { ...DEFAULT_REPORT_LAYOUT_CONFIG, ...JSON.parse(saved) };
     } catch {
       // fallback
@@ -200,7 +200,7 @@ export const ReportCardView: React.FC = () => {
   const handleLayoutConfigChange = (newConfig: ReportLayoutConfig) => {
     setLayoutConfig(newConfig);
     try {
-      localStorage.setItem('moeys_report_layout_config', JSON.stringify(newConfig));
+      localStorage.setItem('Ministry_report_layout_config', JSON.stringify(newConfig));
     } catch {
       // ignore
     }
@@ -412,7 +412,7 @@ export const ReportCardView: React.FC = () => {
           </div>
         )}
 
-        {/* National Header with MoEYS / School Logo */}
+        {/* National Header with Ministry / School Logo */}
         <div className={`text-center pb-4 mb-4 relative z-1 ${
           activeLayout.layoutStyle === 'honor_formal' 
             ? 'border-b-2 border-amber-600' 
@@ -422,7 +422,7 @@ export const ReportCardView: React.FC = () => {
         }`}>
           <div className="flex justify-between items-start text-xs font-semibold text-slate-700 mb-2">
             {/* Left Header: School Info and Logo */}
-            <div className="text-left flex items-center space-x-2.5">
+            <div className="text-left flex items-center space-x-2.5 mt-6">
               {activeLayout.logoMode !== 'minimal' && (
                 <SchoolLogo size={logoPixelSize} customLogoUrl={effectiveLogoUrl} />
               )}
@@ -462,7 +462,7 @@ export const ReportCardView: React.FC = () => {
           }`}>
             {monthlyReportHeading}
           </h1>
-          <div className="flex flex-wrap items-center justify-center gap-x-2 text-xs font-black text-indigo-900 mt-0.5 uppercase tracking-wider">
+          <div className="flex flex-wrap items-center justify-center gap-x-2 text-xs font-black text-indigo-900 mt-0.5 uppercase tracking-wider mt-8">
             <span>ឆ្នាំសិក្សា {activeClass?.academicYear}</span>
             {currentPeriod?.lunarDateKm && (
               <span className="font-semibold text-slate-600 normal-case hidden sm:inline">
@@ -947,7 +947,7 @@ export const ReportCardView: React.FC = () => {
         }`}>
           <div className="flex justify-between items-start text-xs font-semibold text-slate-700 mb-2">
             {/* Left Header: School Info and Logo */}
-            <div className="text-left flex items-center space-x-2.5">
+            <div className="text-left flex items-center space-x-2.5 mt-6">
               {activeLayout.logoMode !== 'minimal' && (
                 <SchoolLogo size={logoPixelSize} customLogoUrl={effectiveLogoUrl} />
               )}
@@ -1088,13 +1088,13 @@ export const ReportCardView: React.FC = () => {
           </table>
         </div>
 
-        {/* 2. MoEYS 3-Pillars Evaluation */}
+        {/* 2. Ministry 3-Pillars Evaluation */}
         {activeOpts.show3Pillars && (
           <div className="bg-slate-50 rounded-xl border border-slate-200 p-4 mb-6">
             <div className="text-xs font-black text-slate-800 uppercase tracking-wider mb-3 flex items-center justify-between">
               <div className="flex items-center space-x-1.5">
                 <Award className="w-4 h-4 text-indigo-700" />
-                <span>{language === 'km' ? '២. លទ្ធផលវាយតម្លៃសម្បទា ៣ យ៉ាង (ស្តង់ដារក្រសួង MoEYS)' : '2. MoEYS 3-Pillar Competency Breakdown'}</span>
+                <span>{language === 'km' ? '២. លទ្ធផលវាយតម្លៃសម្បទា ៣ យ៉ាង (ស្តង់ដារក្រសួង Ministry)' : '2. Ministry 3-Pillar Competency Breakdown'}</span>
               </div>
               <span className="text-[11px] font-mono text-indigo-700 font-bold">
                 ({competencyWeights.knowledge}% + {competencyWeights.skill}% + {competencyWeights.attitude}%)
@@ -1328,7 +1328,7 @@ export const ReportCardView: React.FC = () => {
               className="flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-black transition cursor-pointer text-amber-900 hover:bg-amber-100/70 bg-amber-50/70 border border-amber-200/60"
             >
               <BookOpen className="w-4 h-4 text-amber-700" />
-              <span>សៀវភៅសិក្ខាគរិក (MoEYS)</span>
+              <span>សៀវភៅសិក្ខាគរិក</span>
               <span className="px-1.5 py-0.2 rounded text-[10px] bg-amber-200 text-amber-900 font-bold">ថ្មី</span>
             </button>
           </div>
@@ -1524,7 +1524,7 @@ export const ReportCardView: React.FC = () => {
 
           {/* PDF Export & Print Actions (A5 Paper size configured specifically for សៀវភៅតាមដាន) */}
           <div className="flex flex-wrap items-center gap-2">
-            {/* MoEYS Layout & Stamp Configuration Panel Trigger */}
+            {/* Ministry Layout & Stamp Configuration Panel Trigger */}
             <button
               onClick={() => setIsLayoutConfigOpen(prev => !prev)}
               className={`inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl border text-xs font-black transition cursor-pointer shadow-2xs ${
@@ -1532,7 +1532,7 @@ export const ReportCardView: React.FC = () => {
                   ? 'bg-amber-500 text-slate-950 border-amber-600 ring-2 ring-amber-400/50'
                   : 'bg-amber-50 hover:bg-amber-100 text-amber-950 border-amber-300'
               }`}
-              title={language === 'km' ? 'កំណត់ទម្រង់ក្រសួង (MoEYS) & ត្រាសាលាផ្លូវការ' : 'MoEYS Layout & Official Stamp'}
+              title={language === 'km' ? 'កំណត់ទម្រង់ក្រសួង & ត្រាសាលាផ្លូវការ' : 'Ministry Layout & Official Stamp'}
             >
               <StampIcon className="w-3.5 h-3.5 text-rose-600" />
               <span>{language === 'km' ? 'ទម្រង់ & ត្រាផ្លូវការ' : 'Layout & Official Stamp'}</span>
@@ -1596,8 +1596,8 @@ export const ReportCardView: React.FC = () => {
               targetElementId="active-report-card-container"
               documentTitle={
                 reportMode === 'monthly'
-                  ? `MoEYS_Monthly_Slip_${currentStudent.name.replace(/\s+/g, '_')}_${currentPeriod.code}`
-                  : `MoEYS_Annual_Transcript_${currentStudent.name.replace(/\s+/g, '_')}_${activeClass?.academicYear}`
+                  ? `Ministry_Monthly_Slip_${currentStudent.name.replace(/\s+/g, '_')}_${currentPeriod.code}`
+                  : `Ministry_Annual_Transcript_${currentStudent.name.replace(/\s+/g, '_')}_${activeClass?.academicYear}`
               }
               pageSize={reportMode === 'monthly' ? 'a5' : 'a4'}
               variant="primary"
@@ -1611,8 +1611,8 @@ export const ReportCardView: React.FC = () => {
               targetElementIds={classStudents.map(s => reportMode === 'monthly' ? `monthly-card-${s.id}` : `yearly-card-${s.id}`)}
               documentTitle={
                 reportMode === 'monthly'
-                  ? `MoEYS_All_Monthly_Slips_${activeClass?.nameKm || 'Class'}_${currentPeriod.code}`
-                  : `MoEYS_All_Annual_Transcripts_${activeClass?.nameKm || 'Class'}_${activeClass?.academicYear}`
+                  ? `Ministry_All_Monthly_Slips_${activeClass?.nameKm || 'Class'}_${currentPeriod.code}`
+                  : `Ministry_All_Annual_Transcripts_${activeClass?.nameKm || 'Class'}_${activeClass?.academicYear}`
               }
               pageSize={reportMode === 'monthly' ? 'a5' : 'a4'}
               variant="secondary"
@@ -1627,14 +1627,14 @@ export const ReportCardView: React.FC = () => {
         </div>
       </div>
 
-      {/* Quick MoEYS Layout Styles Bar */}
+      {/* Quick Ministry Layout Styles Bar */}
       <div className="no-print bg-slate-50 border border-slate-200/80 p-2.5 rounded-2xl flex flex-wrap items-center justify-between gap-2 text-xs">
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="font-extrabold text-slate-700 px-1 flex items-center space-x-1.5">
             <Layers className="w-4 h-4 text-indigo-700" />
-            <span>{language === 'km' ? 'ទម្រង់ក្រសួង MoEYS៖' : 'MoEYS Layout Style:'}</span>
+            <span>{language === 'km' ? 'ទម្រង់ក្រសួង Ministry៖' : 'Ministry Layout Style:'}</span>
           </span>
-          {MOEYS_LAYOUT_STYLES.map((style) => {
+          {Ministry_LAYOUT_STYLES.map((style) => {
             const isSelected = layoutConfig.layoutStyle === style.id;
             return (
               <button
@@ -1659,7 +1659,7 @@ export const ReportCardView: React.FC = () => {
           </span>
           <span className="text-slate-300">•</span>
           <span className="hidden sm:inline">
-            ត្រា៖ {layoutConfig.stampMode === 'moeys_circular' ? 'ត្រាមូលក្រហម' : layoutConfig.stampMode === 'custom' ? 'ត្រាផ្ទាល់ខ្លួន' : 'គ្មាន'}
+            ត្រា៖ {layoutConfig.stampMode === 'Ministry_circular' ? 'ត្រាមូលក្រហម' : layoutConfig.stampMode === 'custom' ? 'ត្រាផ្ទាល់ខ្លួន' : 'គ្មាន'}
           </span>
           <button
             onClick={() => setIsLayoutConfigOpen(true)}
@@ -1703,7 +1703,7 @@ export const ReportCardView: React.FC = () => {
         onOpenLayoutConfig={() => setIsLayoutConfigOpen(true)}
       />
 
-      {/* MoEYS Layout & Official Stamp Configuration Panel */}
+      {/* Ministry Layout & Official Stamp Configuration Panel */}
       <ReportLayoutConfigPanel
         isOpen={isLayoutConfigOpen}
         onClose={() => setIsLayoutConfigOpen(false)}

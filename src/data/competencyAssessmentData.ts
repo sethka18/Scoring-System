@@ -1,4 +1,4 @@
-// Official MoEYS Competency Assessment Data (ឧបសម្ព័ន្ធ៣ និង ឧបសម្ព័ន្ធ៤)
+// Official Ministry Competency Assessment Data (ឧបសម្ព័ន្ធ៣ និង ឧបសម្ព័ន្ធ៤)
 // According to Primary Education Standard - Hun Neng Pratong Primary School
 
 export interface SkillActivityItem {

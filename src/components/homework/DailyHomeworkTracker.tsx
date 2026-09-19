@@ -31,7 +31,7 @@ export const DailyHomeworkTracker: React.FC = () => {
   } = useGradebook();
 
   const classId = activeClass?.id || 'default_class';
-  const STORAGE_KEY = `moeys_homework_records_${classId}`;
+  const STORAGE_KEY = `Ministry_homework_records_${classId}`;
 
   // State: List of homework assignments
   const [assignments, setAssignments] = useState<HomeworkAssignment[]>(() => {

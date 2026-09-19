@@ -7,8 +7,8 @@ import {
 } from './curriculumData';
 
 /**
- * Standard MoEYS Primary School Academic Calendar Events (2025-2026 / 2026-2027)
- * Compliant with the Ministry of Education, Youth and Sport (MoEYS) Academic Year Regulations
+ * Standard Ministry Primary School Academic Calendar Events (2025-2026 / 2026-2027)
+ * Compliant with the Ministry of Education, Youth and Sport Academic Year Regulations
  */
 export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
   // Term 1 / Semester 1
@@ -19,7 +19,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     date: '2026-11-01',
     type: 'academic',
     color: '#4f46e5',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ពិធីបើកបវេសនកាលឆ្នាំសិក្សាថ្មីទូទាំងប្រទេសក្រោមការណែនាំរបស់ក្រសួងអប់រំ យុវជន និងកីឡា។',
     descriptionEn: 'National academic year inauguration ceremony.',
     lunarDateKm: '៧រោច ខែអស្សុជ ឆ្នាំមមី អដ្ឋស័ក',
@@ -32,7 +32,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     endDate: '2026-11-07',
     type: 'exam',
     color: '#8b5cf6',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ការវាស់ស្ទង់សមត្ថភាពអំណាន និងសំណេរដើមឆ្នាំ ដើម្បីកំណត់កម្រិតសមត្ថភាពសិស្ស និងរៀបចំផែនការជួយសិស្សរៀនយឺត។',
     descriptionEn: 'Baseline literacy and reading assessment for remediation.',
   },
@@ -44,7 +44,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     endDate: '2026-11-14',
     type: 'exam',
     color: '#7c3aed',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ការវាស់ស្ទង់សមត្ថភាពគណិតវិទ្យា និងការគិតលេខដើមឆ្នាំ ដើម្បីបែងចែកក្រុមសិស្សទទួលការគាំទ្រពិសេស។',
     descriptionEn: 'Baseline mathematics and problem solving assessment.',
   },
@@ -56,7 +56,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     endDate: '2026-11-28',
     type: 'academic',
     color: '#0284c7',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ប្រឡង និងវាយតម្លៃ ៣ សម្បទា (វិជ្ជា, បំណិន, ចរិយា) ប្រចាំខែវិច្ឆិកា។',
     descriptionEn: 'Monthly continuous evaluation for November.',
   },
@@ -68,7 +68,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     endDate: '2026-12-26',
     type: 'academic',
     color: '#0284c7',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ប្រឡង និងវាយតម្លៃ ៣ សម្បទា (វិជ្ជា, បំណិន, ចរិយា) ប្រចាំខែធ្នូ។',
     descriptionEn: 'Monthly continuous evaluation for December.',
   },
@@ -79,7 +79,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     date: '2027-01-07',
     type: 'holiday',
     color: '#dc2626',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ទិវាបុណ្យជាតិ ៧ មករា (សាលារៀនឈប់សម្រាក ១ ថ្ងៃ)។',
     descriptionEn: 'National Public Holiday.',
   },
@@ -91,7 +91,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     endDate: '2027-01-30',
     type: 'academic',
     color: '#0284c7',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ការវាយតម្លៃប្រចាំខែមករា និងការចេញប័ណ្ណសរសើរ Top 5។',
     descriptionEn: 'Monthly continuous evaluation for January.',
   },
@@ -103,7 +103,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     time: '14:00 - 17:00',
     type: 'meeting',
     color: '#7c3aed',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ពិនិត្យវិធីសាស្ត្របង្រៀន និងតាមដានលទ្ធផលសិស្សរៀនយឺត។',
     descriptionEn: 'Staff pedagogical alignment and slow-learner support review.',
   },
@@ -115,7 +115,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     endDate: '2027-02-27',
     type: 'academic',
     color: '#0284c7',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ការវាយតម្លៃប្រចាំខែកុម្ភៈ (ត្រៀមប្រឡងឆមាសទី១)។',
     descriptionEn: 'Monthly continuous evaluation for February.',
   },
@@ -126,7 +126,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     date: '2027-03-11',
     type: 'activity',
     color: '#d97706',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'សកម្មភាពអំណានសៀវភៅ ការប្រកួតស្មូតកំណាព្យ និងតែងនិពន្ធថ្នាក់បឋមសិក្សា។',
     descriptionEn: 'Book reading contests, poetry recitation, and storytelling activities.',
   },
@@ -138,7 +138,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     endDate: '2027-04-03',
     type: 'exam',
     color: '#e11d48',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ការប្រឡងឆមាសទី១ គ្រប់មុខវិជ្ជាស្នូល (ភាសាខ្មែរ, គណិតវិទ្យា, វិទ្យាសាស្ត្រ, សិក្សាសង្គម)។',
     descriptionEn: 'Official Semester 1 Examination for Grades 1 to 6.',
   },
@@ -150,7 +150,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     endDate: '2027-04-19',
     type: 'holiday',
     color: '#ea580c',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ឈប់សម្រាកបុណ្យចូលឆ្នាំថ្មីប្រពៃណីជាតិខ្មែរ (ឆ្នាំមមី អដ្ឋស័ក)។',
     descriptionEn: 'Khmer New Year Holidays and Mid-Year Vacation.',
   },
@@ -163,7 +163,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     date: '2027-04-20',
     type: 'academic',
     color: '#4f46e5',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'បើកដំណើរការបង្រៀន និងរៀនឆមាសទី២ តាមកម្មវិធីសិក្សាជាតិ។',
     descriptionEn: 'Commencement of Semester 2 curriculum.',
   },
@@ -175,7 +175,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     endDate: '2027-05-29',
     type: 'academic',
     color: '#0284c7',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ការវាយតម្លៃប្រចាំខែឧសភា ឆមាសទី២។',
     descriptionEn: 'Monthly continuous evaluation for May.',
   },
@@ -187,7 +187,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     endDate: '2027-06-12',
     type: 'activity',
     color: '#059669',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ការប្រកួតកីឡាបាល់ទាត់ បាល់ទះ អត្តពលកម្ម និងការអប់រំសុខភាពអនាម័យ។',
     descriptionEn: 'Annual school athletic tournaments and hygiene promotion.',
   },
@@ -199,7 +199,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     endDate: '2027-06-26',
     type: 'academic',
     color: '#0284c7',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ការវាយតម្លៃប្រចាំខែមិថុនា។',
     descriptionEn: 'Monthly continuous evaluation for June.',
   },
@@ -211,7 +211,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     endDate: '2027-07-24',
     type: 'academic',
     color: '#0284c7',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ការវាយតម្លៃប្រចាំខែកក្កដា និងត្រៀមប្រឡងបញ្ចប់ឆ្នាំ។',
     descriptionEn: 'Monthly continuous evaluation for July.',
   },
@@ -223,7 +223,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     endDate: '2027-08-14',
     type: 'exam',
     color: '#be123c',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ការប្រឡងបញ្ចប់ឆ្នាំសិក្សា និងប្រឡងបញ្ចប់កម្រិតបឋមសិក្សា (ថ្នាក់ទី៦)។',
     descriptionEn: 'Final Year-End Examination and Grade 6 Primary School Completion Evaluation.',
   },
@@ -234,7 +234,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
     date: '2027-08-31',
     type: 'activity',
     color: '#b45309',
-    isMoEYSOfficial: true,
+    isOfficialStandard: true,
     descriptionKm: 'ពិធីចែករង្វាន់សិស្សឆ្នើម Top 5 ទូទាំងសាលា ចែកសៀវភៅតាមដាន និងចាប់ផ្តើមវិស្សមកាលធំ។',
     descriptionEn: 'School awards presentation, report card handover, and grand summer vacation commencement.',
   },
@@ -242,7 +242,7 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
 
 /**
  * Standard Primary School Period Timetable Configuration
- * Official MoEYS Guideline No. 41 / 2+1+2 Recess Formula / 40 minutes per period
+ * Official Ministry Guideline No. 41 / 2+1+2 Recess Formula / 40 minutes per period
  */
 export interface PeriodDefinition {
   period: number;
@@ -342,7 +342,7 @@ interface SlotBlueprint {
   customTitleKm?: string;
 }
 
-// Official MoEYS Timetable for Grades 4 - 6 (Morning)
+// Official Ministry Timetable for Grades 4 - 6 (Morning)
 // Khmer: 10h, Math: 6h, Social: 4h, Science: 3h, PE: 2h, Thu AM P1-3 (LifeSkills): 3h, Thu AM P4-5 (Meeting/Labor): 2h = Total 30h
 const TIMETABLE_G4_6_MORNING: SlotBlueprint[] = [
   // Period 0 (06:55 - 07:10) Flag ceremony / Hygiene
@@ -394,7 +394,7 @@ const TIMETABLE_G4_6_MORNING: SlotBlueprint[] = [
   { day: 6, period: 5, subjectId: 'sub_khmer' },
 ];
 
-// Official MoEYS Timetable for Grades 4 - 6 (Afternoon)
+// Official Ministry Timetable for Grades 4 - 6 (Afternoon)
 const TIMETABLE_G4_6_AFTERNOON: SlotBlueprint[] = [
   // Period 1 (01:00 - 01:40)
   { day: 1, period: 1, subjectId: 'sub_pe', customTitleKm: 'អប់រំកាយ-កីឡា' },
@@ -445,7 +445,7 @@ const TIMETABLE_G4_6_AFTERNOON: SlotBlueprint[] = [
   { day: 6, period: 6, subjectId: 'sub_assembly', customTitleKm: 'គោរពទង់ជាតិ' },
 ];
 
-// Official MoEYS Timetable for Grades 1 - 3 (Morning)
+// Official Ministry Timetable for Grades 1 - 3 (Morning)
 // Khmer: 13h, Math: 7h, Science-Social: 3h, PE-Health: 2h, Thu AM P1-3 (LifeSkills/Remedial): 3h, Thu AM P4-5 (Meeting/Labor): 2h = Total 30h
 const TIMETABLE_G1_3_MORNING: SlotBlueprint[] = [
   // Period 0 (06:55 - 07:10) Flag ceremony / Hygiene
@@ -497,7 +497,7 @@ const TIMETABLE_G1_3_MORNING: SlotBlueprint[] = [
   { day: 6, period: 5, subjectId: 'sub_khmer' },
 ];
 
-// Official MoEYS Timetable for Grades 1 - 3 (Afternoon)
+// Official Ministry Timetable for Grades 1 - 3 (Afternoon)
 const TIMETABLE_G1_3_AFTERNOON: SlotBlueprint[] = [
   // Period 1 (01:00 - 01:40)
   { day: 1, period: 1, subjectId: 'sub_pe_health', customTitleKm: 'អប់រំកាយ-សុខភាព' },
@@ -620,7 +620,7 @@ export const INITIAL_TIMETABLE_SLOTS: TimetableSlot[] = [
 ];
 
 /**
- * Standard MoEYS Primary School Curriculum (កម្មវិធីសិក្សាបឋមសិក្សា) 
+ * Standard Ministry Primary School Curriculum (កម្មវិធីសិក្សាបឋមសិក្សា) 
  * 36 Weeks Detailed Lesson Program covering Grade 1 to 6
  */
 export const DEFAULT_CURRICULUM_PROGRAMS: CurriculumProgram[] = [

@@ -84,7 +84,7 @@ export const CurriculumUploadModal: React.FC<Props> = ({ isOpen, onClose, onSucc
       // Fallback to text line parser
     }
 
-    // 2. Fallback: Parse unstructured MoEYS text lines
+    // 2. Fallback: Parse unstructured Ministry text lines
     // Handles formats like:
     // "សប្តាហ៍ទី ១: មេរៀនទី១ ការបើកបវេសនកាល (១០ ម៉ោង)"
     // "Week 1: Lesson 1 - Intro to Khmer (10 hours)"
@@ -177,7 +177,7 @@ export const CurriculumUploadModal: React.FC<Props> = ({ isOpen, onClose, onSucc
           color: '#0284c7',
           descriptionKm: `${les.objectivesKm || ''} (${les.hoursCount} ម៉ោង/សប្តាហ៍)`,
           descriptionEn: `${les.objectivesEn || ''} (${les.hoursCount} hrs/week)`,
-          isMoEYSOfficial: true,
+          isOfficialStandard: true,
         });
         syncCount++;
       });
@@ -321,7 +321,7 @@ export const CurriculumUploadModal: React.FC<Props> = ({ isOpen, onClose, onSucc
                   <p className="text-xs text-slate-500 mt-1">
                     {language === 'km' 
                       ? 'គាំទ្រឯកសារតារាងមេរៀន សប្តាហ៍ទី១ ដល់ ទី៣៦' 
-                      : 'Supports structured 36-week MoEYS curriculum files'}
+                      : 'Supports structured 36-week Ministry curriculum files'}
                   </p>
                 </div>
               </div>
@@ -338,7 +338,7 @@ export const CurriculumUploadModal: React.FC<Props> = ({ isOpen, onClose, onSucc
                     className="text-xs font-extrabold text-indigo-700 hover:text-indigo-900 inline-flex items-center space-x-1 cursor-pointer"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>{language === 'km' ? 'ផ្ទុកគំរូកម្មវិធីសិក្សា MoEYS' : 'Load MoEYS Sample'}</span>
+                    <span>{language === 'km' ? 'ផ្ទុកគំរូកម្មវិធីសិក្សាជាតិ' : 'Load Ministry Sample'}</span>
                   </button>
                 </div>
                 <textarea

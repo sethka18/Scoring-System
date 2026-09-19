@@ -214,7 +214,7 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
         {/* Scrollable Form Body */}
         <form onSubmit={handleSubmit} className="overflow-y-auto py-4 space-y-6 flex-1 pr-1">
           
-          {/* Section 1: Dual Logo Customization (School Logo & MoEYS Logo) */}
+          {/* Section 1: Dual Logo Customization (School Logo & Ministry Logo) */}
           <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4.5 border border-slate-200/80 dark:border-slate-700/80 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center space-x-2 text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
@@ -381,7 +381,7 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
 
               <div>
                 <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  {language === 'km' ? 'លេខកូដសាលា / MoEYS Code' : 'School Code / EMIS'}
+                  {language === 'km' ? 'លេខកូដសាលា / Ministry Code' : 'School Code / EMIS'}
                 </label>
                 <input
                   type="text"
@@ -522,7 +522,7 @@ export const SchoolProfileSettingsModal: React.FC<SchoolProfileSettingsModalProp
                 </label>
                 <input
                   type="email"
-                  placeholder="school@moeys.gov.kh"
+                  placeholder="school@Ministry.gov.kh"
                   value={formData.email || ''}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"

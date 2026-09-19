@@ -589,7 +589,7 @@ export const RankingsAndHonorRoll: React.FC = () => {
                   ? 'official-honor-poster-a4'
                   : 'official-rankings-print-container'
               }
-              documentTitle={`MoEYS_${activeClass?.nameKm || 'Class'}_${
+              documentTitle={`Ministry_${activeClass?.nameKm || 'Class'}_${
                 viewMode === 'official_ranking_sheet' ? 'Official_Ranking_Sheet' :
                 viewMode === 'honor_poster' ? 'Honor_Roll_Poster' : 
                 viewMode === 'honor_cards' ? 'Top5_Honor_Roll' : 'Full_Rank_Table'
@@ -775,12 +775,12 @@ export const RankingsAndHonorRoll: React.FC = () => {
 
       </div>
 
-      {/* 1. OFFICIAL MOEYS A4 RANKING SHEET (MONTHLY, SEMESTER 1, SEMESTER 2, YEARLY) */}
+      {/* 1. OFFICIAL Ministry A4 RANKING SHEET (MONTHLY, SEMESTER 1, SEMESTER 2, YEARLY) */}
       {viewMode === 'official_ranking_sheet' && (
         <OfficialClassRankingSheet />
       )}
 
-      {/* 2. OFFICIAL MOEYS HONOR ROLL POSTER (A4 PRINTABLE WITH STUDENT PHOTO SLOTS) */}
+      {/* 2. OFFICIAL Ministry HONOR ROLL POSTER (A4 PRINTABLE WITH STUDENT PHOTO SLOTS) */}
       {viewMode === 'honor_poster' && (
         <OfficialHonorRollPoster
           topStudents={topAchievers}
@@ -796,10 +796,10 @@ export const RankingsAndHonorRoll: React.FC = () => {
           className={`rounded-2xl border ${activeThemeConfig.boardBorder} ${activeThemeConfig.boardBg} p-6 sm:p-8 shadow-xs print:p-0 print:border-none print:shadow-none printable-area text-slate-900 transition-all duration-300`}
         >
           
-          {/* Official Header with MoEYS Logo matching Cambodian Primary School Standard */}
+          {/* Official Header with Ministry Logo matching Cambodian Primary School Standard */}
           <div className="text-center pb-6 border-b-2 border-slate-900/80 mb-6">
             <div className="flex justify-between items-start text-left text-xs font-semibold text-slate-700 mb-2">
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 mt-8">
                 <SchoolLogo size={52} customLogoUrl={schoolProfile?.logoUrl} />
                 <div>
                   <p className="font-extrabold text-slate-900 text-xs uppercase tracking-tight">

@@ -44,7 +44,7 @@ export const DailyAttendanceTracker: React.FC = () => {
     return d.toISOString().split('T')[0];
   }, []);
 
-  const [selectedDate, setSelectedDate] = useState<string>('2026-02-26');
+  const [selectedDate, setSelectedDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
   const [selectedMonth, setSelectedMonth] = useState<string>('2026-02');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterGender, setFilterGender] = useState<'All' | 'Female' | 'Male'>('All');
@@ -199,7 +199,7 @@ export const DailyAttendanceTracker: React.FC = () => {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.setAttribute('download', `MoEYS_Attendance_${activeClass?.nameKm || 'Grade6'}_${selectedMonth}.csv`);
+    link.setAttribute('download', `Ministry_Attendance_${activeClass?.nameKm || 'Grade6'}_${selectedMonth}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -253,7 +253,7 @@ export const DailyAttendanceTracker: React.FC = () => {
               }`}
             >
               <FileText className="w-3.5 h-3.5" />
-              <span>{language === 'km' ? 'តារាងសរុបប្រចាំខែ (MoEYS)' : 'Monthly Summary'}</span>
+              <span>{language === 'km' ? 'តារាងសរុបប្រចាំខែ' : 'Monthly Summary'}</span>
             </button>
           </div>
 
@@ -267,7 +267,7 @@ export const DailyAttendanceTracker: React.FC = () => {
                 <span>CSV</span>
               </button>
               <PrintToPdfButton
-                targetElementId="moeys-monthly-attendance-report"
+                targetElementId="Ministry-monthly-attendance-report"
                 documentTitle={`Attendance_Report_${selectedMonth}_${activeClass?.nameKm || 'Class'}`}
                 pageSize="a4"
                 orientation="landscape"
@@ -579,7 +579,7 @@ export const DailyAttendanceTracker: React.FC = () => {
         </div>
       )}
 
-      {/* VIEW 2: MONTHLY ATTENDANCE REGISTER & MOEYS A4 PRINTABLE SUMMARY */}
+      {/* VIEW 2: MONTHLY ATTENDANCE REGISTER & Ministry A4 PRINTABLE SUMMARY */}
       {activeView === 'monthly_summary' && (
         <div className="space-y-6">
           
@@ -598,22 +598,22 @@ export const DailyAttendanceTracker: React.FC = () => {
             </div>
 
             <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
-              {language === 'km' ? 'ទិន្នន័យត្រូវបានបូកសរុបដោយស្វ័យប្រវត្តិតាមស្ដង់ដារក្រសួងអប់រំ យុវជន និងកីឡា' : 'Auto-calculated totals ready for official MoEYS registers and print'}
+              {language === 'km' ? 'ទិន្នន័យត្រូវបានបូកសរុបដោយស្វ័យប្រវត្តិតាមស្ដង់ដារក្រសួងអប់រំ យុវជន និងកីឡា' : 'Auto-calculated totals ready for official Ministry registers and print'}
             </div>
           </div>
 
-          {/* MoEYS Official Printable Container */}
+          {/* Ministry Official Printable Container */}
           <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-x-auto">
             
-            <div id="moeys-monthly-attendance-report" className="min-w-[800px] p-4 bg-white text-slate-900">
+            <div id="Ministry-monthly-attendance-report" className="min-w-[800px] p-4 bg-white text-slate-900">
               
-              {/* MoEYS Official Letterhead */}
+              {/* Ministry Official Letterhead */}
               <div className="text-center space-y-1 mb-6">
                 <p className="font-bold text-sm tracking-wide text-slate-900">ព្រះរាជាណាចក្រកម្ពុជា</p>
                 <p className="font-bold text-sm tracking-wide text-slate-900">ជាតិ សាសនា ព្រះមហាក្សត្រ</p>
                 <div className="w-24 h-0.5 bg-slate-800 mx-auto my-1"></div>
                 <div className="flex justify-between items-start text-xs font-bold text-slate-800 pt-2 px-4">
-                  <div className="text-left space-y-0.5">
+                  <div className="text-left space-y-0.5 mt-6">
                     <p>ក្រសួងអប់រំ យុវជន និងកីឡា</p>
                     <p>{activeClass?.schoolNameKm || 'សាលាបឋមសិក្សា'}</p>
                     <p>ថ្នាក់ទី៖ {activeClass?.nameKm || 'ថ្នាក់ទី៦'} | ឆ្នាំសិក្សា៖ {activeClass?.academicYear || '2026-2027'}</p>
@@ -640,7 +640,7 @@ export const DailyAttendanceTracker: React.FC = () => {
                     <th className="border border-slate-400 py-2 px-2 bg-rose-50 text-rose-900">អត់ច្បាប់ (អច)</th>
                     <th className="border border-slate-400 py-2 px-2 bg-sky-50 text-sky-900">មកយឺត (យ)</th>
                     <th className="border border-slate-400 py-2 px-2 w-24">អត្រាវត្តមាន</th>
-                    <th className="border border-slate-400 py-2 px-2 min-w-[120px]">ចំណាំ</th>
+                    <th className="border border-slate-400 py-2 px-2 min-w-[120px]">ផ្សេងៗ</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -671,7 +671,7 @@ export const DailyAttendanceTracker: React.FC = () => {
                           {summary.attendanceRate}%
                         </td>
                         <td className="border border-slate-300 py-1.5 px-2 text-2xs text-left text-slate-600">
-                          {summary.unexcusedDays >= 3 ? '⚠️ អវត្តមានញឹកញាប់' : (summary.attendanceRate === 100 ? '⭐ វត្តមានល្អឥតខ្ចោះ' : '')}
+                          
                         </td>
                       </tr>
                     );
@@ -681,7 +681,7 @@ export const DailyAttendanceTracker: React.FC = () => {
 
               {/* Signatures & Footer */}
               <div className="flex justify-between items-start mt-8 pt-4 px-6 text-xs text-slate-800">
-                <div className="text-center space-y-12">
+                <div className="text-center space-y-12 mt-6">
                   <p className="font-bold">បានឃើញ និងឯកភាព</p>
                   <p className="font-bold">នាយកសាលា</p>
                   <p className="text-slate-400">................................................</p>
